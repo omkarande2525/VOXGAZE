@@ -1,0 +1,12 @@
+{
+  "camera_index": 0,
+  "requested_width": 1280,
+  "requested_height": 720,
+  "actual_width": 1280,
+  "actual_height": 720,
+  "observed_fps": 30.0,
+  "backend": "SYNTHETIC_SIMULATOR",
+  "face_tracking_rate": 1.0,
+  "iris_tracking_rate": 1.0,
+  "test_duration_seconds": 60.0
+}
