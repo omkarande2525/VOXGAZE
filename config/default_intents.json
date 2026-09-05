@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "description": "VoxGaze v1 Default Intent Space & Deterministic Phrase Registry",
+  "fast_path": {
+    "UP": {
+      "id": "BASIC|WATER|NONE",
+      "label": "Water",
+      "phrase": "I would like some water, please."
+    },
+    "DOWN": {
+      "id": "BASIC|HELP|NONE",
+      "label": "Help",
+      "phrase": "Please help me."
+    },
+    "LEFT": {
+      "id": "BASIC|PAIN|NONE",
+      "label": "Pain",
+      "phrase": "I am experiencing pain."
+    },
+    "RIGHT": {
+      "id": "SOCIAL|YES|NONE",
+      "label": "Yes",
+      "phrase": "Yes."
+    }
+  },
+  "domains": {
+    "MEDICAL": {
+      "label": "Medical",
+      "items": {
+        "UP": {
+          "id": "MEDICAL|POSITION|NONE",
+          "label": "Adjust Position",
+          "phrase": "Please help me adjust my position."
+        },
+        "DOWN": {
+          "id": "MEDICAL|MEDICATION|NONE",
+          "label": "Medication",
+          "phrase": "It is time for my medication."
+        },
+        "LEFT": {
+          "id": "MEDICAL|PAIN|HEAD",
+          "label": "Head Pain",
+          "phrase": "I have a pain in my head."
+        },
+        "RIGHT": {
+          "id": "MEDICAL|PAIN|LEG",
+          "label": "Leg Pain",
+          "phrase": "My leg is hurting. Please help me."
+        }
+      }
+    },
+    "BASIC": {
+      "label": "Basic Needs",
+      "items": {
+        "UP": {
+          "id": "BASIC|WATER|NONE",
+          "label": "Water",
+          "phrase": "I would like some water, please."
+        },
+        "DOWN": {
+          "id": "BASIC|FOOD|NONE",
+          "label": "Food",
+          "phrase": "I am hungry."
+        },
+        "LEFT": {
+          "id": "BASIC|RESTROOM|NONE",
+          "label": "Restroom",
+          "phrase": "I need to use the restroom."
+        },
+        "RIGHT": {
+          "id": "BASIC|COLD_WARM|NONE",
+          "label": "Temperature",
+          "phrase": "I feel uncomfortable with the room temperature."
+        }
+      }
+    },
+    "SOCIAL": {
+      "label": "Social & Quick Answers",
+      "items": {
+        "UP": {
+          "id": "SOCIAL|YES|NONE",
+          "label": "Yes",
+          "phrase": "Yes."
+        },
+        "DOWN": {
+          "id": "SOCIAL|NO|NONE",
+          "label": "No",
+          "phrase": "No, thank you."
+        },
+        "LEFT": {
+          "id": "SOCIAL|THANK_YOU|NONE",
+          "label": "Thank You",
+          "phrase": "Thank you."
+        },
+        "RIGHT": {
+          "id": "SOCIAL|GREETING|NONE",
+          "label": "Hello",
+          "phrase": "Hello, how are you?"
+        }
+      }
+    }
+  }
+}

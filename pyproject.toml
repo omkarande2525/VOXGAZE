@@ -1,0 +1,21 @@
+[project]
+name = "voxgaze"
+version = "0.1.0"
+description = "Personalized, variable-depth semantic gaze interaction prototype for low-cost assistive communication"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "opencv-python>=4.8.0",
+    "mediapipe>=0.10.9",
+    "numpy>=1.24.0",
+    "pydantic>=2.0.0",
+    "fastapi>=0.100.0",
+    "uvicorn[standard]>=0.23.0",
+    "websockets>=11.0"
+]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-v --strict-markers"
