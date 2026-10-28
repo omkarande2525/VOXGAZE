@@ -349,8 +349,35 @@ class PersonalizedGazeMapper:
 
         if not errors:
             return {
+                "status": "INVALID_EMPTY_DATA",
                 "valid_sample_rate": 0.0,
                 "error": "No valid predictions on test set.",
+                "total_test_samples": total_samples,
+                "valid_test_samples": 0,
+                "peripheral_trial_accuracy": 0.0,
+                "peripheral_trials_passed": 0,
+                "peripheral_trials_total": 0,
+                "peripheral_trial_accuracy_display": "0/0 (0.0%)",
+                "center_return_false_activation_rate": 0.0,
+                "center_trials_false_act": 0,
+                "center_trials_stayed": 0,
+                "center_trials_total": 0,
+                "center_return_false_activation_display": "0/0 (0.0%)",
+                "overall_trial_correctness_rate": 0.0,
+                "overall_trials_correct": 0,
+                "overall_trials_total": 0,
+                "overall_trial_correctness_display": "0/0 (0.0%)",
+                "is_preliminary": True,
+                "sample_size_status": "PRELIMINARY",
+                "trial_selection_accuracy": 0.0,
+                "selection_accuracy": 0.0,
+                "trial_center_false_activation_rate": 0.0,
+                "center_false_activation_rate": 0.0,
+                "frame_selection_accuracy": 0.0,
+                "frame_center_false_activation_rate": 0.0,
+                "overall_frame_correctness_rate": 0.0,
+                "latency_p50_us": 0.0,
+                "latency_p95_us": 0.0,
             }
 
         # -------------------------------------------------------------------
@@ -366,8 +393,12 @@ class PersonalizedGazeMapper:
             if not pts:
                 continue
             t_dir = trial_targets[t_name]
-            med_x = float(np.median([p[0] for p in pts]))
-            med_y = float(np.median([p[1] for p in pts]))
+            xs = [p[0] for p in pts if math.isfinite(p[0])]
+            ys = [p[1] for p in pts if math.isfinite(p[1])]
+            if not xs or not ys:
+                continue
+            med_x = float(np.median(xs))
+            med_y = float(np.median(ys))
             target_bbox = self.TARGET_BOUNDING_BOXES.get(t_dir, (0.0, 0.0, 1.0, 1.0))
 
             if t_dir in ("LEFT", "RIGHT", "UP", "DOWN"):
@@ -386,7 +417,7 @@ class PersonalizedGazeMapper:
 
             elif t_dir == "CENTER":
                 center_trials_total += 1
-                # Center trial passes if median remains inside resting deadzone
+                # Center trial passes if and only if median remains inside resting deadzone
                 stayed_center = self.is_inside_bbox(med_x, med_y, self.TARGET_BOUNDING_BOXES["CENTER"])
                 if not stayed_center:
                     center_trials_false_act += 1
@@ -399,29 +430,49 @@ class PersonalizedGazeMapper:
                     "frames_in_trial": len(pts),
                 })
 
-        trial_selection_accuracy = (
+        center_trials_stayed = center_trials_total - center_trials_false_act
+        overall_trials_total = peripheral_trials_total + center_trials_total
+        overall_trials_correct = peripheral_trials_passed + center_trials_stayed
+
+        peripheral_trial_accuracy = (
             float(peripheral_trials_passed / peripheral_trials_total)
             if peripheral_trials_total > 0
             else 0.0
         )
-        trial_center_false_rate = (
+        center_return_false_rate = (
             float(center_trials_false_act / center_trials_total)
             if center_trials_total > 0
             else 0.0
         )
+        overall_trial_correctness_rate = (
+            float(overall_trials_correct / overall_trials_total)
+            if overall_trials_total > 0
+            else 0.0
+        )
 
-        frame_selection_accuracy = (
+        peripheral_frame_accuracy = (
             float(correct_peripheral_frames / total_peripheral_frames)
             if total_peripheral_frames > 0
             else 0.0
         )
-        frame_center_false_rate = (
+        center_frame_false_rate = (
             float(center_false_activation_frames / total_center_frames)
             if total_center_frames > 0
             else 0.0
         )
+        total_frames = total_peripheral_frames + total_center_frames
+        correct_frames = correct_peripheral_frames + (total_center_frames - center_false_activation_frames)
+        overall_frame_correctness_rate = (
+            float(correct_frames / total_frames)
+            if total_frames > 0
+            else 0.0
+        )
+
+        is_preliminary = (peripheral_trials_total < 12) or (center_trials_total < 15)
+        sample_size_status = "PRELIMINARY" if is_preliminary else "CONCLUSIVE"
 
         return {
+            "status": "VALID",
             "feature_set": self.feature_set.value,
             "alpha": self.alpha,
             "total_test_samples": total_samples,
@@ -433,19 +484,44 @@ class PersonalizedGazeMapper:
             "p95_target_error": round(float(np.percentile(errors, 95)), 4),
             "x_mae": round(float(np.mean(x_errors)), 4),
             "y_mae": round(float(np.mean(y_errors)), 4),
-            # Trial-level metrics (Primary AAC Command Decision Unit)
-            "trial_selection_accuracy": round(trial_selection_accuracy, 4),
-            "trial_center_false_activation_rate": round(trial_center_false_rate, 4),
-            "peripheral_trials_total": peripheral_trials_total,
+            # Unambiguous Trial-Level Metrics with Counts and Denominators
+            "peripheral_trial_accuracy": round(peripheral_trial_accuracy, 4),
             "peripheral_trials_passed": peripheral_trials_passed,
-            "center_trials_total": center_trials_total,
+            "peripheral_trials_total": peripheral_trials_total,
+            "peripheral_trial_accuracy_display": f"{peripheral_trials_passed}/{peripheral_trials_total} ({peripheral_trial_accuracy*100:.1f}%)",
+            "center_return_false_activation_rate": round(center_return_false_rate, 4),
             "center_trials_false_act": center_trials_false_act,
+            "center_trials_stayed": center_trials_stayed,
+            "center_trials_total": center_trials_total,
+            "center_return_false_activation_display": f"{center_trials_false_act}/{center_trials_total} ({center_return_false_rate*100:.1f}%)",
+            "overall_trial_correctness_rate": round(overall_trial_correctness_rate, 4),
+            "overall_trials_correct": overall_trials_correct,
+            "overall_trials_total": overall_trials_total,
+            "overall_trial_correctness_display": f"{overall_trials_correct}/{overall_trials_total} ({overall_trial_correctness_rate*100:.1f}%)",
+            # Sample size classification
+            "is_preliminary": is_preliminary,
+            "sample_size_status": sample_size_status,
             "trial_results": trial_results,
-            # Frame-level metrics (Jitter / Stability)
-            "frame_selection_accuracy": round(frame_selection_accuracy, 4),
-            "frame_center_false_activation_rate": round(frame_center_false_rate, 4),
-            "selection_accuracy": round(trial_selection_accuracy, 4),  # Default alias to trial accuracy
-            "center_false_activation_rate": round(trial_center_false_rate, 4),
+            # Unambiguous Frame-Level Metrics with Counts and Denominators
+            "peripheral_frame_accuracy": round(peripheral_frame_accuracy, 4),
+            "peripheral_frames_correct": correct_peripheral_frames,
+            "peripheral_frames_total": total_peripheral_frames,
+            "peripheral_frame_accuracy_display": f"{correct_peripheral_frames}/{total_peripheral_frames} ({peripheral_frame_accuracy*100:.1f}%)",
+            "center_frame_false_activation_rate": round(center_frame_false_rate, 4),
+            "center_frames_false_act": center_false_activation_frames,
+            "center_frames_total": total_center_frames,
+            "center_frame_false_display": f"{center_false_activation_frames}/{total_center_frames} ({center_frame_false_rate*100:.1f}%)",
+            "overall_frame_correctness_rate": round(overall_frame_correctness_rate, 4),
+            "overall_frames_correct": correct_frames,
+            "overall_frames_total": total_frames,
+            "overall_frame_correctness_display": f"{correct_frames}/{total_frames} ({overall_frame_correctness_rate*100:.1f}%)",
+            # Backward-compatibility aliases
+            "trial_selection_accuracy": round(peripheral_trial_accuracy, 4),
+            "selection_accuracy": round(peripheral_trial_accuracy, 4),
+            "trial_center_false_activation_rate": round(center_return_false_rate, 4),
+            "center_false_activation_rate": round(center_return_false_rate, 4),
+            "frame_selection_accuracy": round(peripheral_frame_accuracy, 4),
+            "frame_center_false_rate": round(center_frame_false_rate, 4),
             # Latency profiling
             "latency_p50_us": round(float(np.percentile(latencies_us, 50)), 2),
             "latency_p95_us": round(float(np.percentile(latencies_us, 95)), 2),
