@@ -1,4 +1,6 @@
 {
+  "provenance": "SYNTHETIC_SIMULATOR (Automated CI)",
+  "hardware_test_completed": false,
   "camera_index": 0,
   "requested_width": 1280,
   "requested_height": 720,

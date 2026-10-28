@@ -1,0 +1,505 @@
+{
+  "metadata": {
+    "session_id": "obs_20261014_220836_c99123",
+    "session_status": "COMPLETED",
+    "start_time_iso": "2026-10-14T22:08:36.107187",
+    "end_time_iso": "2026-10-14T22:12:11.160564",
+    "elapsed_duration_s": 215.05,
+    "total_frames_recorded": 3524,
+    "disclaimer": "Observation condition names reflect experimental instructions provided to the user, not independently verified ground truth. Frame-level variability measures signal stability rather than accuracy."
+  },
+  "conditions_overview": {
+    "total_conditions": 20,
+    "completed_count": 20,
+    "skipped_count": 0,
+    "interrupted_count": 0,
+    "completed": [
+      "CENTER_BASELINE",
+      "EYES_LEFT",
+      "EYES_CENTER_RETURN",
+      "EYES_RIGHT",
+      "EYES_CENTER_RETURN",
+      "EYES_UP",
+      "EYES_CENTER_RETURN",
+      "EYES_DOWN",
+      "EYES_CENTER_RETURN",
+      "HEAD_LEFT_EYES_FORWARD",
+      "HEAD_CENTER_RETURN",
+      "HEAD_RIGHT_EYES_FORWARD",
+      "HEAD_CENTER_RETURN",
+      "HEAD_UP_EYES_FORWARD",
+      "HEAD_CENTER_RETURN",
+      "HEAD_DOWN_EYES_FORWARD",
+      "HEAD_CENTER_RETURN",
+      "COMBINED_MOVEMENT",
+      "TRACKING_RECOVERY",
+      "FINAL_CENTER_BASELINE"
+    ],
+    "skipped": [],
+    "interrupted": []
+  },
+  "overall_counts": {
+    "total_frames": 3524,
+    "tracking_loss_frames": 71,
+    "invalid_crop_frames": 0,
+    "mobileone_inference_error_frames": 0
+  },
+  "latency_metrics": {
+    "mobileone_inference_ms": {
+      "sample_count": 3453,
+      "median_p50_ms": 6.82,
+      "p95_ms": 7.51
+    },
+    "total_frame_latency_ms": {
+      "sample_count": 3524,
+      "median_p50_ms": 28.21,
+      "p95_ms": 44.5
+    }
+  },
+  "center_observations_variability": {
+    "conditions_included": [
+      "CENTER_BASELINE",
+      "EYES_CENTER_RETURN",
+      "EYES_CENTER_RETURN",
+      "EYES_CENTER_RETURN",
+      "EYES_CENTER_RETURN",
+      "HEAD_CENTER_RETURN",
+      "HEAD_CENTER_RETURN",
+      "HEAD_CENTER_RETURN",
+      "HEAD_CENTER_RETURN",
+      "FINAL_CENTER_BASELINE"
+    ],
+    "total_center_frames": 1504,
+    "disclaimer": "These statistics measure empirical frame-level dispersion during repeated center fixations, NOT ground-truth accuracy.",
+    "mobileone_yaw_deg": {
+      "linear_stats": {
+        "sample_count": 1504,
+        "median": -5.5747,
+        "iqr": 7.6,
+        "min": -48.9729,
+        "max": 37.7343,
+        "std": 10.2319
+      },
+      "circular_stats": {
+        "sample_count": 1504,
+        "circular_mean_deg": -5.922,
+        "circular_variance": 0.01565,
+        "circular_std_deg": 10.177
+      }
+    },
+    "mobileone_pitch_deg": {
+      "linear_stats": {
+        "sample_count": 1504,
+        "median": 1.1938,
+        "iqr": 10.6782,
+        "min": -23.442,
+        "max": 46.9699,
+        "std": 10.8228
+      },
+      "circular_stats": {
+        "sample_count": 1504,
+        "circular_mean_deg": 3.046,
+        "circular_variance": 0.01755,
+        "circular_std_deg": 10.782
+      }
+    },
+    "geometry_right_eye_h_ratio": {
+      "sample_count": 1504,
+      "median": 0.514,
+      "iqr": 0.0283,
+      "min": 0.1951,
+      "max": 0.7748,
+      "std": 0.0715
+    },
+    "geometry_right_eye_v_ratio": {
+      "sample_count": 1504,
+      "median": 0.4213,
+      "iqr": 0.0549,
+      "min": -0.1032,
+      "max": 0.6106,
+      "std": 0.0832
+    }
+  },
+  "condition_summaries": [
+    {
+      "condition_index": 1,
+      "condition_name": "CENTER_BASELINE",
+      "instruction": "Look naturally at the center of the screen.",
+      "status": "COMPLETED",
+      "frames_collected": 246,
+      "face_detection_availability_rate": 1.0,
+      "valid_geometry_estimate_rate": 1.0,
+      "valid_mobileone_estimate_rate": 1.0,
+      "counts": {
+        "face_detected": 246,
+        "face_lost": 0,
+        "crop_valid": 246,
+        "crop_invalid": 0,
+        "geometry_valid": 246,
+        "mobileone_valid": 246,
+        "mobileone_failed": 0
+      }
+    },
+    {
+      "condition_index": 2,
+      "condition_name": "EYES_LEFT",
+      "instruction": "Shift gaze to the LEFT without turning your head.",
+      "status": "COMPLETED",
+      "frames_collected": 206,
+      "face_detection_availability_rate": 1.0,
+      "valid_geometry_estimate_rate": 1.0,
+      "valid_mobileone_estimate_rate": 1.0,
+      "counts": {
+        "face_detected": 206,
+        "face_lost": 0,
+        "crop_valid": 206,
+        "crop_invalid": 0,
+        "geometry_valid": 206,
+        "mobileone_valid": 206,
+        "mobileone_failed": 0
+      }
+    },
+    {
+      "condition_index": 3,
+      "condition_name": "EYES_CENTER_RETURN",
+      "instruction": "Return gaze to the CENTER.",
+      "status": "COMPLETED",
+      "frames_collected": 141,
+      "face_detection_availability_rate": 1.0,
+      "valid_geometry_estimate_rate": 1.0,
+      "valid_mobileone_estimate_rate": 1.0,
+      "counts": {
+        "face_detected": 141,
+        "face_lost": 0,
+        "crop_valid": 141,
+        "crop_invalid": 0,
+        "geometry_valid": 141,
+        "mobileone_valid": 141,
+        "mobileone_failed": 0
+      }
+    },
+    {
+      "condition_index": 4,
+      "condition_name": "EYES_RIGHT",
+      "instruction": "Shift gaze to the RIGHT without turning your head.",
+      "status": "COMPLETED",
+      "frames_collected": 110,
+      "face_detection_availability_rate": 1.0,
+      "valid_geometry_estimate_rate": 1.0,
+      "valid_mobileone_estimate_rate": 1.0,
+      "counts": {
+        "face_detected": 110,
+        "face_lost": 0,
+        "crop_valid": 110,
+        "crop_invalid": 0,
+        "geometry_valid": 110,
+        "mobileone_valid": 110,
+        "mobileone_failed": 0
+      }
+    },
+    {
+      "condition_index": 5,
+      "condition_name": "EYES_CENTER_RETURN",
+      "instruction": "Return gaze to the CENTER.",
+      "status": "COMPLETED",
+      "frames_collected": 102,
+      "face_detection_availability_rate": 1.0,
+      "valid_geometry_estimate_rate": 1.0,
+      "valid_mobileone_estimate_rate": 1.0,
+      "counts": {
+        "face_detected": 102,
+        "face_lost": 0,
+        "crop_valid": 102,
+        "crop_invalid": 0,
+        "geometry_valid": 102,
+        "mobileone_valid": 102,
+        "mobileone_failed": 0
+      }
+    },
+    {
+      "condition_index": 6,
+      "condition_name": "EYES_UP",
+      "instruction": "Shift gaze UP without tilting your head.",
+      "status": "COMPLETED",
+      "frames_collected": 175,
+      "face_detection_availability_rate": 1.0,
+      "valid_geometry_estimate_rate": 1.0,
+      "valid_mobileone_estimate_rate": 1.0,
+      "counts": {
+        "face_detected": 175,
+        "face_lost": 0,
+        "crop_valid": 175,
+        "crop_invalid": 0,
+        "geometry_valid": 175,
+        "mobileone_valid": 175,
+        "mobileone_failed": 0
+      }
+    },
+    {
+      "condition_index": 7,
+      "condition_name": "EYES_CENTER_RETURN",
+      "instruction": "Return gaze to the CENTER.",
+      "status": "COMPLETED",
+      "frames_collected": 140,
+      "face_detection_availability_rate": 1.0,
+      "valid_geometry_estimate_rate": 1.0,
+      "valid_mobileone_estimate_rate": 1.0,
+      "counts": {
+        "face_detected": 140,
+        "face_lost": 0,
+        "crop_valid": 140,
+        "crop_invalid": 0,
+        "geometry_valid": 140,
+        "mobileone_valid": 140,
+        "mobileone_failed": 0
+      }
+    },
+    {
+      "condition_index": 8,
+      "condition_name": "EYES_DOWN",
+      "instruction": "Shift gaze DOWN without tilting your head.",
+      "status": "COMPLETED",
+      "frames_collected": 127,
+      "face_detection_availability_rate": 1.0,
+      "valid_geometry_estimate_rate": 1.0,
+      "valid_mobileone_estimate_rate": 1.0,
+      "counts": {
+        "face_detected": 127,
+        "face_lost": 0,
+        "crop_valid": 127,
+        "crop_invalid": 0,
+        "geometry_valid": 127,
+        "mobileone_valid": 127,
+        "mobileone_failed": 0
+      }
+    },
+    {
+      "condition_index": 9,
+      "condition_name": "EYES_CENTER_RETURN",
+      "instruction": "Return gaze to the CENTER.",
+      "status": "COMPLETED",
+      "frames_collected": 127,
+      "face_detection_availability_rate": 1.0,
+      "valid_geometry_estimate_rate": 1.0,
+      "valid_mobileone_estimate_rate": 1.0,
+      "counts": {
+        "face_detected": 127,
+        "face_lost": 0,
+        "crop_valid": 127,
+        "crop_invalid": 0,
+        "geometry_valid": 127,
+        "mobileone_valid": 127,
+        "mobileone_failed": 0
+      }
+    },
+    {
+      "condition_index": 10,
+      "condition_name": "HEAD_LEFT_EYES_FORWARD",
+      "instruction": "Turn head slightly LEFT while keeping eyes forward on screen.",
+      "status": "COMPLETED",
+      "frames_collected": 135,
+      "face_detection_availability_rate": 1.0,
+      "valid_geometry_estimate_rate": 1.0,
+      "valid_mobileone_estimate_rate": 1.0,
+      "counts": {
+        "face_detected": 135,
+        "face_lost": 0,
+        "crop_valid": 135,
+        "crop_invalid": 0,
+        "geometry_valid": 135,
+        "mobileone_valid": 135,
+        "mobileone_failed": 0
+      }
+    },
+    {
+      "condition_index": 11,
+      "condition_name": "HEAD_CENTER_RETURN",
+      "instruction": "Return head to CENTER.",
+      "status": "COMPLETED",
+      "frames_collected": 80,
+      "face_detection_availability_rate": 1.0,
+      "valid_geometry_estimate_rate": 1.0,
+      "valid_mobileone_estimate_rate": 1.0,
+      "counts": {
+        "face_detected": 80,
+        "face_lost": 0,
+        "crop_valid": 80,
+        "crop_invalid": 0,
+        "geometry_valid": 80,
+        "mobileone_valid": 80,
+        "mobileone_failed": 0
+      }
+    },
+    {
+      "condition_index": 12,
+      "condition_name": "HEAD_RIGHT_EYES_FORWARD",
+      "instruction": "Turn head slightly RIGHT while keeping eyes forward on screen.",
+      "status": "COMPLETED",
+      "frames_collected": 136,
+      "face_detection_availability_rate": 1.0,
+      "valid_geometry_estimate_rate": 1.0,
+      "valid_mobileone_estimate_rate": 1.0,
+      "counts": {
+        "face_detected": 136,
+        "face_lost": 0,
+        "crop_valid": 136,
+        "crop_invalid": 0,
+        "geometry_valid": 136,
+        "mobileone_valid": 136,
+        "mobileone_failed": 0
+      }
+    },
+    {
+      "condition_index": 13,
+      "condition_name": "HEAD_CENTER_RETURN",
+      "instruction": "Return head to CENTER.",
+      "status": "COMPLETED",
+      "frames_collected": 125,
+      "face_detection_availability_rate": 1.0,
+      "valid_geometry_estimate_rate": 1.0,
+      "valid_mobileone_estimate_rate": 1.0,
+      "counts": {
+        "face_detected": 125,
+        "face_lost": 0,
+        "crop_valid": 125,
+        "crop_invalid": 0,
+        "geometry_valid": 125,
+        "mobileone_valid": 125,
+        "mobileone_failed": 0
+      }
+    },
+    {
+      "condition_index": 14,
+      "condition_name": "HEAD_UP_EYES_FORWARD",
+      "instruction": "Tilt head slightly UP while keeping eyes forward on screen.",
+      "status": "COMPLETED",
+      "frames_collected": 120,
+      "face_detection_availability_rate": 1.0,
+      "valid_geometry_estimate_rate": 1.0,
+      "valid_mobileone_estimate_rate": 1.0,
+      "counts": {
+        "face_detected": 120,
+        "face_lost": 0,
+        "crop_valid": 120,
+        "crop_invalid": 0,
+        "geometry_valid": 120,
+        "mobileone_valid": 120,
+        "mobileone_failed": 0
+      }
+    },
+    {
+      "condition_index": 15,
+      "condition_name": "HEAD_CENTER_RETURN",
+      "instruction": "Return head to CENTER.",
+      "status": "COMPLETED",
+      "frames_collected": 195,
+      "face_detection_availability_rate": 1.0,
+      "valid_geometry_estimate_rate": 1.0,
+      "valid_mobileone_estimate_rate": 1.0,
+      "counts": {
+        "face_detected": 195,
+        "face_lost": 0,
+        "crop_valid": 195,
+        "crop_invalid": 0,
+        "geometry_valid": 195,
+        "mobileone_valid": 195,
+        "mobileone_failed": 0
+      }
+    },
+    {
+      "condition_index": 16,
+      "condition_name": "HEAD_DOWN_EYES_FORWARD",
+      "instruction": "Tilt head slightly DOWN while keeping eyes forward on screen.",
+      "status": "COMPLETED",
+      "frames_collected": 186,
+      "face_detection_availability_rate": 1.0,
+      "valid_geometry_estimate_rate": 1.0,
+      "valid_mobileone_estimate_rate": 1.0,
+      "counts": {
+        "face_detected": 186,
+        "face_lost": 0,
+        "crop_valid": 186,
+        "crop_invalid": 0,
+        "geometry_valid": 186,
+        "mobileone_valid": 186,
+        "mobileone_failed": 0
+      }
+    },
+    {
+      "condition_index": 17,
+      "condition_name": "HEAD_CENTER_RETURN",
+      "instruction": "Return head to CENTER.",
+      "status": "COMPLETED",
+      "frames_collected": 163,
+      "face_detection_availability_rate": 1.0,
+      "valid_geometry_estimate_rate": 1.0,
+      "valid_mobileone_estimate_rate": 1.0,
+      "counts": {
+        "face_detected": 163,
+        "face_lost": 0,
+        "crop_valid": 163,
+        "crop_invalid": 0,
+        "geometry_valid": 163,
+        "mobileone_valid": 163,
+        "mobileone_failed": 0
+      }
+    },
+    {
+      "condition_index": 18,
+      "condition_name": "COMBINED_MOVEMENT",
+      "instruction": "Perform natural combined head and eye movement.",
+      "status": "COMPLETED",
+      "frames_collected": 652,
+      "face_detection_availability_rate": 1.0,
+      "valid_geometry_estimate_rate": 1.0,
+      "valid_mobileone_estimate_rate": 1.0,
+      "counts": {
+        "face_detected": 652,
+        "face_lost": 0,
+        "crop_valid": 652,
+        "crop_invalid": 0,
+        "geometry_valid": 652,
+        "mobileone_valid": 652,
+        "mobileone_failed": 0
+      }
+    },
+    {
+      "condition_index": 19,
+      "condition_name": "TRACKING_RECOVERY",
+      "instruction": "Cover camera or look away briefly, then return to center.",
+      "status": "COMPLETED",
+      "frames_collected": 173,
+      "face_detection_availability_rate": 0.5896,
+      "valid_geometry_estimate_rate": 0.5896,
+      "valid_mobileone_estimate_rate": 0.5896,
+      "counts": {
+        "face_detected": 102,
+        "face_lost": 71,
+        "crop_valid": 102,
+        "crop_invalid": 71,
+        "geometry_valid": 102,
+        "mobileone_valid": 102,
+        "mobileone_failed": 71
+      }
+    },
+    {
+      "condition_index": 20,
+      "condition_name": "FINAL_CENTER_BASELINE",
+      "instruction": "Final neutral center gaze baseline.",
+      "status": "COMPLETED",
+      "frames_collected": 185,
+      "face_detection_availability_rate": 1.0,
+      "valid_geometry_estimate_rate": 1.0,
+      "valid_mobileone_estimate_rate": 1.0,
+      "counts": {
+        "face_detected": 185,
+        "face_lost": 0,
+        "crop_valid": 185,
+        "crop_invalid": 0,
+        "geometry_valid": 185,
+        "mobileone_valid": 185,
+        "mobileone_failed": 0
+      }
+    }
+  ]
+}

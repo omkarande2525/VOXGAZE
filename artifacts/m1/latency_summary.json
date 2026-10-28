@@ -1,5 +1,27 @@
 {
-  "mean": 0.01123066666574838,
-  "p50": 0.011343332880642265,
-  "p95": 0.01319499924041641
+  "camera_capture_latency_ms": {
+    "mean": 0.0,
+    "p50": 0.0,
+    "p95": 0.0
+  },
+  "mediapipe_inference_latency_ms": {
+    "mean": 0.0,
+    "p50": 0.0,
+    "p95": 0.0
+  },
+  "geometry_normalization_latency_ms": {
+    "mean": 0.0,
+    "p50": 0.0,
+    "p95": 0.0
+  },
+  "gaze_classification_latency_ms": {
+    "mean": 0.003277599966774384,
+    "p50": 0.0028999929782003164,
+    "p95": 0.0049000082071870565
+  },
+  "end_to_end_processing_latency_ms": {
+    "mean": 0.003277599966774384,
+    "p50": 0.0028999929782003164,
+    "p95": 0.0049000082071870565
+  }
 }

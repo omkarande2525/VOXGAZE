@@ -21,17 +21,18 @@ def validate_thresholds(t: CalibrationThresholds) -> tuple[bool, Optional[str]]:
     Validate that hysteresis thresholds have proper separation and ordering.
     - Left: enter < exit (looking left decreases H toward 0)
     - Right: enter > exit (looking right increases H toward 1)
-    - Up: enter < exit (looking up decreases V toward 0)
-    - Down: enter > exit (looking down increases V toward 1)
+    - Up: enter < exit (looking up decreases V toward 0 or negative)
+    - Down: enter > exit (looking down increases V toward 1 or positive)
     - Blink: closed_ear < open_ear
+    Only validates enabled directions.
     """
-    if t.left.enter >= t.left.exit:
+    if getattr(t.left, "is_enabled", True) and t.left.enter >= t.left.exit:
         return False, f"Left enter threshold ({t.left.enter}) must be < left exit threshold ({t.left.exit})"
-    if t.right.enter <= t.right.exit:
+    if getattr(t.right, "is_enabled", True) and t.right.enter <= t.right.exit:
         return False, f"Right enter threshold ({t.right.enter}) must be > right exit threshold ({t.right.exit})"
-    if t.up.enter >= t.up.exit:
+    if getattr(t.up, "is_enabled", True) and t.up.enter >= t.up.exit:
         return False, f"Up enter threshold ({t.up.enter}) must be < up exit threshold ({t.up.exit})"
-    if t.down.enter <= t.down.exit:
+    if getattr(t.down, "is_enabled", True) and t.down.enter <= t.down.exit:
         return False, f"Down enter threshold ({t.down.enter}) must be > down exit threshold ({t.down.exit})"
     if t.blink_closed_ear >= t.blink_open_ear:
         return False, f"Blink closed EAR ({t.blink_closed_ear}) must be < open EAR ({t.blink_open_ear})"

@@ -26,6 +26,7 @@ class EyeLandmarks(BaseModel):
     h_ratio: float = Field(..., description="Normalized horizontal ratio [0, 1]")
     v_ratio: float = Field(..., description="Normalized vertical ratio [0, 1]")
     ear: float = Field(..., description="Eye Aspect Ratio")
+    canthal_ratio: Optional[float] = Field(default=None, description="Normalized canthal-normal vertical ratio")
 
 
 class GazeFeatures(BaseModel):
@@ -37,6 +38,8 @@ class GazeFeatures(BaseModel):
     ear_right: float = 0.0
     tracking_confidence: float = Field(..., ge=0.0, le=1.0)
     is_tracking_valid: bool = True
+    is_right_eye_valid: Optional[bool] = Field(default=None, description="Quality validity of right eye geometry")
+    is_left_eye_valid: Optional[bool] = Field(default=None, description="Quality validity of left eye geometry")
 
 
 # ---------------------------------------------------------
@@ -46,6 +49,7 @@ class GazeFeatures(BaseModel):
 class DirectionThreshold(BaseModel):
     enter: float
     exit: float
+    is_enabled: bool = True
 
 
 class CalibrationThresholds(BaseModel):
@@ -55,6 +59,7 @@ class CalibrationThresholds(BaseModel):
     down: DirectionThreshold
     blink_closed_ear: float
     blink_open_ear: float
+    vertical_metric: str = Field(default="eyelid", description="Vertical metric used: 'eyelid' or 'canthal_normal'")
 
 
 class CalibrationStats(BaseModel):
@@ -67,6 +72,8 @@ class CalibrationStats(BaseModel):
     max_h: float
     min_v: float
     max_v: float
+    median_ear: Optional[float] = None
+    mad_ear: Optional[float] = None
 
 
 class CalibrationProfile(BaseModel):

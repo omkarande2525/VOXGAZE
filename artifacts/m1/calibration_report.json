@@ -1,6 +1,8 @@
 {
+  "provenance": "SYNTHETIC_CALIBRATION",
   "profile_version": 1,
   "algorithm_version": "synthetic-v1",
+  "active_eye": "RIGHT_EYE_BASELINE",
   "stats": {
     "CENTER": {
       "sample_count": 45,
@@ -11,7 +13,9 @@
       "min_h": 0.47,
       "max_h": 0.53,
       "min_v": 0.47,
-      "max_v": 0.53
+      "max_v": 0.53,
+      "median_ear": null,
+      "mad_ear": null
     },
     "LEFT": {
       "sample_count": 45,
@@ -22,7 +26,9 @@
       "min_h": 0.26,
       "max_h": 0.34,
       "min_v": 0.47,
-      "max_v": 0.53
+      "max_v": 0.53,
+      "median_ear": null,
+      "mad_ear": null
     },
     "RIGHT": {
       "sample_count": 45,
@@ -33,7 +39,9 @@
       "min_h": 0.66,
       "max_h": 0.74,
       "min_v": 0.47,
-      "max_v": 0.53
+      "max_v": 0.53,
+      "median_ear": null,
+      "mad_ear": null
     },
     "UP": {
       "sample_count": 45,
@@ -44,7 +52,9 @@
       "min_h": 0.47,
       "max_h": 0.53,
       "min_v": 0.26,
-      "max_v": 0.34
+      "max_v": 0.34,
+      "median_ear": null,
+      "mad_ear": null
     },
     "DOWN": {
       "sample_count": 45,
@@ -55,7 +65,9 @@
       "min_h": 0.47,
       "max_h": 0.53,
       "min_v": 0.66,
-      "max_v": 0.74
+      "max_v": 0.74,
+      "median_ear": null,
+      "mad_ear": null
     },
     "CLOSED": {
       "sample_count": 45,
@@ -66,7 +78,9 @@
       "min_h": 0.47,
       "max_h": 0.53,
       "min_v": 0.47,
-      "max_v": 0.53
+      "max_v": 0.53,
+      "median_ear": null,
+      "mad_ear": null
     }
   },
   "thresholds": {
