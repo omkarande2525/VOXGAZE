@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VoxGaze AAC — Gaze-to-Word Communication</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="theme-high-contrast">
+
+  <!-- Accessible Skip Link -->
+  <a href="#word-board" class="skip-link">Skip to Word Board</a>
+
+  <div class="app-container">
+
+    <!-- Top Header & Honest Mode Selector -->
+    <header class="app-header">
+      <div class="header-brand">
+        <h1 class="app-title"><span class="brand-icon">&#x1F441;&#xFE0F;</span> VoxGaze AAC</h1>
+        <span class="prototype-badge" title="Research prototype, not a clinically validated device">RESEARCH PROTOTYPE</span>
+      </div>
+
+      <!-- Mode Switcher -->
+      <div class="mode-switcher-container">
+        <div class="mode-tabs" role="radiogroup" aria-label="Operating Mode">
+          <button id="btn-mode-demo" class="mode-tab active" role="radio" aria-checked="true">
+            <span class="tab-icon">&#x1F3AE;</span>
+            <div class="tab-text">
+              <span class="tab-title">DEMO MODE</span>
+              <span class="tab-subtitle">Simulated Gaze (Keyboard / WASD)</span>
+            </div>
+          </button>
+          <button id="btn-mode-live" class="mode-tab" role="radio" aria-checked="false">
+            <span class="tab-icon">&#x1F4F7;</span>
+            <div class="tab-text">
+              <span class="tab-title">LIVE RESEARCH</span>
+              <span class="tab-subtitle">Webcam Sensor Pipeline</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Demo Guided Walkthrough Button -->
+      <div class="header-actions">
+        <button id="btn-start-demo" class="btn btn-primary btn-demo-tour">
+          <span class="btn-icon">&#x2728;</span> Start Guided Demo
+        </button>
+      </div>
+    </header>
+
+    <!-- Prominent Honest Banner (Changes with Mode) -->
+    <div id="mode-notice-banner" class="notice-banner banner-demo" role="region" aria-live="polite">
+      <div class="banner-content">
+        <span class="banner-icon" id="banner-icon">&#x2139;&#xFE0F;</span>
+        <div class="banner-text">
+          <strong id="banner-title">DEMO / SIMULATED GAZE MODE ACTIVE</strong>
+          <p id="banner-desc">Use <strong>Arrow Keys</strong> or <strong>W, A, S, D</strong> to move the gaze indicator. Press <strong>Space</strong> or dwell over a tile to select. <em>Input is simulated for reliable presentation and is not live eye tracking.</em></p>
+        </div>
+      </div>
+      <div id="live-gate-warning" class="gate-warning-pill hidden">
+        <span class="warning-icon">&#x26A0;&#xFE0F;</span> LIVE SELECTION DISABLED (Calibration Gates Incomplete)
+      </div>
+    </div>
+
+    <!-- Guided Demo Tour Card (Visible during walkthrough) -->
+    <div id="demo-tour-card" class="demo-tour-card hidden" role="region" aria-live="assertive">
+      <div class="tour-header">
+        <span class="tour-badge" id="tour-step-badge">STEP 1 OF 6</span>
+        <h3 id="tour-step-title">Move Indicator to 'I'</h3>
+        <button id="btn-exit-tour" class="btn-icon-only" aria-label="Exit Demo Tour">&#x2715;</button>
+      </div>
+      <p id="tour-step-desc">Use arrow keys or WASD to position the gaze indicator over the <strong>I</strong> tile.</p>
+      <div class="tour-progress-bar"><div id="tour-progress-fill" class="tour-progress-fill"></div></div>
+    </div>
+
+    <!-- Active Phrase Display Bar & Controls -->
+    <section class="phrase-section" aria-label="Constructed Phrase">
+      <div class="phrase-bar-container">
+        <div class="phrase-label-group">
+          <span class="phrase-label">Phrase Bar</span>
+          <span id="phrase-preview-candidate" class="candidate-preview-tag hidden" aria-live="polite">
+            Candidate: <strong id="candidate-word-text">--</strong> (Confirm: Space)
+          </span>
+        </div>
+        <div class="phrase-display-box" id="phrase-display" aria-live="polite" aria-atomic="true">
+          <span class="phrase-placeholder" id="phrase-placeholder">Assembled phrase appears here...</span>
+          <span class="phrase-text hidden" id="phrase-text"></span>
+        </div>
+      </div>
+
+      <!-- Phrase Action Controls -->
+      <div class="phrase-controls">
+        <button id="btn-speak" class="btn btn-action btn-speak" title="Speak assembled phrase offline" aria-label="Speak Phrase">
+          <span class="btn-icon">&#x1F50A;</span>
+          <span class="btn-label">SPEAK</span>
+        </button>
+        <button id="btn-backspace" class="btn btn-secondary btn-backspace" title="Remove last word" aria-label="Remove Last Word">
+          <span class="btn-icon">&#x232B;</span>
+          <span class="btn-label">Undo</span>
+        </button>
+        <button id="btn-clear" class="btn btn-secondary btn-clear" title="Clear phrase" aria-label="Clear Phrase">
+          <span class="btn-icon">&#x1F5D1;&#xFE0F;</span>
+          <span class="btn-label">Clear</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Main AAC Word Board Grid -->
+    <main class="main-content">
+      <section id="word-board" class="board-section" aria-label="AAC Word Tiles">
+        <div class="board-grid" id="tiles-grid">
+          <!-- Tiles injected dynamically via JavaScript for clean maintenance -->
+        </div>
+      </section>
+
+      <!-- Right Side Live Diagnostic & Telemetry Panel -->
+      <aside class="sidebar-section" aria-label="System Diagnostics &amp; Status">
+
+        <!-- Live Camera & Calibration Sub-panel (in Live mode) -->
+        <div id="live-camera-card" class="card diagnostic-card hidden">
+          <div class="card-header">
+            <h3><span class="card-icon">&#x1F4F9;</span> Camera &amp; Calibration</h3>
+            <span id="cam-status-badge" class="badge badge-paused">STANDBY</span>
+          </div>
+          <div id="camera-status-line" class="camera-status-indicator cam-status-warning">
+            &#x25CF; Camera inactive
+          </div>
+          <div class="video-container">
+            <video id="webcam-video" autoplay playsinline muted class="camera-stream hidden"></video>
+            <div id="camera-overlay-msg" class="camera-overlay-msg">
+              <span>Click "Start Camera" to begin webcam preview</span>
+            </div>
+          </div>
+          <div class="live-action-buttons">
+            <button id="btn-toggle-camera" class="btn btn-sm btn-secondary">Start Camera</button>
+            <button id="btn-open-calibration" class="btn btn-sm btn-outline">Open Calibration</button>
+          </div>
+        </div>
+
+        <!-- Telemetry & Quality Gates Card -->
+        <div class="card telemetry-card">
+          <div class="card-header">
+            <h3><span class="card-icon">&#x1F4CA;</span> Telemetry &amp; Quality Gates</h3>
+            <span id="telemetry-status-pill" class="badge badge-active">DEMO ACTIVE</span>
+          </div>
+
+          <div class="telemetry-grid">
+            <div class="metric-row">
+              <span class="metric-label">Selection Status</span>
+              <span class="metric-val text-success" id="val-selection-status">ENABLED</span>
+            </div>
+            <div class="metric-row">
+              <span class="metric-label">Tracking Quality</span>
+              <span class="metric-val" id="val-tracking-quality">VALID (100%)</span>
+            </div>
+            <div class="metric-row">
+              <span class="metric-label">Gaze Position (H, V)</span>
+              <span class="metric-val" id="val-gaze-coords">0.50, 0.50</span>
+            </div>
+            <div class="metric-row">
+              <span class="metric-label">Eye Closure (EAR)</span>
+              <span class="metric-val" id="val-ear">0.30</span>
+            </div>
+            <div class="metric-row">
+              <span class="metric-label">Head Pose (Yaw, Pitch)</span>
+              <span class="metric-val" id="val-head-pose">0.0&deg;, 0.0&deg;</span>
+            </div>
+          </div>
+
+          <!-- Gate Findings Status Box -->
+          <div class="gate-status-box" id="gate-status-box">
+            <div class="gate-status-title">Physical Directional Gates:</div>
+            <div class="gate-status-items">
+              <span class="gate-item gate-fail" id="gate-left">Left: UNSUPPORTED</span>
+              <span class="gate-item gate-fail" id="gate-right">Right: UNSUPPORTED</span>
+              <span class="gate-item gate-fail" id="gate-up">Up: UNSUPPORTED</span>
+              <span class="gate-item gate-fail" id="gate-down">Down: UNSUPPORTED</span>
+            </div>
+            <p class="gate-policy-note">Policy: Unsupported directions fail safely. Words cannot be triggered by uncalibrated sensors.</p>
+          </div>
+        </div>
+
+        <!-- Accessibility Controls & Keyboard Guide Card -->
+        <div class="card help-card">
+          <div class="card-header">
+            <h3><span class="card-icon">&#x2328;&#xFE0F;</span> Keyboard Controls</h3>
+          </div>
+          <ul class="keyboard-shortcuts-list">
+            <li><kbd>Arrow Keys</kbd> / <kbd>W A S D</kbd> : Move gaze pointer</li>
+            <li><kbd>Space</kbd> : Select tile / Confirm candidate</li>
+            <li><kbd>Backspace</kbd> : Undo last word</li>
+            <li><kbd>C</kbd> : Clear phrase</li>
+            <li><kbd>S</kbd> / <kbd>Enter</kbd> : Speak phrase</li>
+          </ul>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Simulated Gaze Pointer / Reticle Element -->
+    <div id="gaze-reticle" class="gaze-reticle" aria-hidden="true">
+      <svg class="reticle-svg" viewBox="0 0 48 48">
+        <circle class="reticle-outer" cx="24" cy="24" r="20" />
+        <circle id="reticle-dwell-ring" class="reticle-dwell" cx="24" cy="24" r="20" />
+        <circle class="reticle-dot" cx="24" cy="24" r="5" />
+      </svg>
+    </div>
+
+    <!-- Calibration Screen Modal (for Research validation inspection) -->
+    <div id="calibration-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="calib-modal-title">
+      <div class="modal-dialog calibration-dialog">
+        <div class="modal-header">
+          <h2 id="calib-modal-title">Research Fixation Calibration Protocol</h2>
+          <button id="btn-close-calib" class="btn-icon-only" aria-label="Close Calibration">&#x2715;</button>
+        </div>
+        <div class="modal-body">
+          <p class="calib-instructions">
+            Follow the active fixation target circle on screen. Settling interval stabilizes gaze; recording interval captures raw bilateral eye geometry.
+          </p>
+          <div class="calib-canvas-container">
+            <canvas id="calib-canvas" width="640" height="360" class="calib-canvas"></canvas>
+          </div>
+          <div class="calib-feedback-banner" id="calib-feedback">
+            Status: Ready. Gate validation requires minimum 0.06 H and 0.05 V separation.
+          </div>
+          <div class="calib-progress-bar"><div id="calib-progress-fill" class="calib-progress-fill"></div></div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-start-calib-seq" class="btn btn-primary">Start 5-Point Calibration</button>
+          <button id="btn-retry-calib" class="btn btn-secondary hidden">Retry Calibration</button>
+          <button id="btn-exit-calib" class="btn btn-secondary">Exit to Board</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status Toast Notifications -->
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

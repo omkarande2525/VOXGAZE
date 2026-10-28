@@ -1,0 +1,665 @@
+{
+  "metadata": {
+    "total_frames_recorded": 3228,
+    "overall_face_availability_pct": 100.0,
+    "overall_geometry_valid_pct": 99.94,
+    "active_eye_evaluated": "right",
+    "session_id": "calib_v15_20261025_130951_0a6b30",
+    "csv_file": "D:\\VOXGAZE\\artifacts\\observations\\calib_v15_0a6b30_20261025_130951_1ef58c.csv",
+    "json_summary_file": "D:\\VOXGAZE\\artifacts\\observations\\calib_v15_0a6b30_20261025_130951_1ef58c_summary.json",
+    "settling_duration_s": 2.0,
+    "recording_duration_s": 4.0,
+    "total_conditions_in_protocol": 27,
+    "completed_conditions": 27
+  },
+  "phase1_calibration": {
+    "target_statistics": {
+      "CENTER": {
+        "total_frames": 600,
+        "face_detected_count": 600,
+        "geom_valid_count": 600,
+        "right_eye_valid_count": 600,
+        "left_eye_valid_count": 600,
+        "valid_samples_used": 600,
+        "valid_sample_rate": 1.0,
+        "h": {
+          "median": 0.4602,
+          "mad": 0.0054,
+          "std": 0.0128,
+          "min": 0.4355,
+          "max": 0.5204
+        },
+        "v_eyelid": {
+          "median": 0.4914,
+          "mad": 0.0058,
+          "std": 0.0128,
+          "min": 0.4427,
+          "max": 0.5423
+        },
+        "v_canthal": {
+          "median": -0.0406,
+          "mad": 0.0029,
+          "std": 0.0057,
+          "min": -0.0478,
+          "max": -0.0032
+        },
+        "canthal_dist_px": {
+          "median": -1.3628,
+          "mad": 0.0855,
+          "std": 0.1741,
+          "min": -1.6902,
+          "max": -0.1229
+        },
+        "ear": {
+          "median": 0.3349,
+          "mad": 0.0051,
+          "std": 0.0087,
+          "min": 0.2995,
+          "max": 0.377
+        }
+      },
+      "LEFT": {
+        "total_frames": 120,
+        "face_detected_count": 120,
+        "geom_valid_count": 120,
+        "right_eye_valid_count": 120,
+        "left_eye_valid_count": 120,
+        "valid_samples_used": 120,
+        "valid_sample_rate": 1.0,
+        "h": {
+          "median": 0.4235,
+          "mad": 0.002,
+          "std": 0.0055,
+          "min": 0.4191,
+          "max": 0.4448
+        },
+        "v_eyelid": {
+          "median": 0.5309,
+          "mad": 0.0054,
+          "std": 0.0074,
+          "min": 0.509,
+          "max": 0.5475
+        },
+        "v_canthal": {
+          "median": -0.0372,
+          "mad": 0.0005,
+          "std": 0.0029,
+          "min": -0.0399,
+          "max": -0.0252
+        },
+        "canthal_dist_px": {
+          "median": -1.3339,
+          "mad": 0.0207,
+          "std": 0.1036,
+          "min": -1.4241,
+          "max": -0.906
+        },
+        "ear": {
+          "median": 0.3459,
+          "mad": 0.0025,
+          "std": 0.0049,
+          "min": 0.3274,
+          "max": 0.3538
+        }
+      },
+      "RIGHT": {
+        "total_frames": 120,
+        "face_detected_count": 120,
+        "geom_valid_count": 120,
+        "right_eye_valid_count": 120,
+        "left_eye_valid_count": 120,
+        "valid_samples_used": 120,
+        "valid_sample_rate": 1.0,
+        "h": {
+          "median": 0.481,
+          "mad": 0.036,
+          "std": 0.0624,
+          "min": 0.3209,
+          "max": 0.5377
+        },
+        "v_eyelid": {
+          "median": 0.4769,
+          "mad": 0.0106,
+          "std": 0.0279,
+          "min": 0.4552,
+          "max": 0.5734
+        },
+        "v_canthal": {
+          "median": -0.0415,
+          "mad": 0.0019,
+          "std": 0.0121,
+          "min": -0.0471,
+          "max": -0.0031
+        },
+        "canthal_dist_px": {
+          "median": -1.4292,
+          "mad": 0.0575,
+          "std": 0.4095,
+          "min": -1.5687,
+          "max": -0.1076
+        },
+        "ear": {
+          "median": 0.3305,
+          "mad": 0.0079,
+          "std": 0.0192,
+          "min": 0.2674,
+          "max": 0.3441
+        }
+      },
+      "UP": {
+        "total_frames": 120,
+        "face_detected_count": 120,
+        "geom_valid_count": 120,
+        "right_eye_valid_count": 120,
+        "left_eye_valid_count": 120,
+        "valid_samples_used": 120,
+        "valid_sample_rate": 1.0,
+        "h": {
+          "median": 0.4515,
+          "mad": 0.0051,
+          "std": 0.0051,
+          "min": 0.4424,
+          "max": 0.4591
+        },
+        "v_eyelid": {
+          "median": 0.4888,
+          "mad": 0.0021,
+          "std": 0.0027,
+          "min": 0.4829,
+          "max": 0.4942
+        },
+        "v_canthal": {
+          "median": -0.0519,
+          "mad": 0.0011,
+          "std": 0.0014,
+          "min": -0.0545,
+          "max": -0.0495
+        },
+        "canthal_dist_px": {
+          "median": -1.732,
+          "mad": 0.0342,
+          "std": 0.0409,
+          "min": -1.8073,
+          "max": -1.6589
+        },
+        "ear": {
+          "median": 0.3567,
+          "mad": 0.0017,
+          "std": 0.0024,
+          "min": 0.3512,
+          "max": 0.3615
+        }
+      },
+      "DOWN": {
+        "total_frames": 120,
+        "face_detected_count": 120,
+        "geom_valid_count": 120,
+        "right_eye_valid_count": 120,
+        "left_eye_valid_count": 120,
+        "valid_samples_used": 120,
+        "valid_sample_rate": 1.0,
+        "h": {
+          "median": 0.4741,
+          "mad": 0.0034,
+          "std": 0.0039,
+          "min": 0.4672,
+          "max": 0.4825
+        },
+        "v_eyelid": {
+          "median": 0.4402,
+          "mad": 0.0046,
+          "std": 0.0066,
+          "min": 0.4313,
+          "max": 0.4543
+        },
+        "v_canthal": {
+          "median": -0.0264,
+          "mad": 0.0011,
+          "std": 0.0019,
+          "min": -0.0283,
+          "max": -0.0221
+        },
+        "canthal_dist_px": {
+          "median": -0.8743,
+          "mad": 0.0363,
+          "std": 0.0624,
+          "min": -0.9396,
+          "max": -0.7324
+        },
+        "ear": {
+          "median": 0.2772,
+          "mad": 0.0069,
+          "std": 0.007,
+          "min": 0.2643,
+          "max": 0.2868
+        }
+      },
+      "CLOSED": {
+        "total_frames": 107,
+        "face_detected_count": 107,
+        "geom_valid_count": 107,
+        "right_eye_valid_count": 107,
+        "left_eye_valid_count": 107,
+        "valid_samples_used": 107,
+        "valid_sample_rate": 1.0,
+        "h": {
+          "median": 0.4669,
+          "mad": 0.005,
+          "std": 0.0063,
+          "min": 0.4537,
+          "max": 0.4736
+        },
+        "v_eyelid": {
+          "median": 2.9691,
+          "mad": 0.7227,
+          "std": 1.0801,
+          "min": 0.3527,
+          "max": 4.0523
+        },
+        "v_canthal": {
+          "median": 0.0325,
+          "mad": 0.0015,
+          "std": 0.0115,
+          "min": -0.0197,
+          "max": 0.0407
+        },
+        "canthal_dist_px": {
+          "median": 1.168,
+          "mad": 0.0545,
+          "std": 0.4061,
+          "min": -0.6571,
+          "max": 1.452
+        },
+        "ear": {
+          "median": 0.0156,
+          "mad": 0.0013,
+          "std": 0.0465,
+          "min": 0.0132,
+          "max": 0.2381
+        }
+      }
+    },
+    "directional_separations": {
+      "delta_h_left": 0.0367,
+      "delta_h_right": 0.0208,
+      "delta_v_eyelid_up": 0.0026,
+      "delta_v_eyelid_down": -0.0512,
+      "delta_v_canthal_up": 0.0113,
+      "delta_v_canthal_down": 0.0142,
+      "delta_ear_blink": 0.3193
+    },
+    "gate_results": {
+      "is_left_supported": false,
+      "is_right_supported": false,
+      "is_up_supported": true,
+      "is_down_supported": true,
+      "is_blink_supported": true,
+      "unsupported_reasons": [
+        "LEFT_GAZE_UNSUPPORTED: Delta H (0.0367) < 0.06",
+        "RIGHT_GAZE_UNSUPPORTED: Delta H (0.0208) < 0.06"
+      ],
+      "provisional_thresholds_used": {
+        "min_separation_h": 0.06,
+        "min_separation_v": 0.05,
+        "min_separation_v_canthal": 0.005,
+        "min_separation_blink": 0.05
+      },
+      "vertical_metric": "canthal_normal"
+    },
+    "frozen_thresholds": {
+      "left": {
+        "enter": 0.0,
+        "exit": 0.0,
+        "is_enabled": false
+      },
+      "right": {
+        "enter": 1.0,
+        "exit": 1.0,
+        "is_enabled": false
+      },
+      "up": {
+        "enter": -0.04738,
+        "exit": -0.044555,
+        "is_enabled": true
+      },
+      "down": {
+        "enter": -0.03208,
+        "exit": -0.035629999999999995,
+        "is_enabled": true
+      },
+      "blink_closed_ear": 0.14332,
+      "blink_open_ear": 0.255075,
+      "vertical_metric": "canthal_normal"
+    }
+  },
+  "phase2_independent_evaluation": {
+    "trials_evaluated_count": 7,
+    "trials_correct_count": 6,
+    "trial_level_accuracy": 0.8571,
+    "total_test_frames": 841,
+    "correct_test_frames": 580,
+    "frame_level_accuracy": 0.6897,
+    "evaluation_status": "EVALUATED",
+    "center_fixation_stability": {
+      "trials_evaluated": 5,
+      "trials_correct": 4,
+      "trial_accuracy": 0.8,
+      "frames_evaluated": 600,
+      "frames_correct": 364,
+      "frame_accuracy": 0.6067
+    },
+    "directional_sensitivity": {
+      "trials_evaluated": 2,
+      "trials_correct": 2,
+      "trial_accuracy": 1.0,
+      "frames_evaluated": 241,
+      "frames_correct": 216,
+      "frame_accuracy": 0.8963,
+      "status": "EVALUATED"
+    },
+    "trial_details": [
+      {
+        "condition_index": 11,
+        "condition_name": "EVAL_CENTER_1",
+        "target_direction": "CENTER",
+        "status": "EVALUATED",
+        "total_frames": 120,
+        "valid_frames": 120,
+        "trial_predicted": "CENTER",
+        "trial_correct": true,
+        "frame_accuracy": 0.85
+      },
+      {
+        "condition_index": 12,
+        "condition_name": "EVAL_LEFT",
+        "target_direction": "LEFT",
+        "status": "OMITTED_UNSUPPORTED",
+        "total_frames": 120,
+        "valid_frames": 120,
+        "trial_predicted": null,
+        "trial_correct": null,
+        "frame_accuracy": null
+      },
+      {
+        "condition_index": 13,
+        "condition_name": "EVAL_CENTER_2",
+        "target_direction": "CENTER",
+        "status": "EVALUATED",
+        "total_frames": 120,
+        "valid_frames": 120,
+        "trial_predicted": "CENTER",
+        "trial_correct": true,
+        "frame_accuracy": 0.5417
+      },
+      {
+        "condition_index": 14,
+        "condition_name": "EVAL_RIGHT",
+        "target_direction": "RIGHT",
+        "status": "OMITTED_UNSUPPORTED",
+        "total_frames": 120,
+        "valid_frames": 120,
+        "trial_predicted": null,
+        "trial_correct": null,
+        "frame_accuracy": null
+      },
+      {
+        "condition_index": 15,
+        "condition_name": "EVAL_CENTER_3",
+        "target_direction": "CENTER",
+        "status": "EVALUATED",
+        "total_frames": 120,
+        "valid_frames": 120,
+        "trial_predicted": "CENTER",
+        "trial_correct": true,
+        "frame_accuracy": 1.0
+      },
+      {
+        "condition_index": 16,
+        "condition_name": "EVAL_UP",
+        "target_direction": "UP",
+        "status": "EVALUATED",
+        "total_frames": 121,
+        "valid_frames": 121,
+        "trial_predicted": "UP",
+        "trial_correct": true,
+        "frame_accuracy": 1.0
+      },
+      {
+        "condition_index": 17,
+        "condition_name": "EVAL_CENTER_4",
+        "target_direction": "CENTER",
+        "status": "EVALUATED",
+        "total_frames": 120,
+        "valid_frames": 120,
+        "trial_predicted": "UP",
+        "trial_correct": false,
+        "frame_accuracy": 0.3667
+      },
+      {
+        "condition_index": 18,
+        "condition_name": "EVAL_DOWN",
+        "target_direction": "DOWN",
+        "status": "EVALUATED",
+        "total_frames": 120,
+        "valid_frames": 120,
+        "trial_predicted": "DOWN",
+        "trial_correct": true,
+        "frame_accuracy": 0.7917
+      },
+      {
+        "condition_index": 19,
+        "condition_name": "EVAL_CENTER_5",
+        "target_direction": "CENTER",
+        "status": "EVALUATED",
+        "total_frames": 120,
+        "valid_frames": 120,
+        "trial_predicted": "CENTER",
+        "trial_correct": true,
+        "frame_accuracy": 0.275
+      }
+    ],
+    "confusion_matrix": {
+      "CENTER": {
+        "CENTER": 364,
+        "LEFT": 0,
+        "RIGHT": 0,
+        "UP": 225,
+        "DOWN": 11,
+        "BLINK": 0,
+        "ABSTAIN": 0
+      },
+      "LEFT": {
+        "CENTER": 0,
+        "LEFT": 0,
+        "RIGHT": 0,
+        "UP": 0,
+        "DOWN": 0,
+        "BLINK": 0,
+        "ABSTAIN": 0
+      },
+      "RIGHT": {
+        "CENTER": 0,
+        "LEFT": 0,
+        "RIGHT": 0,
+        "UP": 0,
+        "DOWN": 0,
+        "BLINK": 0,
+        "ABSTAIN": 0
+      },
+      "UP": {
+        "CENTER": 0,
+        "LEFT": 0,
+        "RIGHT": 0,
+        "UP": 121,
+        "DOWN": 0,
+        "BLINK": 0,
+        "ABSTAIN": 0
+      },
+      "DOWN": {
+        "CENTER": 25,
+        "LEFT": 0,
+        "RIGHT": 0,
+        "UP": 0,
+        "DOWN": 95,
+        "BLINK": 0,
+        "ABSTAIN": 0
+      }
+    }
+  },
+  "baseline_center_drift": {
+    "initial_baseline": {
+      "condition_index": 1,
+      "median_h": 0.4645,
+      "median_v": 0.4938
+    },
+    "max_absolute_drift_h": 0.0148,
+    "max_absolute_drift_v": 0.0626,
+    "center_returns_evaluated": 14,
+    "drift_series": [
+      {
+        "condition_index": 1,
+        "condition_name": "CALIB_CENTER_1",
+        "median_h": 0.4645,
+        "median_v": 0.4938,
+        "delta_h_from_initial": 0.0,
+        "delta_v_from_initial": 0.0
+      },
+      {
+        "condition_index": 3,
+        "condition_name": "CALIB_CENTER_2",
+        "median_h": 0.4609,
+        "median_v": 0.497,
+        "delta_h_from_initial": -0.0036,
+        "delta_v_from_initial": 0.0033
+      },
+      {
+        "condition_index": 5,
+        "condition_name": "CALIB_CENTER_3",
+        "median_h": 0.4534,
+        "median_v": 0.4926,
+        "delta_h_from_initial": -0.0111,
+        "delta_v_from_initial": -0.0011
+      },
+      {
+        "condition_index": 7,
+        "condition_name": "CALIB_CENTER_4",
+        "median_h": 0.4643,
+        "median_v": 0.4743,
+        "delta_h_from_initial": -0.0002,
+        "delta_v_from_initial": -0.0195
+      },
+      {
+        "condition_index": 9,
+        "condition_name": "CALIB_CENTER_5",
+        "median_h": 0.4579,
+        "median_v": 0.4912,
+        "delta_h_from_initial": -0.0066,
+        "delta_v_from_initial": -0.0026
+      },
+      {
+        "condition_index": 11,
+        "condition_name": "EVAL_CENTER_1",
+        "median_h": 0.4591,
+        "median_v": 0.4828,
+        "delta_h_from_initial": -0.0055,
+        "delta_v_from_initial": -0.011
+      },
+      {
+        "condition_index": 13,
+        "condition_name": "EVAL_CENTER_2",
+        "median_h": 0.4594,
+        "median_v": 0.4756,
+        "delta_h_from_initial": -0.0052,
+        "delta_v_from_initial": -0.0181
+      },
+      {
+        "condition_index": 15,
+        "condition_name": "EVAL_CENTER_3",
+        "median_h": 0.4497,
+        "median_v": 0.5003,
+        "delta_h_from_initial": -0.0148,
+        "delta_v_from_initial": 0.0066
+      },
+      {
+        "condition_index": 17,
+        "condition_name": "EVAL_CENTER_4",
+        "median_h": 0.4656,
+        "median_v": 0.467,
+        "delta_h_from_initial": 0.001,
+        "delta_v_from_initial": -0.0268
+      },
+      {
+        "condition_index": 19,
+        "condition_name": "EVAL_CENTER_5",
+        "median_h": 0.476,
+        "median_v": 0.4533,
+        "delta_h_from_initial": 0.0114,
+        "delta_v_from_initial": -0.0404
+      },
+      {
+        "condition_index": 21,
+        "condition_name": "HEAD_CENTER_RETURN_1",
+        "median_h": 0.4702,
+        "median_v": 0.4672,
+        "delta_h_from_initial": 0.0057,
+        "delta_v_from_initial": -0.0266
+      },
+      {
+        "condition_index": 23,
+        "condition_name": "HEAD_CENTER_RETURN_2",
+        "median_h": 0.4619,
+        "median_v": 0.4312,
+        "delta_h_from_initial": -0.0026,
+        "delta_v_from_initial": -0.0626
+      },
+      {
+        "condition_index": 25,
+        "condition_name": "HEAD_CENTER_RETURN_3",
+        "median_h": 0.4784,
+        "median_v": 0.4324,
+        "delta_h_from_initial": 0.0139,
+        "delta_v_from_initial": -0.0614
+      },
+      {
+        "condition_index": 27,
+        "condition_name": "HEAD_CENTER_RETURN_FINAL",
+        "median_h": 0.4638,
+        "median_v": 0.4805,
+        "delta_h_from_initial": -0.0008,
+        "delta_v_from_initial": -0.0133
+      }
+    ]
+  },
+  "phase3_exploratory_head_contrast": {
+    "HEAD_LEFT": {
+      "valid_samples": 120,
+      "mean_mobileone_yaw_deg": -6.33,
+      "mean_mobileone_pitch_deg": -15.84,
+      "median_ocular_h": 0.4773
+    },
+    "CENTER": {
+      "valid_samples": 480,
+      "mean_mobileone_yaw_deg": -8.36,
+      "mean_mobileone_pitch_deg": -7.76,
+      "median_ocular_h": 0.4666
+    },
+    "HEAD_RIGHT": {
+      "valid_samples": 118,
+      "mean_mobileone_yaw_deg": -7.34,
+      "mean_mobileone_pitch_deg": 0.23,
+      "median_ocular_h": 0.4611
+    },
+    "HEAD_UP": {
+      "valid_samples": 120,
+      "mean_mobileone_yaw_deg": -13.36,
+      "mean_mobileone_pitch_deg": -0.67,
+      "median_ocular_h": 0.4839
+    },
+    "HEAD_DOWN": {
+      "valid_samples": 120,
+      "mean_mobileone_yaw_deg": -14.05,
+      "mean_mobileone_pitch_deg": -14.58,
+      "median_ocular_h": 0.4779
+    }
+  }
+}

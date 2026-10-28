@@ -4,6 +4,7 @@ Consumes normalized GazeFeatures, applies user CalibrationProfile thresholds,
 and outputs discrete GazeState while handling abstention and blink signals.
 """
 
+import math
 from typing import Optional, Tuple
 from backend.app.core.contracts import (
     CalibrationProfile,
@@ -11,14 +12,26 @@ from backend.app.core.contracts import (
     GazeFeatures,
     GazeState,
 )
+from backend.app.perception.geometry import (
+    PLAUSIBLE_H_MAX,
+    PLAUSIBLE_H_MIN,
+    PLAUSIBLE_V_MAX,
+    PLAUSIBLE_V_MIN,
+)
 
 
 class GazeEngine:
     """Stateful directional classifier with dual-threshold hysteresis."""
 
-    def __init__(self, profile: Optional[CalibrationProfile] = None, min_confidence: float = 0.5):
+    def __init__(
+        self,
+        profile: Optional[CalibrationProfile] = None,
+        min_confidence: float = 0.5,
+        active_eye: str = "right",
+    ):
         self.profile: Optional[CalibrationProfile] = profile
         self.min_confidence: float = min_confidence
+        self.active_eye: str = active_eye
         self.current_direction: Direction = Direction.CENTER
         self.blink_start_ms: Optional[int] = None
         self.last_blink_duration_ms: float = 0.0
@@ -43,8 +56,15 @@ class GazeEngine:
         ts = features.timestamp_ms
         conf = features.tracking_confidence
 
-        # 1. Quality Gate: No face detected
-        if features.left_eye is None:
+        # Select active eye (RIGHT_EYE_BASELINE by default, with fallback to left eye)
+        eye = features.right_eye if self.active_eye == "right" else features.left_eye
+        active_valid = features.is_right_eye_valid if self.active_eye == "right" else features.is_left_eye_valid
+        if eye is None:
+            eye = features.left_eye if self.active_eye == "right" else features.right_eye
+            active_valid = features.is_left_eye_valid if self.active_eye == "right" else features.is_right_eye_valid
+
+        # 1. Quality Gate: No face or eye detected
+        if eye is None:
             self.blink_start_ms = None
             return GazeState(
                 timestamp_ms=ts,
@@ -56,13 +76,17 @@ class GazeEngine:
                 status_flag="✕ NO_FACE",
             )
 
-        eye = features.left_eye
         h = eye.h_ratio
         v = eye.v_ratio
         ear = eye.ear
 
-        # 2. Quality Gate: Low tracking confidence or invalid tracking flag
-        if not features.is_tracking_valid or conf < self.min_confidence:
+        # If profile calibrated using canthal normal, use active eye's canthal_ratio for vertical hysteresis
+        if self.profile is not None and getattr(self.profile.thresholds, "vertical_metric", "eyelid") == "canthal_normal":
+            if eye.canthal_ratio is not None and math.isfinite(eye.canthal_ratio):
+                v = eye.canthal_ratio
+
+        # 2. Quality Gate: Low tracking confidence, invalid tracking flag, or active eye marked invalid
+        if not features.is_tracking_valid or conf < self.min_confidence or active_valid is False:
             self.blink_start_ms = None
             return GazeState(
                 timestamp_ms=ts,
@@ -72,6 +96,31 @@ class GazeEngine:
                 ear=ear,
                 confidence=conf,
                 status_flag="! ABSTAIN",
+            )
+
+        # 2b. Quality Gate: Non-finite coordinates or out-of-band ratios on active eye
+        if not (math.isfinite(h) and math.isfinite(v) and math.isfinite(ear)):
+            self.blink_start_ms = None
+            return GazeState(
+                timestamp_ms=ts,
+                direction=Direction.ABSTAIN,
+                raw_h=h,
+                raw_v=v,
+                ear=ear,
+                confidence=conf,
+                status_flag="! ABSTAIN (NON_FINITE)",
+            )
+
+        if not (PLAUSIBLE_H_MIN <= h <= PLAUSIBLE_H_MAX and PLAUSIBLE_V_MIN <= v <= PLAUSIBLE_V_MAX):
+            self.blink_start_ms = None
+            return GazeState(
+                timestamp_ms=ts,
+                direction=Direction.ABSTAIN,
+                raw_h=h,
+                raw_v=v,
+                ear=ear,
+                confidence=conf,
+                status_flag="! ABSTAIN (OUT_OF_BOUNDS_RATIO)",
             )
 
         # 3. Quality Gate: Uncalibrated profile
@@ -126,43 +175,44 @@ class GazeEngine:
         state = self.current_direction
 
         # If currently in a directional state, check exit threshold back to CENTER
+        # (A disabled direction immediately returns to CENTER)
         if state == Direction.LEFT:
-            if h > t.left.exit:
+            if not getattr(t.left, "is_enabled", True) or h > t.left.exit:
                 return Direction.CENTER
             return Direction.LEFT
 
         elif state == Direction.RIGHT:
-            if h < t.right.exit:
+            if not getattr(t.right, "is_enabled", True) or h < t.right.exit:
                 return Direction.CENTER
             return Direction.RIGHT
 
         elif state == Direction.UP:
-            if v > t.up.exit:
+            if not getattr(t.up, "is_enabled", True) or v > t.up.exit:
                 return Direction.CENTER
             return Direction.UP
 
         elif state == Direction.DOWN:
-            if v < t.down.exit:
+            if not getattr(t.down, "is_enabled", True) or v < t.down.exit:
                 return Direction.CENTER
             return Direction.DOWN
 
         # If currently CENTER (or recovered from BLINK/UNCALIBRATED), evaluate enter thresholds
         candidates = []
 
-        if h < t.left.enter:
+        if getattr(t.left, "is_enabled", True) and h < t.left.enter:
             # Measure relative entry depth beyond threshold
             depth = t.left.enter - h
             candidates.append((Direction.LEFT, depth))
 
-        if h > t.right.enter:
+        if getattr(t.right, "is_enabled", True) and h > t.right.enter:
             depth = h - t.right.enter
             candidates.append((Direction.RIGHT, depth))
 
-        if v < t.up.enter:
+        if getattr(t.up, "is_enabled", True) and v < t.up.enter:
             depth = t.up.enter - v
             candidates.append((Direction.UP, depth))
 
-        if v > t.down.enter:
+        if getattr(t.down, "is_enabled", True) and v > t.down.enter:
             depth = v - t.down.enter
             candidates.append((Direction.DOWN, depth))
 

@@ -1,0 +1,439 @@
+{
+  "session_id": "cmp_v16_20261025_164202_0a8c00",
+  "timestamp_utc": "2026-10-25T11:12:03Z",
+  "mock_mode": true,
+  "total_frames_recorded": 405,
+  "protocol": {
+    "blocks_count": 3,
+    "train_blocks": [
+      1,
+      2
+    ],
+    "held_out_test_block": 3,
+    "targets_per_block": 9,
+    "balanced_orders": {
+      "block_1": [
+        "CENTER",
+        "LEFT",
+        "CENTER",
+        "RIGHT",
+        "CENTER",
+        "UP",
+        "CENTER",
+        "DOWN",
+        "CENTER"
+      ],
+      "block_2": [
+        "CENTER",
+        "RIGHT",
+        "CENTER",
+        "DOWN",
+        "CENTER",
+        "LEFT",
+        "CENTER",
+        "UP",
+        "CENTER"
+      ],
+      "block_3": [
+        "CENTER",
+        "DOWN",
+        "CENTER",
+        "LEFT",
+        "CENTER",
+        "UP",
+        "CENTER",
+        "RIGHT",
+        "CENTER"
+      ]
+    }
+  },
+  "decision_rule": {
+    "rule_statement": "Adopt ResNet-34 only if held-out trial accuracy exceeds MobileOne S0 by >= 15.0 percentage points.",
+    "mobileone_accuracy_pct": 100.0,
+    "resnet34_accuracy_pct": 100.0,
+    "delta_percentage_points": 0.0,
+    "adopted": false
+  },
+  "models": {
+    "mobileone_s0_hybrid": {
+      "model": "MobileOne S0",
+      "feature_set": "HYBRID",
+      "evaluation_5dir": {
+        "trial_selection_accuracy": 1.0,
+        "trial_center_false_activation_rate": 0.0,
+        "mean_target_error": 0.03,
+        "dwell_selection_accuracy": 1.0,
+        "trial_results": [
+          {
+            "trial_name": "B3_1_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.498,
+            "median_y": 0.4797,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_2_DOWN",
+            "target_direction": "DOWN",
+            "median_x": 0.5015,
+            "median_y": 0.8502,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_3_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.5004,
+            "median_y": 0.4745,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_4_LEFT",
+            "target_direction": "LEFT",
+            "median_x": 0.1499,
+            "median_y": 0.5297,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_5_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4977,
+            "median_y": 0.4812,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_6_UP",
+            "target_direction": "UP",
+            "median_x": 0.501,
+            "median_y": 0.1848,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_7_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4973,
+            "median_y": 0.4967,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_8_RIGHT",
+            "target_direction": "RIGHT",
+            "median_x": 0.8543,
+            "median_y": 0.5365,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_9_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.5,
+            "median_y": 0.4746,
+            "hit": true,
+            "frames_in_trial": 15
+          }
+        ]
+      },
+      "evaluation_4dir_research_mode": {
+        "trial_selection_accuracy": 1.0,
+        "trial_center_false_activation_rate": 0.0,
+        "mean_target_error": 0.0293,
+        "notice": "PROVISIONAL 4-DIRECTION RESEARCH MODE (OMITS UPWARD GAZE)."
+      },
+      "end_to_end_latency_ms": {
+        "p50": 16.21,
+        "p95": 16.21,
+        "sample_count": 135
+      }
+    },
+    "mobileone_s0_angles": {
+      "model": "MobileOne S0",
+      "feature_set": "ANGLES_ONLY",
+      "evaluation_5dir": {
+        "trial_selection_accuracy": 1.0,
+        "trial_center_false_activation_rate": 0.0,
+        "mean_target_error": 0.0513,
+        "dwell_selection_accuracy": 0.75,
+        "trial_results": [
+          {
+            "trial_name": "B3_1_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.498,
+            "median_y": 0.4634,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_2_DOWN",
+            "target_direction": "DOWN",
+            "median_x": 0.4987,
+            "median_y": 0.9019,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_3_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4966,
+            "median_y": 0.4602,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_4_LEFT",
+            "target_direction": "LEFT",
+            "median_x": 0.1706,
+            "median_y": 0.4718,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_5_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.495,
+            "median_y": 0.4653,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_6_UP",
+            "target_direction": "UP",
+            "median_x": 0.4946,
+            "median_y": 0.3222,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_7_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4987,
+            "median_y": 0.4729,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_8_RIGHT",
+            "target_direction": "RIGHT",
+            "median_x": 0.8706,
+            "median_y": 0.4817,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_9_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.5001,
+            "median_y": 0.4628,
+            "hit": true,
+            "frames_in_trial": 15
+          }
+        ]
+      },
+      "evaluation_4dir_research_mode": {
+        "trial_selection_accuracy": 1.0,
+        "trial_center_false_activation_rate": 0.0,
+        "mean_target_error": 0.0362,
+        "notice": "PROVISIONAL 4-DIRECTION RESEARCH MODE (OMITS UPWARD GAZE)."
+      },
+      "end_to_end_latency_ms": {
+        "p50": 16.21,
+        "p95": 16.21,
+        "sample_count": 135
+      }
+    },
+    "resnet34_hybrid": {
+      "model": "ResNet-34",
+      "feature_set": "HYBRID",
+      "evaluation_5dir": {
+        "trial_selection_accuracy": 1.0,
+        "trial_center_false_activation_rate": 0.0,
+        "mean_target_error": 0.0235,
+        "dwell_selection_accuracy": 1.0,
+        "trial_results": [
+          {
+            "trial_name": "B3_1_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4988,
+            "median_y": 0.4803,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_2_DOWN",
+            "target_direction": "DOWN",
+            "median_x": 0.5011,
+            "median_y": 0.8743,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_3_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4998,
+            "median_y": 0.4852,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_4_LEFT",
+            "target_direction": "LEFT",
+            "median_x": 0.1522,
+            "median_y": 0.5272,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_5_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4975,
+            "median_y": 0.5013,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_6_UP",
+            "target_direction": "UP",
+            "median_x": 0.5012,
+            "median_y": 0.1771,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_7_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4976,
+            "median_y": 0.4868,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_8_RIGHT",
+            "target_direction": "RIGHT",
+            "median_x": 0.8539,
+            "median_y": 0.5183,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_9_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4982,
+            "median_y": 0.4803,
+            "hit": true,
+            "frames_in_trial": 15
+          }
+        ]
+      },
+      "evaluation_4dir_research_mode": {
+        "trial_selection_accuracy": 1.0,
+        "trial_center_false_activation_rate": 0.0,
+        "mean_target_error": 0.0227,
+        "notice": "PROVISIONAL 4-DIRECTION RESEARCH MODE (OMITS UPWARD GAZE)."
+      },
+      "end_to_end_latency_ms": {
+        "p50": 74.21,
+        "p95": 74.21,
+        "sample_count": 135
+      }
+    },
+    "resnet34_angles": {
+      "model": "ResNet-34",
+      "feature_set": "ANGLES_ONLY",
+      "evaluation_5dir": {
+        "trial_selection_accuracy": 1.0,
+        "trial_center_false_activation_rate": 0.0,
+        "mean_target_error": 0.0533,
+        "dwell_selection_accuracy": 1.0,
+        "trial_results": [
+          {
+            "trial_name": "B3_1_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4939,
+            "median_y": 0.4654,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_2_DOWN",
+            "target_direction": "DOWN",
+            "median_x": 0.5,
+            "median_y": 0.9169,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_3_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4981,
+            "median_y": 0.4637,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_4_LEFT",
+            "target_direction": "LEFT",
+            "median_x": 0.1691,
+            "median_y": 0.469,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_5_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4951,
+            "median_y": 0.4751,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_6_UP",
+            "target_direction": "UP",
+            "median_x": 0.4918,
+            "median_y": 0.3229,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_7_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4972,
+            "median_y": 0.4671,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_8_RIGHT",
+            "target_direction": "RIGHT",
+            "median_x": 0.8667,
+            "median_y": 0.4682,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_9_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4936,
+            "median_y": 0.463,
+            "hit": true,
+            "frames_in_trial": 15
+          }
+        ]
+      },
+      "evaluation_4dir_research_mode": {
+        "trial_selection_accuracy": 1.0,
+        "trial_center_false_activation_rate": 0.0,
+        "mean_target_error": 0.0379,
+        "notice": "PROVISIONAL 4-DIRECTION RESEARCH MODE (OMITS UPWARD GAZE)."
+      },
+      "end_to_end_latency_ms": {
+        "p50": 74.21,
+        "p95": 74.21,
+        "sample_count": 135
+      }
+    }
+  }
+}

@@ -79,6 +79,7 @@ def make_sample(
         return GazeFeatures(
             timestamp_ms=timestamp_ms,
             left_eye=None,
+            right_eye=None,
             tracking_confidence=confidence,
             is_tracking_valid=is_valid,
         )
@@ -96,6 +97,9 @@ def make_sample(
     return GazeFeatures(
         timestamp_ms=timestamp_ms,
         left_eye=eye,
+        right_eye=eye,
+        ear_left=ear,
+        ear_right=ear,
         tracking_confidence=confidence,
         is_tracking_valid=is_valid,
     )

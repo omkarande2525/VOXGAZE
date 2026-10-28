@@ -1,0 +1,6 @@
+session_id,monotonic_time_s,elapsed_session_s,protocol_phase,condition_index,condition_name,target_direction,frame_index,face_detected,face_crop_valid,geometry_valid,active_eye,right_eye_valid,left_eye_valid,right_eye_h_ratio,right_eye_v_ratio,right_eye_ear,right_eye_canthal_ratio,left_eye_h_ratio,left_eye_v_ratio,left_eye_ear,left_eye_canthal_ratio,canthal_normal_dist_px,mobileone_valid,mobileone_yaw_deg,mobileone_pitch_deg,mediapipe_latency_ms,total_frame_latency_ms,unavailable_reason
+calib_v15_20261021_204435_0e16a4,97488.578000,3.875,CALIBRATION_ESTIMATION,1,CALIB_CENTER_1,CENTER,1,false,false,false,right,,,,,,,,,,,,false,,,10.10,127.92,NO_FACE_DETECTED
+calib_v15_20261021_204435_0e16a4,97488.609000,3.906,CALIBRATION_ESTIMATION,1,CALIB_CENTER_1,CENTER,2,false,false,false,right,,,,,,,,,,,,false,,,6.84,10.17,NO_FACE_DETECTED
+calib_v15_20261021_204435_0e16a4,97488.640000,3.937,CALIBRATION_ESTIMATION,1,CALIB_CENTER_1,CENTER,3,false,false,false,right,,,,,,,,,,,,false,,,8.37,27.44,NO_FACE_DETECTED
+calib_v15_20261021_204435_0e16a4,97488.671000,3.968,CALIBRATION_ESTIMATION,1,CALIB_CENTER_1,CENTER,4,false,false,false,right,,,,,,,,,,,,false,,,8.22,32.69,NO_FACE_DETECTED
+calib_v15_20261021_204435_0e16a4,97488.703000,4.000,CALIBRATION_ESTIMATION,1,CALIB_CENTER_1,CENTER,5,false,false,false,right,,,,,,,,,,,,false,,,7.24,25.33,NO_FACE_DETECTED

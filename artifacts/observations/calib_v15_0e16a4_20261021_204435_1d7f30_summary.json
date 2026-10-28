@@ -1,0 +1,127 @@
+{
+  "metadata": {
+    "total_frames_recorded": 5,
+    "overall_face_availability_pct": 0.0,
+    "overall_geometry_valid_pct": 0.0,
+    "active_eye_evaluated": "right",
+    "session_id": "calib_v15_20261021_204435_0e16a4",
+    "csv_file": "D:\\VOXGAZE\\artifacts\\observations\\calib_v15_0e16a4_20261021_204435_1d7f30.csv",
+    "json_summary_file": "D:\\VOXGAZE\\artifacts\\observations\\calib_v15_0e16a4_20261021_204435_1d7f30_summary.json",
+    "settling_duration_s": 2.0,
+    "recording_duration_s": 4.0,
+    "total_conditions_in_protocol": 27,
+    "completed_conditions": 0
+  },
+  "phase1_calibration": {
+    "target_statistics": {
+      "CENTER": {
+        "total_frames": 5,
+        "face_detected_count": 0,
+        "geom_valid_count": 0,
+        "right_eye_valid_count": 0,
+        "left_eye_valid_count": 0,
+        "valid_samples_used": 0,
+        "valid_sample_rate": 0.0,
+        "h": null,
+        "v_eyelid": null,
+        "v_canthal": null,
+        "ear": null
+      },
+      "LEFT": {
+        "total_frames": 0,
+        "face_detected_count": 0,
+        "geom_valid_count": 0,
+        "right_eye_valid_count": 0,
+        "left_eye_valid_count": 0,
+        "valid_samples_used": 0,
+        "valid_sample_rate": 0.0,
+        "h": null,
+        "v_eyelid": null,
+        "v_canthal": null,
+        "ear": null
+      },
+      "RIGHT": {
+        "total_frames": 0,
+        "face_detected_count": 0,
+        "geom_valid_count": 0,
+        "right_eye_valid_count": 0,
+        "left_eye_valid_count": 0,
+        "valid_samples_used": 0,
+        "valid_sample_rate": 0.0,
+        "h": null,
+        "v_eyelid": null,
+        "v_canthal": null,
+        "ear": null
+      },
+      "UP": {
+        "total_frames": 0,
+        "face_detected_count": 0,
+        "geom_valid_count": 0,
+        "right_eye_valid_count": 0,
+        "left_eye_valid_count": 0,
+        "valid_samples_used": 0,
+        "valid_sample_rate": 0.0,
+        "h": null,
+        "v_eyelid": null,
+        "v_canthal": null,
+        "ear": null
+      },
+      "DOWN": {
+        "total_frames": 0,
+        "face_detected_count": 0,
+        "geom_valid_count": 0,
+        "right_eye_valid_count": 0,
+        "left_eye_valid_count": 0,
+        "valid_samples_used": 0,
+        "valid_sample_rate": 0.0,
+        "h": null,
+        "v_eyelid": null,
+        "v_canthal": null,
+        "ear": null
+      },
+      "CLOSED": {
+        "total_frames": 0,
+        "face_detected_count": 0,
+        "geom_valid_count": 0,
+        "right_eye_valid_count": 0,
+        "left_eye_valid_count": 0,
+        "valid_samples_used": 0,
+        "valid_sample_rate": 0.0,
+        "h": null,
+        "v_eyelid": null,
+        "v_canthal": null,
+        "ear": null
+      }
+    },
+    "directional_separations": {
+      "delta_h_left": null,
+      "delta_h_right": null,
+      "delta_v_eyelid_up": null,
+      "delta_v_eyelid_down": null,
+      "delta_v_canthal_up": null,
+      "delta_v_canthal_down": null,
+      "delta_ear_blink": null
+    },
+    "gate_results": {
+      "is_left_supported": false,
+      "is_right_supported": false,
+      "is_up_supported": false,
+      "is_down_supported": false,
+      "is_blink_supported": false,
+      "unsupported_reasons": [
+        "INSUFFICIENT_CENTER_DATA: Missing center baseline medians"
+      ],
+      "provisional_thresholds_used": {
+        "min_separation_h": 0.06,
+        "min_separation_v": 0.05,
+        "min_separation_blink": 0.05
+      }
+    },
+    "frozen_thresholds": null
+  },
+  "phase2_independent_evaluation": null,
+  "baseline_center_drift": {
+    "error": "Initial center baseline has zero valid samples"
+  },
+  "phase3_exploratory_head_contrast": {}
+}
