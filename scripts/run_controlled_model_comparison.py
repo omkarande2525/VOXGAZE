@@ -82,10 +82,20 @@ TARGET_BBOXES: Dict[str, Tuple[float, float, float, float]] = {
     "DOWN": (0.30, 0.65, 0.70, 1.00),    # Bottom button
 }
 
-# Balanced sequences for the 3 blocks (interleaved center returns)
+# Balanced sequences for the 5 blocks (interleaved center returns)
 BLOCK_1_TARGETS: List[str] = ["CENTER", "LEFT", "CENTER", "RIGHT", "CENTER", "UP", "CENTER", "DOWN", "CENTER"]
 BLOCK_2_TARGETS: List[str] = ["CENTER", "RIGHT", "CENTER", "DOWN", "CENTER", "LEFT", "CENTER", "UP", "CENTER"]
 BLOCK_3_TARGETS: List[str] = ["CENTER", "DOWN", "CENTER", "LEFT", "CENTER", "UP", "CENTER", "RIGHT", "CENTER"]
+BLOCK_4_TARGETS: List[str] = ["CENTER", "UP", "CENTER", "RIGHT", "CENTER", "DOWN", "CENTER", "LEFT", "CENTER"]
+BLOCK_5_TARGETS: List[str] = ["CENTER", "LEFT", "CENTER", "UP", "CENTER", "DOWN", "CENTER", "RIGHT", "CENTER"]
+
+BLOCK_TARGETS_MAP: Dict[int, List[str]] = {
+    1: BLOCK_1_TARGETS,
+    2: BLOCK_2_TARGETS,
+    3: BLOCK_3_TARGETS,
+    4: BLOCK_4_TARGETS,
+    5: BLOCK_5_TARGETS,
+}
 
 
 def emit_beep(freq: int = 880, dur_ms: int = 120) -> None:
@@ -143,20 +153,44 @@ def is_inside_box(x: float, y: float, bbox: Tuple[float, float, float, float]) -
 
 
 def evaluate_trial_dwell(
-    predictions: List[Tuple[float, float]],
+    predictions: List[Any],  # List of (x, y, t_s) or (x, y)
     target_bbox: Tuple[float, float, float, float],
-    min_dwell_frames: int = 12,  # ~400 ms at 30 FPS
+    min_dwell_s: float = 0.400,
+    min_dwell_frames: int = 12,
 ) -> bool:
-    """Checks whether predictions maintain continuous dwell in target box."""
-    consecutive = 0
-    for x, y in predictions:
-        if is_inside_box(x, y, target_bbox):
-            consecutive += 1
-            if consecutive >= min_dwell_frames:
-                return True
-        else:
-            consecutive = 0
-    return False
+    """
+    Checks whether predictions maintain continuous dwell in target box.
+    Uses real monotonic timestamps (>= min_dwell_s) when available in tuples of length >= 3,
+    falling back to frame count (>= min_dwell_frames) for 2-tuples.
+    """
+    if not predictions:
+        return False
+
+    has_timestamps = len(predictions[0]) >= 3 if isinstance(predictions[0], (tuple, list)) else False
+
+    if has_timestamps:
+        dwell_start_s: Optional[float] = None
+        for item in predictions:
+            x, y, t_s = item[0], item[1], item[2]
+            if is_inside_box(x, y, target_bbox):
+                if dwell_start_s is None:
+                    dwell_start_s = t_s
+                elif (t_s - dwell_start_s) >= min_dwell_s:
+                    return True
+            else:
+                dwell_start_s = None
+        return False
+    else:
+        consecutive = 0
+        for item in predictions:
+            x, y = item[0], item[1]
+            if is_inside_box(x, y, target_bbox):
+                consecutive += 1
+                if consecutive >= min_dwell_frames:
+                    return True
+            else:
+                consecutive = 0
+        return False
 
 
 MIN_HELD_OUT_PERIPHERAL_TRIALS = 12
@@ -415,11 +449,17 @@ def analyze_block_evaluation(
     feature_set: FeatureSetType = FeatureSetType.HYBRID,
 ) -> Dict[str, Any]:
     """
-    Fits PersonalizedGazeMapper on Blocks 1 & 2 and evaluates on Block 3.
-    Reports both 5-direction and 4-direction (omitting UP) modes.
+    Fits PersonalizedGazeMapper on calibration Blocks 1 & 2 and evaluates on
+    held-out test Blocks 3, 4, 5 (12 peripheral trials, 15 center trials).
+
+    Reports:
+    - 5-direction and 4-direction (omitting UP) modes
+    - Real timestamp-based continuous dwell (>= 400 ms)
+    - True end-to-end target acquisition latency (onset to first box entry)
+    - Transient false directional entries during center fixation (any frame vs median)
     """
     train_records = [r for r in records if r.block_index in (1, 2)]
-    test_records = [r for r in records if r.block_index == 3]
+    test_records = [r for r in records if r.block_index in (3, 4, 5)]
 
     empty_eval_dict = {
         "status": "INSUFFICIENT_DATA",
@@ -454,6 +494,28 @@ def analyze_block_evaluation(
             "model": "MobileOne S0" if model_key == "m1" else "ResNet-34",
             "feature_set": feature_set.value,
             "evaluation_5dir": empty_eval_dict,
+            "target_acquisition_latency": {
+                "p50_ms": None,
+                "p95_ms": None,
+                "mean_ms": None,
+                "successful_acquisitions_count": 0,
+                "total_peripheral_trials": 0,
+                "acquisition_rate": 0.0,
+                "per_trial_acquisitions": [],
+            },
+            "transient_center_escapes": {
+                "total_center_trials": 0,
+                "trials_with_transient_escapes": 0,
+                "transient_escape_trial_rate": 0.0,
+                "trials_with_transient_button_entries": 0,
+                "transient_button_entry_trial_rate": 0.0,
+                "total_center_frames": 0,
+                "transient_escape_frames_count": 0,
+                "transient_escape_frame_rate": 0.0,
+                "transient_button_entry_frames_count": 0,
+                "transient_button_entry_frame_rate": 0.0,
+                "per_trial_breakdown": [],
+            },
             "end_to_end_latency_ms": {"p50": None, "p95": None, "sample_count": 0, "status": "INVALID_MISSING_LATENCY"},
         }
 
@@ -496,9 +558,32 @@ def analyze_block_evaluation(
             "model": "MobileOne S0" if model_key == "m1" else "ResNet-34",
             "feature_set": feature_set.value,
             "evaluation_5dir": empty_eval_dict,
+            "target_acquisition_latency": {
+                "p50_ms": None,
+                "p95_ms": None,
+                "mean_ms": None,
+                "successful_acquisitions_count": 0,
+                "total_peripheral_trials": 0,
+                "acquisition_rate": 0.0,
+                "per_trial_acquisitions": [],
+            },
+            "transient_center_escapes": {
+                "total_center_trials": 0,
+                "trials_with_transient_escapes": 0,
+                "transient_escape_trial_rate": 0.0,
+                "trials_with_transient_button_entries": 0,
+                "transient_button_entry_trial_rate": 0.0,
+                "total_center_frames": 0,
+                "transient_escape_frames_count": 0,
+                "transient_escape_frame_rate": 0.0,
+                "transient_button_entry_frames_count": 0,
+                "transient_button_entry_frame_rate": 0.0,
+                "per_trial_breakdown": [],
+            },
             "end_to_end_latency_ms": {"p50": None, "p95": None, "sample_count": 0, "status": "INVALID_MISSING_LATENCY"},
         }
 
+    # Separate mapper fitting per model on identical calibration trials
     mapper = PersonalizedGazeMapper(feature_set=feature_set, alpha=1.0)
     fit_ok = mapper.fit(train_samples)
     if not fit_ok:
@@ -507,6 +592,28 @@ def analyze_block_evaluation(
             "model": "MobileOne S0" if model_key == "m1" else "ResNet-34",
             "feature_set": feature_set.value,
             "evaluation_5dir": empty_eval_dict,
+            "target_acquisition_latency": {
+                "p50_ms": None,
+                "p95_ms": None,
+                "mean_ms": None,
+                "successful_acquisitions_count": 0,
+                "total_peripheral_trials": 0,
+                "acquisition_rate": 0.0,
+                "per_trial_acquisitions": [],
+            },
+            "transient_center_escapes": {
+                "total_center_trials": 0,
+                "trials_with_transient_escapes": 0,
+                "transient_escape_trial_rate": 0.0,
+                "trials_with_transient_button_entries": 0,
+                "transient_button_entry_trial_rate": 0.0,
+                "total_center_frames": 0,
+                "transient_escape_frames_count": 0,
+                "transient_escape_frame_rate": 0.0,
+                "transient_button_entry_frames_count": 0,
+                "transient_button_entry_frame_rate": 0.0,
+                "per_trial_breakdown": [],
+            },
             "end_to_end_latency_ms": {"p50": None, "p95": None, "sample_count": 0, "status": "INVALID_MISSING_LATENCY"},
         }
 
@@ -517,16 +624,52 @@ def analyze_block_evaluation(
     test_samples_4dir = [s for s in test_samples if s.target_direction != "UP"]
     eval_4dir = mapper.evaluate_held_out(test_samples_4dir)
 
-    # Dwell-based evaluation on Block 3 trials
+    # Group held-out records with real timestamps for dwell and latency analysis
     trials_by_name: Dict[str, Dict[str, Any]] = {}
-    for s in test_samples:
-        t_name = s.condition_name or "unknown"
-        if t_name not in trials_by_name:
-            trials_by_name[t_name] = {"target": s.target_direction, "preds": []}
-        pred = mapper.predict(s)
-        if pred.is_valid and math.isfinite(pred.screen_x) and math.isfinite(pred.screen_y):
-            trials_by_name[t_name]["preds"].append((pred.screen_x, pred.screen_y))
+    for r in test_records:
+        if not r.face_crop_valid:
+            continue
+        yaw = r.m1_yaw_deg if model_key == "m1" else r.r34_yaw_deg
+        pitch = r.m1_pitch_deg if model_key == "m1" else r.r34_pitch_deg
+        valid = r.m1_valid if model_key == "m1" else r.r34_valid
+        if not valid or yaw is None or pitch is None:
+            continue
 
+        sample = CalibrationSample(
+            target_x=TARGET_COORDS.get(r.target_direction, (0.5, 0.5))[0],
+            target_y=TARGET_COORDS.get(r.target_direction, (0.5, 0.5))[1],
+            target_direction=r.target_direction,
+            yaw_deg=yaw,
+            pitch_deg=pitch,
+            right_eye_h=r.right_eye_h,
+            right_eye_v=r.right_eye_v,
+            left_eye_h=r.left_eye_h,
+            left_eye_v=r.left_eye_v,
+            canthal_normal=r.canthal_normal_px,
+            condition_name=r.trial_name,
+            trial_index=r.condition_index,
+        )
+        pred = mapper.predict(sample)
+        if pred.is_valid and math.isfinite(pred.screen_x) and math.isfinite(pred.screen_y):
+            t_name = r.trial_name
+            if t_name not in trials_by_name:
+                targets_seq = BLOCK_TARGETS_MAP.get(r.block_index, [])
+                # r.condition_index is 1-based (1..len(targets_seq))
+                prec_target = (
+                    targets_seq[r.condition_index - 2]
+                    if (r.condition_index >= 2 and (r.condition_index - 2) < len(targets_seq))
+                    else "NONE_START_OF_BLOCK"
+                )
+                trials_by_name[t_name] = {
+                    "target": r.target_direction,
+                    "block_index": r.block_index,
+                    "condition_index": r.condition_index,
+                    "preceding_target": prec_target,
+                    "preds_with_time": [],  # (x, y, t_s)
+                }
+            trials_by_name[t_name]["preds_with_time"].append((pred.screen_x, pred.screen_y, r.monotonic_time_s))
+
+    # Real timestamp-based 400 ms continuous dwell evaluation
     dwell_passed = 0
     dwell_total_peripheral = 0
     for t_name, data in trials_by_name.items():
@@ -534,12 +677,129 @@ def analyze_block_evaluation(
         if t_dir in ("LEFT", "RIGHT", "UP", "DOWN"):
             dwell_total_peripheral += 1
             bbox = TARGET_BBOXES[t_dir]
-            if evaluate_trial_dwell(data["preds"], bbox, min_dwell_frames=12):
+            if evaluate_trial_dwell(data["preds_with_time"], bbox, min_dwell_s=0.400):
                 dwell_passed += 1
 
     dwell_accuracy = float(dwell_passed / dwell_total_peripheral) if dwell_total_peripheral else 0.0
 
-    # End-to-end latency stats
+    # True end-to-end target acquisition latency (time from target change to pointer first entering target box)
+    acquisition_latencies_ms: List[float] = []
+    per_trial_acquisitions: List[Dict[str, Any]] = []
+
+    for t_name, data in trials_by_name.items():
+        t_dir = data["target"]
+        if t_dir in ("LEFT", "RIGHT", "UP", "DOWN"):
+            bbox = TARGET_BBOXES[t_dir]
+            preds = data["preds_with_time"]
+            if not preds:
+                continue
+            t_onset_s = preds[0][2]
+            entry_latency_ms: Optional[float] = None
+            for x, y, t_s in preds:
+                if is_inside_box(x, y, bbox):
+                    entry_latency_ms = round((t_s - t_onset_s) * 1000.0, 2)
+                    break
+
+            per_trial_acquisitions.append({
+                "trial_name": t_name,
+                "target_direction": t_dir,
+                "block_index": data.get("block_index"),
+                "condition_index": data.get("condition_index"),
+                "preceding_target": data.get("preceding_target"),
+                "acquired": entry_latency_ms is not None,
+                "latency_to_first_entry_ms": entry_latency_ms,
+            })
+            if entry_latency_ms is not None:
+                acquisition_latencies_ms.append(entry_latency_ms)
+
+    acq_p50 = float(np.percentile(acquisition_latencies_ms, 50)) if acquisition_latencies_ms else None
+    acq_p95 = float(np.percentile(acquisition_latencies_ms, 95)) if acquisition_latencies_ms else None
+    acq_mean = float(np.mean(acquisition_latencies_ms)) if acquisition_latencies_ms else None
+    target_acq_stats = {
+        "p50_ms": round(acq_p50, 2) if acq_p50 is not None else None,
+        "p95_ms": round(acq_p95, 2) if acq_p95 is not None else None,
+        "mean_ms": round(acq_mean, 2) if acq_mean is not None else None,
+        "successful_acquisitions_count": len(acquisition_latencies_ms),
+        "total_peripheral_trials": len(per_trial_acquisitions),
+        "acquisition_rate": round(len(acquisition_latencies_ms) / len(per_trial_acquisitions), 4) if per_trial_acquisitions else 0.0,
+        "per_trial_acquisitions": per_trial_acquisitions,
+    }
+
+    # Transient false directional entries during center fixation (any frame vs median)
+    center_transient_trials: List[Dict[str, Any]] = []
+    total_center_frames = 0
+    total_frames_escaped_deadzone = 0
+    total_frames_in_directional_buttons = 0
+    trials_with_any_escape = 0
+    trials_with_any_button_entry = 0
+
+    center_bbox = TARGET_BBOXES["CENTER"]
+    directional_bboxes = {d: TARGET_BBOXES[d] for d in ("LEFT", "RIGHT", "UP", "DOWN")}
+
+    for t_name, data in trials_by_name.items():
+        if data["target"] == "CENTER":
+            preds = data["preds_with_time"]
+            if not preds:
+                continue
+            n_frames = len(preds)
+            total_center_frames += n_frames
+            escaped_frames = 0
+            button_frames = 0
+            entered_buttons_by_dir: Dict[str, int] = {"LEFT": 0, "RIGHT": 0, "UP": 0, "DOWN": 0}
+
+            for x, y, _ in preds:
+                outside = not is_inside_box(x, y, center_bbox)
+                if outside:
+                    escaped_frames += 1
+                for d_name, d_bbox in directional_bboxes.items():
+                    if is_inside_box(x, y, d_bbox):
+                        button_frames += 1
+                        entered_buttons_by_dir[d_name] += 1
+                        break
+
+            med_x = float(np.median([p[0] for p in preds]))
+            med_y = float(np.median([p[1] for p in preds]))
+            median_stayed = is_inside_box(med_x, med_y, center_bbox)
+
+            if escaped_frames > 0:
+                trials_with_any_escape += 1
+            if button_frames > 0:
+                trials_with_any_button_entry += 1
+
+            total_frames_escaped_deadzone += escaped_frames
+            total_frames_in_directional_buttons += button_frames
+
+            center_transient_trials.append({
+                "trial_name": t_name,
+                "block_index": data.get("block_index"),
+                "condition_index": data.get("condition_index"),
+                "preceding_target": data.get("preceding_target"),
+                "total_frames": n_frames,
+                "median_x": round(med_x, 4),
+                "median_y": round(med_y, 4),
+                "median_hit_deadzone": median_stayed,
+                "frames_escaped_deadzone": escaped_frames,
+                "frames_in_buttons": button_frames,
+                "transient_clean": (escaped_frames == 0),
+                "button_entries_by_dir": entered_buttons_by_dir,
+            })
+
+    total_center_trials = len(center_transient_trials)
+    center_transient_summary = {
+        "total_center_trials": total_center_trials,
+        "trials_with_transient_escapes": trials_with_any_escape,
+        "transient_escape_trial_rate": round(trials_with_any_escape / total_center_trials, 4) if total_center_trials else 0.0,
+        "trials_with_transient_button_entries": trials_with_any_button_entry,
+        "transient_button_entry_trial_rate": round(trials_with_any_button_entry / total_center_trials, 4) if total_center_trials else 0.0,
+        "total_center_frames": total_center_frames,
+        "transient_escape_frames_count": total_frames_escaped_deadzone,
+        "transient_escape_frame_rate": round(total_frames_escaped_deadzone / total_center_frames, 4) if total_center_frames else 0.0,
+        "transient_button_entry_frames_count": total_frames_in_directional_buttons,
+        "transient_button_entry_frame_rate": round(total_frames_in_directional_buttons / total_center_frames, 4) if total_center_frames else 0.0,
+        "per_trial_breakdown": center_transient_trials,
+    }
+
+    # Single-frame pipeline latency stats
     e2e_latencies = [
         (r.m1_end_to_end_ms if model_key == "m1" else r.r34_end_to_end_ms)
         for r in test_records
@@ -584,6 +844,8 @@ def analyze_block_evaluation(
             "peripheral_dwell_passed": dwell_passed,
             "peripheral_dwell_total": dwell_total_peripheral,
             "peripheral_dwell_display": f"{dwell_passed}/{dwell_total_peripheral} ({dwell_accuracy*100:.1f}%)" if dwell_total_peripheral else "0/0 (0.0%)",
+            "target_acquisition_latency": target_acq_stats,
+            "transient_center_escapes": center_transient_summary,
             "trial_results": eval_5dir.get("trial_results", []),
             # Backward-compatible aliases
             "trial_selection_accuracy": eval_5dir.get("peripheral_trial_accuracy", 0.0),
@@ -612,6 +874,8 @@ def analyze_block_evaluation(
             "trial_selection_accuracy": eval_4dir.get("peripheral_trial_accuracy", 0.0),
             "trial_center_false_activation_rate": eval_4dir.get("center_return_false_activation_rate", 0.0),
         },
+        "target_acquisition_latency": target_acq_stats,
+        "transient_center_escapes": center_transient_summary,
         "end_to_end_latency_ms": {
             "p50": e2e_p50,
             "p95": e2e_p95,
@@ -660,7 +924,7 @@ def draw_target_canvas(
     cv2.circle(canvas, (cx, cy), 3, (255, 255, 255), -1, cv2.LINE_AA)
 
     # Top Header & Instructions
-    header = f"VOXGAZE CONTROLLED COMPARISON - BLOCK {block_num}/3 | TRIAL {trial_num}/{total_trials}: {target_name}"
+    header = f"VOXGAZE CONTROLLED COMPARISON - BLOCK {block_num}/5 | TRIAL {trial_num}/{total_trials}: {target_name}"
     cv2.putText(canvas, header, (30, 45), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (255, 255, 255), 2, cv2.LINE_AA)
 
     # Status pill
@@ -727,17 +991,21 @@ def execute_comparison_session(
         (1, BLOCK_1_TARGETS),
         (2, BLOCK_2_TARGETS),
         (3, BLOCK_3_TARGETS),
+        (4, BLOCK_4_TARGETS),
+        (5, BLOCK_5_TARGETS),
     ]
 
     frame_counter = 0
 
     if mock_mode:
-        print("\n[INFO] Executing in mock/synthetic mode (15 frames per trial)...")
+        print("\n[INFO] Executing in mock/synthetic mode (15 frames per trial across 5 blocks)...")
+        base_time = time.monotonic()
         for block_idx, targets in blocks:
             for cond_idx, target in enumerate(targets):
                 trial_name = f"B{block_idx}_{cond_idx+1}_{target}"
                 for _ in range(15):
                     frame_counter += 1
+                    t_frame = base_time + (frame_counter * 0.0333)
                     if target == "CENTER":
                         base_yaw, base_pitch = -4.0, -10.0
                         rh, rv = 0.50, 0.50
@@ -773,7 +1041,7 @@ def execute_comparison_session(
                         trial_name=trial_name,
                         target_direction=target,
                         frame_index=frame_counter,
-                        monotonic_time_s=time.monotonic(),
+                        monotonic_time_s=t_frame,
                         face_detected=True,
                         face_crop_valid=True,
                         right_eye_h=rh + np.random.normal(0, 0.005),
@@ -1032,12 +1300,12 @@ def execute_comparison_session(
             "total_frames_recorded": len(records),
         }
 
-    # Perform Block 3 Held-Out Evaluation on both models
-    print("\n[STEP 1] Evaluating MobileOne S0 (Hybrid & Angles)...")
+    # Perform Blocks 3, 4, 5 Held-Out Evaluation on both models (12 peripheral, 15 center trials)
+    print("\n[STEP 1] Evaluating MobileOne S0 (Hybrid & Angles on Blocks 3-5)...")
     m1_hybrid = analyze_block_evaluation(records, model_key="m1", feature_set=FeatureSetType.HYBRID)
     m1_angles = analyze_block_evaluation(records, model_key="m1", feature_set=FeatureSetType.ANGLES_ONLY)
 
-    print("\n[STEP 2] Evaluating ResNet-34 (Hybrid & Angles)...")
+    print("\n[STEP 2] Evaluating ResNet-34 (Hybrid & Angles on Blocks 3-5)...")
     r34_hybrid = analyze_block_evaluation(records, model_key="r34", feature_set=FeatureSetType.HYBRID)
     r34_angles = analyze_block_evaluation(records, model_key="r34", feature_set=FeatureSetType.ANGLES_ONLY)
 
@@ -1079,20 +1347,24 @@ def execute_comparison_session(
     r34_e2e_p50 = r34_eval["metrics"]["latency_p50_ms"]
 
     print("\n" + "=" * 80)
-    print(" COMPARISON SUMMARY & RESNET-34 DECISION RULE")
+    print(" COMPARISON SUMMARY & RESNET-34 DECISION RULE (5-BLOCK PROTOCOL)")
     print("=" * 80)
     print(f" [VALIDATION STATUS]: {validation_label}")
     print(" MobileOne S0:")
     print(f"   - Peripheral Accuracy: {m1_eval['metrics']['peripheral_trial_accuracy_display']}")
-    print(f"   - Center False Activation: {m1_eval['metrics']['center_return_false_activation_display']}")
-    print(f"   - Overall Trial Correctness: {m1_eval['metrics']['overall_trial_correctness_display']}")
-    print(f"   - End-to-End Latency: {m1_e2e_p50} ms")
+    print(f"   - Center False Activation (Median): {m1_eval['metrics']['center_return_false_activation_display']}")
+    print(f"   - Center Transient Escapes (Any Frame): {m1_hybrid.get('transient_center_escapes', {}).get('trials_with_transient_escapes', 0)}/{m1_hybrid.get('transient_center_escapes', {}).get('total_center_trials', 0)} trials")
+    print(f"   - Continuous Dwell (>= 400 ms): {m1_hybrid.get('evaluation_5dir', {}).get('peripheral_dwell_display', 'N/A')}")
+    print(f"   - Target Acquisition Latency (p50): {m1_hybrid.get('target_acquisition_latency', {}).get('p50_ms')} ms")
+    print(f"   - Pipeline Latency (p50): {m1_e2e_p50} ms")
     print(f"   - Adoption Gate: {m1_eval['status']}")
     print(" ResNet-34:")
     print(f"   - Peripheral Accuracy: {r34_eval['metrics']['peripheral_trial_accuracy_display']}")
-    print(f"   - Center False Activation: {r34_eval['metrics']['center_return_false_activation_display']}")
-    print(f"   - Overall Trial Correctness: {r34_eval['metrics']['overall_trial_correctness_display']}")
-    print(f"   - End-to-End Latency: {r34_e2e_p50} ms")
+    print(f"   - Center False Activation (Median): {r34_eval['metrics']['center_return_false_activation_display']}")
+    print(f"   - Center Transient Escapes (Any Frame): {r34_hybrid.get('transient_center_escapes', {}).get('trials_with_transient_escapes', 0)}/{r34_hybrid.get('transient_center_escapes', {}).get('total_center_trials', 0)} trials")
+    print(f"   - Continuous Dwell (>= 400 ms): {r34_hybrid.get('evaluation_5dir', {}).get('peripheral_dwell_display', 'N/A')}")
+    print(f"   - Target Acquisition Latency (p50): {r34_hybrid.get('target_acquisition_latency', {}).get('p50_ms')} ms")
+    print(f"   - Pipeline Latency (p50): {r34_e2e_p50} ms")
     print(f"   - Adoption Gate: {r34_eval['status']}")
     print(f" ResNet-34 vs MobileOne Delta: {acc_diff_pp:+5.1f} percentage points (Rule requires: >= +15.0 pp)")
     print(f" Decision Rule Result: {'PASS (Adopt ResNet-34)' if resnet34_adopted else 'REJECT / PRELIMINARY (Retain MobileOne S0 Baseline)'}")
@@ -1106,14 +1378,20 @@ def execute_comparison_session(
         "is_physical_validation": not mock_mode,
         "total_frames_recorded": len(records),
         "protocol": {
-            "blocks_count": 3,
+            "blocks_count": len(blocks),
             "train_blocks": [1, 2],
-            "held_out_test_block": 3,
+            "held_out_test_blocks": [3, 4, 5],
             "targets_per_block": len(BLOCK_1_TARGETS),
+            "total_trials": len(blocks) * len(BLOCK_1_TARGETS),
+            "held_out_trials_count": 3 * len(BLOCK_1_TARGETS),
+            "held_out_peripheral_trials": 12,
+            "held_out_center_trials": 15,
             "balanced_orders": {
                 "block_1": BLOCK_1_TARGETS,
                 "block_2": BLOCK_2_TARGETS,
                 "block_3": BLOCK_3_TARGETS,
+                "block_4": BLOCK_4_TARGETS,
+                "block_5": BLOCK_5_TARGETS,
             },
         },
         "decision_rule": {
