@@ -159,6 +159,256 @@ def evaluate_trial_dwell(
     return False
 
 
+MIN_HELD_OUT_PERIPHERAL_TRIALS = 12
+MIN_HELD_OUT_CENTER_TRIALS = 15
+MIN_INDEPENDENT_SESSIONS = 2
+MIN_PERIPHERAL_ACCURACY_THRESHOLD = 0.85
+MAX_CENTER_FALSE_ACTIVATION_THRESHOLD = 0.05
+
+
+def evaluate_model_adoption(
+    eval_5dir: Optional[Dict[str, Any]],
+    latency_info: Optional[Dict[str, Any]],
+    sessions_passed: int = 1,
+    is_mock: bool = False,
+    model_name: str = "",
+) -> Dict[str, Any]:
+    """
+    Evaluates strict non-negotiable adoption criteria:
+    1. Not mock (mock reports can never confer adoption).
+    2. Valid end-to-end latency (p50 > 0, finite, not None).
+    3. Peripheral accuracy >= 85.0% on >= 12 held-out trials.
+    4. Center false activations <= 5.0% on >= 15 held-out trials.
+    5. Both passing across >= 2 independent sessions.
+
+    Produces explicit INVALID/INCOMPLETE status on missing fields, empty trials, or NaN.
+    """
+    reasons: List[str] = []
+    validation_label = "MOCK, not physical validation" if is_mock else "PHYSICAL"
+    if is_mock:
+        reasons.append("MOCK report: Synthetic/mock data can never confer adoption or physical validation.")
+
+    # Check for empty, missing, or error evaluation dictionary
+    if (
+        eval_5dir is None
+        or not isinstance(eval_5dir, dict)
+        or eval_5dir.get("status") in ("INVALID_EMPTY_DATA", "INSUFFICIENT_DATA", "FIT_FAILED", "INSUFFICIENT_VALID_SAMPLES")
+    ):
+        status_val = eval_5dir.get("status", "INVALID_OR_INCOMPLETE_DATA") if isinstance(eval_5dir, dict) else "INVALID_OR_INCOMPLETE_DATA"
+        reasons.append(f"Incomplete or invalid evaluation data (status={status_val}).")
+        return {
+            "model_name": model_name,
+            "adopted": False,
+            "status": status_val if status_val != "VALID" else "INVALID_OR_INCOMPLETE_DATA",
+            "is_preliminary": True,
+            "sample_size_status": "PRELIMINARY",
+            "validation_label": validation_label,
+            "reasons": reasons,
+            "metrics": {
+                "peripheral_trials_passed": 0,
+                "peripheral_trials_total": 0,
+                "peripheral_trial_accuracy": 0.0,
+                "peripheral_trial_accuracy_display": "0/0 (0.0%)",
+                "center_trials_false_act": 0,
+                "center_trials_stayed": 0,
+                "center_trials_total": 0,
+                "center_return_false_activation_rate": 0.0,
+                "center_return_false_activation_display": "0/0 (0.0%)",
+                "overall_trials_correct": 0,
+                "overall_trials_total": 0,
+                "overall_trial_correctness_rate": 0.0,
+                "overall_trial_correctness_display": "0/0 (0.0%)",
+                "latency_p50_ms": None,
+                "independent_sessions_passed": sessions_passed,
+                "independent_sessions_required": MIN_INDEPENDENT_SESSIONS,
+            },
+            "criteria_gates": {
+                "non_mock": not is_mock,
+                "valid_latency": False,
+                "peripheral_accuracy": False,
+                "peripheral_sample_size": False,
+                "center_false_activation": False,
+                "center_sample_size": False,
+                "cross_session_generalization": False,
+            },
+        }
+
+    # Extract metrics safely
+    peri_pass = eval_5dir.get("peripheral_trials_passed")
+    peri_tot = eval_5dir.get("peripheral_trials_total")
+    peri_acc = eval_5dir.get("peripheral_trial_accuracy")
+    if peri_acc is None:
+        peri_acc = eval_5dir.get("trial_selection_accuracy")
+
+    center_fa = eval_5dir.get("center_trials_false_act")
+    center_tot = eval_5dir.get("center_trials_total")
+    center_fa_rate = eval_5dir.get("center_return_false_activation_rate")
+    if center_fa_rate is None:
+        center_fa_rate = eval_5dir.get("trial_center_false_activation_rate")
+
+    overall_correct = eval_5dir.get("overall_trials_correct")
+    overall_tot = eval_5dir.get("overall_trials_total")
+    overall_rate = eval_5dir.get("overall_trial_correctness_rate")
+
+    # Check for NaN / None / non-finite in numerical metrics
+    has_nan = False
+    for v in (peri_acc, center_fa_rate):
+        if v is None or not math.isfinite(v):
+            has_nan = True
+            break
+
+    if has_nan or peri_tot is None or center_tot is None or peri_pass is None or center_fa is None:
+        reasons.append("Non-finite, NaN, or missing metric values detected in trial results.")
+        return {
+            "model_name": model_name,
+            "adopted": False,
+            "status": "INVALID_NAN_OR_MISSING_METRICS",
+            "is_preliminary": True,
+            "sample_size_status": "PRELIMINARY",
+            "validation_label": validation_label,
+            "reasons": reasons,
+            "metrics": {
+                "peripheral_trials_passed": peri_pass or 0,
+                "peripheral_trials_total": peri_tot or 0,
+                "peripheral_trial_accuracy": 0.0 if (peri_acc is None or not math.isfinite(peri_acc)) else peri_acc,
+                "peripheral_trial_accuracy_display": f"{peri_pass or 0}/{peri_tot or 0}",
+                "center_trials_false_act": center_fa or 0,
+                "center_trials_stayed": (center_tot or 0) - (center_fa or 0),
+                "center_trials_total": center_tot or 0,
+                "center_return_false_activation_rate": 0.0 if (center_fa_rate is None or not math.isfinite(center_fa_rate)) else center_fa_rate,
+                "center_return_false_activation_display": f"{center_fa or 0}/{center_tot or 0}",
+                "overall_trials_correct": overall_correct or 0,
+                "overall_trials_total": overall_tot or 0,
+                "overall_trial_correctness_rate": 0.0 if (overall_rate is None or not math.isfinite(overall_rate)) else overall_rate,
+                "overall_trial_correctness_display": f"{overall_correct or 0}/{overall_tot or 0}",
+                "latency_p50_ms": None,
+                "independent_sessions_passed": sessions_passed,
+                "independent_sessions_required": MIN_INDEPENDENT_SESSIONS,
+            },
+            "criteria_gates": {
+                "non_mock": not is_mock,
+                "valid_latency": False,
+                "peripheral_accuracy": False,
+                "peripheral_sample_size": False,
+                "center_false_activation": False,
+                "center_sample_size": False,
+                "cross_session_generalization": False,
+            },
+        }
+
+    center_stayed = center_tot - center_fa
+    if overall_tot is None:
+        overall_tot = peri_tot + center_tot
+    if overall_correct is None:
+        overall_correct = peri_pass + center_stayed
+    if overall_rate is None:
+        overall_rate = float(overall_correct / overall_tot) if overall_tot > 0 else 0.0
+
+    # Latency check
+    lat_p50 = None
+    valid_latency = False
+    if latency_info and isinstance(latency_info, dict):
+        lat_status = latency_info.get("status", "VALID")
+        lat_val = latency_info.get("p50")
+        if lat_status != "INVALID_MISSING_LATENCY" and lat_val is not None and math.isfinite(lat_val) and lat_val > 0:
+            lat_p50 = lat_val
+            valid_latency = True
+        else:
+            reasons.append("End-to-end latency is missing, zero, or non-finite.")
+    else:
+        reasons.append("Latency info dictionary is missing or invalid.")
+
+    # Check adoption gates
+    non_mock_pass = not is_mock
+    latency_pass = valid_latency
+    peri_sample_pass = (peri_tot >= MIN_HELD_OUT_PERIPHERAL_TRIALS)
+    center_sample_pass = (center_tot >= MIN_HELD_OUT_CENTER_TRIALS)
+    peri_acc_pass = (peri_acc >= MIN_PERIPHERAL_ACCURACY_THRESHOLD)
+    center_fa_pass = (center_fa_rate <= MAX_CENTER_FALSE_ACTIVATION_THRESHOLD)
+    session_pass = (sessions_passed >= MIN_INDEPENDENT_SESSIONS)
+
+    is_preliminary = (not peri_sample_pass) or (not center_sample_pass) or (not session_pass)
+    sample_size_status = "PRELIMINARY" if is_preliminary else "CONCLUSIVE"
+
+    if not peri_sample_pass:
+        reasons.append(f"Insufficient peripheral trials: {peri_tot}/{MIN_HELD_OUT_PERIPHERAL_TRIALS} held-out trials (PRELIMINARY).")
+    if not center_sample_pass:
+        reasons.append(f"Insufficient center trials: {center_tot}/{MIN_HELD_OUT_CENTER_TRIALS} held-out trials (PRELIMINARY).")
+    if not session_pass:
+        reasons.append(f"Insufficient independent sessions: {sessions_passed}/{MIN_INDEPENDENT_SESSIONS} required across independent sessions.")
+    if not peri_acc_pass:
+        reasons.append(f"Peripheral accuracy {peri_acc*100:.1f}% ({peri_pass}/{peri_tot}) is below required {MIN_PERIPHERAL_ACCURACY_THRESHOLD*100:.1f}%.")
+    if not center_fa_pass:
+        reasons.append(f"Center false activation rate {center_fa_rate*100:.1f}% ({center_fa}/{center_tot}) exceeds allowable {MAX_CENTER_FALSE_ACTIVATION_THRESHOLD*100:.1f}%.")
+
+    all_gates_passed = (
+        non_mock_pass
+        and latency_pass
+        and peri_sample_pass
+        and center_sample_pass
+        and peri_acc_pass
+        and center_fa_pass
+        and session_pass
+    )
+
+    if all_gates_passed:
+        adopted = True
+        status = "ADOPTED_VALIDATED"
+    else:
+        adopted = False
+        if is_mock:
+            status = "MOCK_REJECTED"
+        elif not valid_latency:
+            status = "INVALID_MISSING_LATENCY"
+        elif not peri_sample_pass or not center_sample_pass:
+            status = "PRELIMINARY_SAMPLE_SIZE"
+        elif not session_pass:
+            status = "PRELIMINARY_INSUFFICIENT_SESSIONS"
+        elif not peri_acc_pass:
+            status = "REJECTED_PERIPHERAL_ACCURACY_LOW"
+        elif not center_fa_pass:
+            status = "REJECTED_CENTER_FALSE_ACTIVATION_HIGH"
+        else:
+            status = "REJECTED"
+
+    return {
+        "model_name": model_name,
+        "adopted": adopted,
+        "status": status,
+        "is_preliminary": is_preliminary,
+        "sample_size_status": sample_size_status,
+        "validation_label": validation_label,
+        "reasons": reasons,
+        "metrics": {
+            "peripheral_trials_passed": peri_pass,
+            "peripheral_trials_total": peri_tot,
+            "peripheral_trial_accuracy": round(peri_acc, 4),
+            "peripheral_trial_accuracy_display": f"{peri_pass}/{peri_tot} ({peri_acc*100:.1f}%)",
+            "center_trials_false_act": center_fa,
+            "center_trials_stayed": center_stayed,
+            "center_trials_total": center_tot,
+            "center_return_false_activation_rate": round(center_fa_rate, 4),
+            "center_return_false_activation_display": f"{center_fa}/{center_tot} ({center_fa_rate*100:.1f}%)",
+            "overall_trials_correct": overall_correct,
+            "overall_trials_total": overall_tot,
+            "overall_trial_correctness_rate": round(overall_rate, 4),
+            "overall_trial_correctness_display": f"{overall_correct}/{overall_tot} ({overall_rate*100:.1f}%)",
+            "latency_p50_ms": lat_p50,
+            "independent_sessions_passed": sessions_passed,
+            "independent_sessions_required": MIN_INDEPENDENT_SESSIONS,
+        },
+        "criteria_gates": {
+            "non_mock": non_mock_pass,
+            "valid_latency": latency_pass,
+            "peripheral_accuracy": peri_acc_pass,
+            "peripheral_sample_size": peri_sample_pass,
+            "center_false_activation": center_fa_pass,
+            "center_sample_size": center_sample_pass,
+            "cross_session_generalization": session_pass,
+        },
+    }
+
+
 def analyze_block_evaluation(
     records: List[FrameComparisonRecord],
     model_key: str,  # "m1" or "r34"
@@ -171,11 +421,40 @@ def analyze_block_evaluation(
     train_records = [r for r in records if r.block_index in (1, 2)]
     test_records = [r for r in records if r.block_index == 3]
 
+    empty_eval_dict = {
+        "status": "INSUFFICIENT_DATA",
+        "peripheral_trial_accuracy": 0.0,
+        "peripheral_trials_passed": 0,
+        "peripheral_trials_total": 0,
+        "peripheral_trial_accuracy_display": "0/0 (0.0%)",
+        "center_return_false_activation_rate": 0.0,
+        "center_trials_false_act": 0,
+        "center_trials_stayed": 0,
+        "center_trials_total": 0,
+        "center_return_false_activation_display": "0/0 (0.0%)",
+        "overall_trial_correctness_rate": 0.0,
+        "overall_trials_correct": 0,
+        "overall_trials_total": 0,
+        "overall_trial_correctness_display": "0/0 (0.0%)",
+        "is_preliminary": True,
+        "sample_size_status": "PRELIMINARY",
+        "trial_selection_accuracy": 0.0,
+        "trial_center_false_activation_rate": 0.0,
+        "dwell_selection_accuracy": 0.0,
+        "peripheral_dwell_accuracy": 0.0,
+        "peripheral_dwell_passed": 0,
+        "peripheral_dwell_total": 0,
+        "peripheral_dwell_display": "0/0 (0.0%)",
+        "trial_results": [],
+    }
+
     if not train_records or not test_records:
         return {
             "status": "INSUFFICIENT_DATA",
-            "evaluation_5dir": {"trial_selection_accuracy": 0.0},
-            "end_to_end_latency_ms": {"p50": 0.0, "p95": 0.0, "sample_count": 0},
+            "model": "MobileOne S0" if model_key == "m1" else "ResNet-34",
+            "feature_set": feature_set.value,
+            "evaluation_5dir": empty_eval_dict,
+            "end_to_end_latency_ms": {"p50": None, "p95": None, "sample_count": 0, "status": "INVALID_MISSING_LATENCY"},
         }
 
     def _to_samples(recs: List[FrameComparisonRecord]) -> List[CalibrationSample]:
@@ -214,8 +493,10 @@ def analyze_block_evaluation(
     if len(train_samples) < 5 or len(test_samples) < 5:
         return {
             "status": "INSUFFICIENT_VALID_SAMPLES",
-            "evaluation_5dir": {"trial_selection_accuracy": 0.0},
-            "end_to_end_latency_ms": {"p50": 0.0, "p95": 0.0, "sample_count": 0},
+            "model": "MobileOne S0" if model_key == "m1" else "ResNet-34",
+            "feature_set": feature_set.value,
+            "evaluation_5dir": empty_eval_dict,
+            "end_to_end_latency_ms": {"p50": None, "p95": None, "sample_count": 0, "status": "INVALID_MISSING_LATENCY"},
         }
 
     mapper = PersonalizedGazeMapper(feature_set=feature_set, alpha=1.0)
@@ -223,8 +504,10 @@ def analyze_block_evaluation(
     if not fit_ok:
         return {
             "status": "FIT_FAILED",
-            "evaluation_5dir": {"trial_selection_accuracy": 0.0},
-            "end_to_end_latency_ms": {"p50": 0.0, "p95": 0.0, "sample_count": 0},
+            "model": "MobileOne S0" if model_key == "m1" else "ResNet-34",
+            "feature_set": feature_set.value,
+            "evaluation_5dir": empty_eval_dict,
+            "end_to_end_latency_ms": {"p50": None, "p95": None, "sample_count": 0, "status": "INVALID_MISSING_LATENCY"},
         }
 
     # Base held-out evaluation (5-direction)
@@ -241,7 +524,7 @@ def analyze_block_evaluation(
         if t_name not in trials_by_name:
             trials_by_name[t_name] = {"target": s.target_direction, "preds": []}
         pred = mapper.predict(s)
-        if pred.is_valid:
+        if pred.is_valid and math.isfinite(pred.screen_x) and math.isfinite(pred.screen_y):
             trials_by_name[t_name]["preds"].append((pred.screen_x, pred.screen_y))
 
     dwell_passed = 0
@@ -262,29 +545,78 @@ def analyze_block_evaluation(
         for r in test_records
         if (r.m1_valid if model_key == "m1" else r.r34_valid)
     ]
-    e2e_p50 = float(np.percentile(e2e_latencies, 50)) if e2e_latencies else 0.0
-    e2e_p95 = float(np.percentile(e2e_latencies, 95)) if e2e_latencies else 0.0
+    valid_latencies = [
+        l for l in e2e_latencies
+        if l is not None and math.isfinite(l) and l > 0
+    ]
+    if valid_latencies:
+        e2e_p50 = round(float(np.percentile(valid_latencies, 50)), 2)
+        e2e_p95 = round(float(np.percentile(valid_latencies, 95)), 2)
+        lat_status = "VALID"
+    else:
+        e2e_p50 = None
+        e2e_p95 = None
+        lat_status = "INVALID_MISSING_LATENCY"
 
     return {
+        "status": eval_5dir.get("status", "VALID"),
         "model": "MobileOne S0" if model_key == "m1" else "ResNet-34",
         "feature_set": feature_set.value,
         "evaluation_5dir": {
-            "trial_selection_accuracy": eval_5dir.get("trial_selection_accuracy", 0.0),
-            "trial_center_false_activation_rate": eval_5dir.get("trial_center_false_activation_rate", 0.0),
+            "status": eval_5dir.get("status", "VALID"),
+            "peripheral_trial_accuracy": eval_5dir.get("peripheral_trial_accuracy", 0.0),
+            "peripheral_trials_passed": eval_5dir.get("peripheral_trials_passed", 0),
+            "peripheral_trials_total": eval_5dir.get("peripheral_trials_total", 0),
+            "peripheral_trial_accuracy_display": eval_5dir.get("peripheral_trial_accuracy_display", "0/0 (0.0%)"),
+            "center_return_false_activation_rate": eval_5dir.get("center_return_false_activation_rate", 0.0),
+            "center_trials_false_act": eval_5dir.get("center_trials_false_act", 0),
+            "center_trials_stayed": eval_5dir.get("center_trials_stayed", 0),
+            "center_trials_total": eval_5dir.get("center_trials_total", 0),
+            "center_return_false_activation_display": eval_5dir.get("center_return_false_activation_display", "0/0 (0.0%)"),
+            "overall_trial_correctness_rate": eval_5dir.get("overall_trial_correctness_rate", 0.0),
+            "overall_trials_correct": eval_5dir.get("overall_trials_correct", 0),
+            "overall_trials_total": eval_5dir.get("overall_trials_total", 0),
+            "overall_trial_correctness_display": eval_5dir.get("overall_trial_correctness_display", "0/0 (0.0%)"),
+            "is_preliminary": eval_5dir.get("is_preliminary", True),
+            "sample_size_status": eval_5dir.get("sample_size_status", "PRELIMINARY"),
             "mean_target_error": eval_5dir.get("mean_target_error", 0.0),
-            "dwell_selection_accuracy": round(dwell_accuracy, 4),
+            "peripheral_dwell_accuracy": round(dwell_accuracy, 4),
+            "peripheral_dwell_passed": dwell_passed,
+            "peripheral_dwell_total": dwell_total_peripheral,
+            "peripheral_dwell_display": f"{dwell_passed}/{dwell_total_peripheral} ({dwell_accuracy*100:.1f}%)" if dwell_total_peripheral else "0/0 (0.0%)",
             "trial_results": eval_5dir.get("trial_results", []),
+            # Backward-compatible aliases
+            "trial_selection_accuracy": eval_5dir.get("peripheral_trial_accuracy", 0.0),
+            "selection_accuracy": eval_5dir.get("peripheral_trial_accuracy", 0.0),
+            "trial_center_false_activation_rate": eval_5dir.get("center_return_false_activation_rate", 0.0),
+            "dwell_selection_accuracy": round(dwell_accuracy, 4),
         },
         "evaluation_4dir_research_mode": {
-            "trial_selection_accuracy": eval_4dir.get("trial_selection_accuracy", 0.0),
-            "trial_center_false_activation_rate": eval_4dir.get("trial_center_false_activation_rate", 0.0),
+            "status": eval_4dir.get("status", "VALID"),
+            "peripheral_trial_accuracy": eval_4dir.get("peripheral_trial_accuracy", 0.0),
+            "peripheral_trials_passed": eval_4dir.get("peripheral_trials_passed", 0),
+            "peripheral_trials_total": eval_4dir.get("peripheral_trials_total", 0),
+            "peripheral_trial_accuracy_display": eval_4dir.get("peripheral_trial_accuracy_display", "0/0 (0.0%)"),
+            "center_return_false_activation_rate": eval_4dir.get("center_return_false_activation_rate", 0.0),
+            "center_trials_false_act": eval_4dir.get("center_trials_false_act", 0),
+            "center_trials_stayed": eval_4dir.get("center_trials_stayed", 0),
+            "center_trials_total": eval_4dir.get("center_trials_total", 0),
+            "overall_trial_correctness_rate": eval_4dir.get("overall_trial_correctness_rate", 0.0),
+            "overall_trials_correct": eval_4dir.get("overall_trials_correct", 0),
+            "overall_trials_total": eval_4dir.get("overall_trials_total", 0),
+            "is_preliminary": eval_4dir.get("is_preliminary", True),
+            "sample_size_status": eval_4dir.get("sample_size_status", "PRELIMINARY"),
             "mean_target_error": eval_4dir.get("mean_target_error", 0.0),
             "notice": "PROVISIONAL 4-DIRECTION RESEARCH MODE (OMITS UPWARD GAZE).",
+            # Backward-compatible aliases
+            "trial_selection_accuracy": eval_4dir.get("peripheral_trial_accuracy", 0.0),
+            "trial_center_false_activation_rate": eval_4dir.get("center_return_false_activation_rate", 0.0),
         },
         "end_to_end_latency_ms": {
-            "p50": round(e2e_p50, 2),
-            "p95": round(e2e_p95, 2),
-            "sample_count": len(e2e_latencies),
+            "p50": e2e_p50,
+            "p95": e2e_p95,
+            "sample_count": len(valid_latencies),
+            "status": lat_status,
         },
     }
 
@@ -709,27 +1041,69 @@ def execute_comparison_session(
     r34_hybrid = analyze_block_evaluation(records, model_key="r34", feature_set=FeatureSetType.HYBRID)
     r34_angles = analyze_block_evaluation(records, model_key="r34", feature_set=FeatureSetType.ANGLES_ONLY)
 
-    # Safe extraction of accuracies and latencies
-    m1_acc = m1_hybrid.get("evaluation_5dir", {}).get("trial_selection_accuracy", 0.0)
-    r34_acc = r34_hybrid.get("evaluation_5dir", {}).get("trial_selection_accuracy", 0.0)
-    acc_diff_pp = round((r34_acc - m1_acc) * 100.0, 1)
-    meets_adoption_rule = acc_diff_pp >= 15.0
+    # Rigorous non-negotiable adoption evaluations
+    m1_eval = evaluate_model_adoption(
+        m1_hybrid.get("evaluation_5dir"),
+        m1_hybrid.get("end_to_end_latency_ms"),
+        sessions_passed=1,  # Single execution is 1 session
+        is_mock=mock_mode,
+        model_name="MobileOne S0",
+    )
+    r34_eval = evaluate_model_adoption(
+        r34_hybrid.get("evaluation_5dir"),
+        r34_hybrid.get("end_to_end_latency_ms"),
+        sessions_passed=1,
+        is_mock=mock_mode,
+        model_name="ResNet-34",
+    )
 
-    m1_e2e_p50 = m1_hybrid.get("end_to_end_latency_ms", {}).get("p50", 0.0)
-    r34_e2e_p50 = r34_hybrid.get("end_to_end_latency_ms", {}).get("p50", 0.0)
+    m1_acc = m1_eval["metrics"]["peripheral_trial_accuracy"]
+    r34_acc = r34_eval["metrics"]["peripheral_trial_accuracy"]
+    acc_diff_pp = round((r34_acc - m1_acc) * 100.0, 1)
+
+    meets_relative_delta = acc_diff_pp >= 15.0
+    # Adoption requires meeting ALL absolute gates AND relative advantage
+    resnet34_adopted = bool(r34_eval["adopted"] and meets_relative_delta)
+
+    if mock_mode:
+        overall_status = "MOCK_NOT_PHYSICAL_VALIDATION"
+    elif r34_eval["is_preliminary"]:
+        overall_status = "PRELIMINARY_SAMPLE_SIZE"
+    elif resnet34_adopted:
+        overall_status = "ADOPTED_RESNET34"
+    else:
+        overall_status = "RETAIN_MOBILEONE_BASELINE"
+
+    validation_label = "MOCK, not physical validation" if mock_mode else "PHYSICAL ACQUISITION"
+    m1_e2e_p50 = m1_eval["metrics"]["latency_p50_ms"]
+    r34_e2e_p50 = r34_eval["metrics"]["latency_p50_ms"]
 
     print("\n" + "=" * 80)
     print(" COMPARISON SUMMARY & RESNET-34 DECISION RULE")
     print("=" * 80)
-    print(f" MobileOne S0 Hybrid Trial Accuracy (5-dir): {m1_acc*100:.1f}% | End-to-End Latency: {m1_e2e_p50} ms")
-    print(f" ResNet-34    Hybrid Trial Accuracy (5-dir): {r34_acc*100:.1f}% | End-to-End Latency: {r34_e2e_p50} ms")
+    print(f" [VALIDATION STATUS]: {validation_label}")
+    print(" MobileOne S0:")
+    print(f"   - Peripheral Accuracy: {m1_eval['metrics']['peripheral_trial_accuracy_display']}")
+    print(f"   - Center False Activation: {m1_eval['metrics']['center_return_false_activation_display']}")
+    print(f"   - Overall Trial Correctness: {m1_eval['metrics']['overall_trial_correctness_display']}")
+    print(f"   - End-to-End Latency: {m1_e2e_p50} ms")
+    print(f"   - Adoption Gate: {m1_eval['status']}")
+    print(" ResNet-34:")
+    print(f"   - Peripheral Accuracy: {r34_eval['metrics']['peripheral_trial_accuracy_display']}")
+    print(f"   - Center False Activation: {r34_eval['metrics']['center_return_false_activation_display']}")
+    print(f"   - Overall Trial Correctness: {r34_eval['metrics']['overall_trial_correctness_display']}")
+    print(f"   - End-to-End Latency: {r34_e2e_p50} ms")
+    print(f"   - Adoption Gate: {r34_eval['status']}")
     print(f" ResNet-34 vs MobileOne Delta: {acc_diff_pp:+5.1f} percentage points (Rule requires: >= +15.0 pp)")
-    print(f" Decision Rule Result: {'PASS (Adopt ResNet-34)' if meets_adoption_rule else 'FAIL (Retain MobileOne S0 as Practical Baseline)'}")
+    print(f" Decision Rule Result: {'PASS (Adopt ResNet-34)' if resnet34_adopted else 'REJECT / PRELIMINARY (Retain MobileOne S0 Baseline)'}")
+    print(f" Overall Decision Status: {overall_status}")
 
     summary = {
         "session_id": session_id,
         "timestamp_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "mock_mode": mock_mode,
+        "validation_notice": "MOCK, not physical validation" if mock_mode else "PHYSICAL ACQUISITION",
+        "is_physical_validation": not mock_mode,
         "total_frames_recorded": len(records),
         "protocol": {
             "blocks_count": 3,
@@ -743,11 +1117,20 @@ def execute_comparison_session(
             },
         },
         "decision_rule": {
-            "rule_statement": "Adopt ResNet-34 only if held-out trial accuracy exceeds MobileOne S0 by >= 15.0 percentage points.",
+            "rule_statement": "Adoption requires: peripheral accuracy >= 85% on >= 12 held-out trials, center false activations <= 5% on >= 15 held-out trials, and both passing across >= 2 independent sessions.",
+            "relative_advantage_requirement": "ResNet-34 requires exceeding MobileOne S0 by >= 15.0 percentage points in addition to meeting all absolute safety gates.",
+            "validation_label": validation_label,
+            "is_physical_validation": not mock_mode,
             "mobileone_accuracy_pct": round(m1_acc * 100.0, 2),
             "resnet34_accuracy_pct": round(r34_acc * 100.0, 2),
             "delta_percentage_points": acc_diff_pp,
-            "adopted": meets_adoption_rule,
+            "meets_relative_delta": meets_relative_delta,
+            "adopted": resnet34_adopted,
+            "status": overall_status,
+            "model_evaluations": {
+                "mobileone_s0": m1_eval,
+                "resnet34": r34_eval,
+            },
         },
         "models": {
             "mobileone_s0_hybrid": m1_hybrid,

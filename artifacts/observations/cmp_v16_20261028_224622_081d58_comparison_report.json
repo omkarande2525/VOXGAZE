@@ -1,0 +1,678 @@
+{
+  "session_id": "cmp_v16_20261028_224622_081d58",
+  "timestamp_utc": "2026-10-28T17:16:22Z",
+  "mock_mode": true,
+  "validation_notice": "MOCK, not physical validation",
+  "is_physical_validation": false,
+  "total_frames_recorded": 405,
+  "protocol": {
+    "blocks_count": 3,
+    "train_blocks": [
+      1,
+      2
+    ],
+    "held_out_test_block": 3,
+    "targets_per_block": 9,
+    "balanced_orders": {
+      "block_1": [
+        "CENTER",
+        "LEFT",
+        "CENTER",
+        "RIGHT",
+        "CENTER",
+        "UP",
+        "CENTER",
+        "DOWN",
+        "CENTER"
+      ],
+      "block_2": [
+        "CENTER",
+        "RIGHT",
+        "CENTER",
+        "DOWN",
+        "CENTER",
+        "LEFT",
+        "CENTER",
+        "UP",
+        "CENTER"
+      ],
+      "block_3": [
+        "CENTER",
+        "DOWN",
+        "CENTER",
+        "LEFT",
+        "CENTER",
+        "UP",
+        "CENTER",
+        "RIGHT",
+        "CENTER"
+      ]
+    }
+  },
+  "decision_rule": {
+    "rule_statement": "Adoption requires: peripheral accuracy >= 85% on >= 12 held-out trials, center false activations <= 5% on >= 15 held-out trials, and both passing across >= 2 independent sessions.",
+    "relative_advantage_requirement": "ResNet-34 requires exceeding MobileOne S0 by >= 15.0 percentage points in addition to meeting all absolute safety gates.",
+    "validation_label": "MOCK, not physical validation",
+    "is_physical_validation": false,
+    "mobileone_accuracy_pct": 100.0,
+    "resnet34_accuracy_pct": 100.0,
+    "delta_percentage_points": 0.0,
+    "meets_relative_delta": false,
+    "adopted": false,
+    "status": "MOCK_NOT_PHYSICAL_VALIDATION",
+    "model_evaluations": {
+      "mobileone_s0": {
+        "model_name": "MobileOne S0",
+        "adopted": false,
+        "status": "MOCK_REJECTED",
+        "is_preliminary": true,
+        "sample_size_status": "PRELIMINARY",
+        "validation_label": "MOCK, not physical validation",
+        "reasons": [
+          "MOCK report: Synthetic/mock data can never confer adoption or physical validation.",
+          "Insufficient peripheral trials: 4/12 held-out trials (PRELIMINARY).",
+          "Insufficient center trials: 5/15 held-out trials (PRELIMINARY).",
+          "Insufficient independent sessions: 1/2 required across independent sessions."
+        ],
+        "metrics": {
+          "peripheral_trials_passed": 4,
+          "peripheral_trials_total": 4,
+          "peripheral_trial_accuracy": 1.0,
+          "peripheral_trial_accuracy_display": "4/4 (100.0%)",
+          "center_trials_false_act": 0,
+          "center_trials_stayed": 5,
+          "center_trials_total": 5,
+          "center_return_false_activation_rate": 0.0,
+          "center_return_false_activation_display": "0/5 (0.0%)",
+          "overall_trials_correct": 9,
+          "overall_trials_total": 9,
+          "overall_trial_correctness_rate": 1.0,
+          "overall_trial_correctness_display": "9/9 (100.0%)",
+          "latency_p50_ms": 16.21,
+          "independent_sessions_passed": 1,
+          "independent_sessions_required": 2
+        },
+        "criteria_gates": {
+          "non_mock": false,
+          "valid_latency": true,
+          "peripheral_accuracy": true,
+          "peripheral_sample_size": false,
+          "center_false_activation": true,
+          "center_sample_size": false,
+          "cross_session_generalization": false
+        }
+      },
+      "resnet34": {
+        "model_name": "ResNet-34",
+        "adopted": false,
+        "status": "MOCK_REJECTED",
+        "is_preliminary": true,
+        "sample_size_status": "PRELIMINARY",
+        "validation_label": "MOCK, not physical validation",
+        "reasons": [
+          "MOCK report: Synthetic/mock data can never confer adoption or physical validation.",
+          "Insufficient peripheral trials: 4/12 held-out trials (PRELIMINARY).",
+          "Insufficient center trials: 5/15 held-out trials (PRELIMINARY).",
+          "Insufficient independent sessions: 1/2 required across independent sessions."
+        ],
+        "metrics": {
+          "peripheral_trials_passed": 4,
+          "peripheral_trials_total": 4,
+          "peripheral_trial_accuracy": 1.0,
+          "peripheral_trial_accuracy_display": "4/4 (100.0%)",
+          "center_trials_false_act": 0,
+          "center_trials_stayed": 5,
+          "center_trials_total": 5,
+          "center_return_false_activation_rate": 0.0,
+          "center_return_false_activation_display": "0/5 (0.0%)",
+          "overall_trials_correct": 9,
+          "overall_trials_total": 9,
+          "overall_trial_correctness_rate": 1.0,
+          "overall_trial_correctness_display": "9/9 (100.0%)",
+          "latency_p50_ms": 74.21,
+          "independent_sessions_passed": 1,
+          "independent_sessions_required": 2
+        },
+        "criteria_gates": {
+          "non_mock": false,
+          "valid_latency": true,
+          "peripheral_accuracy": true,
+          "peripheral_sample_size": false,
+          "center_false_activation": true,
+          "center_sample_size": false,
+          "cross_session_generalization": false
+        }
+      }
+    }
+  },
+  "models": {
+    "mobileone_s0_hybrid": {
+      "status": "VALID",
+      "model": "MobileOne S0",
+      "feature_set": "HYBRID",
+      "evaluation_5dir": {
+        "status": "VALID",
+        "peripheral_trial_accuracy": 1.0,
+        "peripheral_trials_passed": 4,
+        "peripheral_trials_total": 4,
+        "peripheral_trial_accuracy_display": "4/4 (100.0%)",
+        "center_return_false_activation_rate": 0.0,
+        "center_trials_false_act": 0,
+        "center_trials_stayed": 5,
+        "center_trials_total": 5,
+        "center_return_false_activation_display": "0/5 (0.0%)",
+        "overall_trial_correctness_rate": 1.0,
+        "overall_trials_correct": 9,
+        "overall_trials_total": 9,
+        "overall_trial_correctness_display": "9/9 (100.0%)",
+        "is_preliminary": true,
+        "sample_size_status": "PRELIMINARY",
+        "mean_target_error": 0.0289,
+        "peripheral_dwell_accuracy": 1.0,
+        "peripheral_dwell_passed": 4,
+        "peripheral_dwell_total": 4,
+        "peripheral_dwell_display": "4/4 (100.0%)",
+        "trial_results": [
+          {
+            "trial_name": "B3_1_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4979,
+            "median_y": 0.4913,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_2_DOWN",
+            "target_direction": "DOWN",
+            "median_x": 0.5,
+            "median_y": 0.8497,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_3_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4985,
+            "median_y": 0.4832,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_4_LEFT",
+            "target_direction": "LEFT",
+            "median_x": 0.1531,
+            "median_y": 0.5182,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_5_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4976,
+            "median_y": 0.4963,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_6_UP",
+            "target_direction": "UP",
+            "median_x": 0.4993,
+            "median_y": 0.1853,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_7_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4999,
+            "median_y": 0.4644,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_8_RIGHT",
+            "target_direction": "RIGHT",
+            "median_x": 0.8539,
+            "median_y": 0.5321,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_9_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4987,
+            "median_y": 0.4764,
+            "hit": true,
+            "frames_in_trial": 15
+          }
+        ],
+        "trial_selection_accuracy": 1.0,
+        "selection_accuracy": 1.0,
+        "trial_center_false_activation_rate": 0.0,
+        "dwell_selection_accuracy": 1.0
+      },
+      "evaluation_4dir_research_mode": {
+        "status": "VALID",
+        "peripheral_trial_accuracy": 1.0,
+        "peripheral_trials_passed": 3,
+        "peripheral_trials_total": 3,
+        "peripheral_trial_accuracy_display": "3/3 (100.0%)",
+        "center_return_false_activation_rate": 0.0,
+        "center_trials_false_act": 0,
+        "center_trials_stayed": 5,
+        "center_trials_total": 5,
+        "overall_trial_correctness_rate": 1.0,
+        "overall_trials_correct": 8,
+        "overall_trials_total": 8,
+        "is_preliminary": true,
+        "sample_size_status": "PRELIMINARY",
+        "mean_target_error": 0.0275,
+        "notice": "PROVISIONAL 4-DIRECTION RESEARCH MODE (OMITS UPWARD GAZE).",
+        "trial_selection_accuracy": 1.0,
+        "trial_center_false_activation_rate": 0.0
+      },
+      "end_to_end_latency_ms": {
+        "p50": 16.21,
+        "p95": 16.21,
+        "sample_count": 135,
+        "status": "VALID"
+      }
+    },
+    "mobileone_s0_angles": {
+      "status": "VALID",
+      "model": "MobileOne S0",
+      "feature_set": "ANGLES_ONLY",
+      "evaluation_5dir": {
+        "status": "VALID",
+        "peripheral_trial_accuracy": 1.0,
+        "peripheral_trials_passed": 4,
+        "peripheral_trials_total": 4,
+        "peripheral_trial_accuracy_display": "4/4 (100.0%)",
+        "center_return_false_activation_rate": 0.0,
+        "center_trials_false_act": 0,
+        "center_trials_stayed": 5,
+        "center_trials_total": 5,
+        "center_return_false_activation_display": "0/5 (0.0%)",
+        "overall_trial_correctness_rate": 1.0,
+        "overall_trials_correct": 9,
+        "overall_trials_total": 9,
+        "overall_trial_correctness_display": "9/9 (100.0%)",
+        "is_preliminary": true,
+        "sample_size_status": "PRELIMINARY",
+        "mean_target_error": 0.0541,
+        "peripheral_dwell_accuracy": 0.75,
+        "peripheral_dwell_passed": 3,
+        "peripheral_dwell_total": 4,
+        "peripheral_dwell_display": "3/4 (75.0%)",
+        "trial_results": [
+          {
+            "trial_name": "B3_1_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4954,
+            "median_y": 0.4771,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_2_DOWN",
+            "target_direction": "DOWN",
+            "median_x": 0.4997,
+            "median_y": 0.9005,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_3_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4968,
+            "median_y": 0.4651,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_4_LEFT",
+            "target_direction": "LEFT",
+            "median_x": 0.1695,
+            "median_y": 0.4624,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_5_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4936,
+            "median_y": 0.4736,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_6_UP",
+            "target_direction": "UP",
+            "median_x": 0.4897,
+            "median_y": 0.3268,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_7_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4937,
+            "median_y": 0.4551,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_8_RIGHT",
+            "target_direction": "RIGHT",
+            "median_x": 0.8722,
+            "median_y": 0.4739,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_9_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.492,
+            "median_y": 0.4627,
+            "hit": true,
+            "frames_in_trial": 15
+          }
+        ],
+        "trial_selection_accuracy": 1.0,
+        "selection_accuracy": 1.0,
+        "trial_center_false_activation_rate": 0.0,
+        "dwell_selection_accuracy": 0.75
+      },
+      "evaluation_4dir_research_mode": {
+        "status": "VALID",
+        "peripheral_trial_accuracy": 1.0,
+        "peripheral_trials_passed": 3,
+        "peripheral_trials_total": 3,
+        "peripheral_trial_accuracy_display": "3/3 (100.0%)",
+        "center_return_false_activation_rate": 0.0,
+        "center_trials_false_act": 0,
+        "center_trials_stayed": 5,
+        "center_trials_total": 5,
+        "overall_trial_correctness_rate": 1.0,
+        "overall_trials_correct": 8,
+        "overall_trials_total": 8,
+        "is_preliminary": true,
+        "sample_size_status": "PRELIMINARY",
+        "mean_target_error": 0.0387,
+        "notice": "PROVISIONAL 4-DIRECTION RESEARCH MODE (OMITS UPWARD GAZE).",
+        "trial_selection_accuracy": 1.0,
+        "trial_center_false_activation_rate": 0.0
+      },
+      "end_to_end_latency_ms": {
+        "p50": 16.21,
+        "p95": 16.21,
+        "sample_count": 135,
+        "status": "VALID"
+      }
+    },
+    "resnet34_hybrid": {
+      "status": "VALID",
+      "model": "ResNet-34",
+      "feature_set": "HYBRID",
+      "evaluation_5dir": {
+        "status": "VALID",
+        "peripheral_trial_accuracy": 1.0,
+        "peripheral_trials_passed": 4,
+        "peripheral_trials_total": 4,
+        "peripheral_trial_accuracy_display": "4/4 (100.0%)",
+        "center_return_false_activation_rate": 0.0,
+        "center_trials_false_act": 0,
+        "center_trials_stayed": 5,
+        "center_trials_total": 5,
+        "center_return_false_activation_display": "0/5 (0.0%)",
+        "overall_trial_correctness_rate": 1.0,
+        "overall_trials_correct": 9,
+        "overall_trials_total": 9,
+        "overall_trial_correctness_display": "9/9 (100.0%)",
+        "is_preliminary": true,
+        "sample_size_status": "PRELIMINARY",
+        "mean_target_error": 0.0205,
+        "peripheral_dwell_accuracy": 1.0,
+        "peripheral_dwell_passed": 4,
+        "peripheral_dwell_total": 4,
+        "peripheral_dwell_display": "4/4 (100.0%)",
+        "trial_results": [
+          {
+            "trial_name": "B3_1_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4975,
+            "median_y": 0.4867,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_2_DOWN",
+            "target_direction": "DOWN",
+            "median_x": 0.5022,
+            "median_y": 0.8557,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_3_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4972,
+            "median_y": 0.4848,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_4_LEFT",
+            "target_direction": "LEFT",
+            "median_x": 0.1534,
+            "median_y": 0.5232,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_5_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4974,
+            "median_y": 0.4974,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_6_UP",
+            "target_direction": "UP",
+            "median_x": 0.5001,
+            "median_y": 0.178,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_7_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4997,
+            "median_y": 0.4965,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_8_RIGHT",
+            "target_direction": "RIGHT",
+            "median_x": 0.8544,
+            "median_y": 0.5067,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_9_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.496,
+            "median_y": 0.4875,
+            "hit": true,
+            "frames_in_trial": 15
+          }
+        ],
+        "trial_selection_accuracy": 1.0,
+        "selection_accuracy": 1.0,
+        "trial_center_false_activation_rate": 0.0,
+        "dwell_selection_accuracy": 1.0
+      },
+      "evaluation_4dir_research_mode": {
+        "status": "VALID",
+        "peripheral_trial_accuracy": 1.0,
+        "peripheral_trials_passed": 3,
+        "peripheral_trials_total": 3,
+        "peripheral_trial_accuracy_display": "3/3 (100.0%)",
+        "center_return_false_activation_rate": 0.0,
+        "center_trials_false_act": 0,
+        "center_trials_stayed": 5,
+        "center_trials_total": 5,
+        "overall_trial_correctness_rate": 1.0,
+        "overall_trials_correct": 8,
+        "overall_trials_total": 8,
+        "is_preliminary": true,
+        "sample_size_status": "PRELIMINARY",
+        "mean_target_error": 0.0196,
+        "notice": "PROVISIONAL 4-DIRECTION RESEARCH MODE (OMITS UPWARD GAZE).",
+        "trial_selection_accuracy": 1.0,
+        "trial_center_false_activation_rate": 0.0
+      },
+      "end_to_end_latency_ms": {
+        "p50": 74.21,
+        "p95": 74.21,
+        "sample_count": 135,
+        "status": "VALID"
+      }
+    },
+    "resnet34_angles": {
+      "status": "VALID",
+      "model": "ResNet-34",
+      "feature_set": "ANGLES_ONLY",
+      "evaluation_5dir": {
+        "status": "VALID",
+        "peripheral_trial_accuracy": 1.0,
+        "peripheral_trials_passed": 4,
+        "peripheral_trials_total": 4,
+        "peripheral_trial_accuracy_display": "4/4 (100.0%)",
+        "center_return_false_activation_rate": 0.0,
+        "center_trials_false_act": 0,
+        "center_trials_stayed": 5,
+        "center_trials_total": 5,
+        "center_return_false_activation_display": "0/5 (0.0%)",
+        "overall_trial_correctness_rate": 1.0,
+        "overall_trials_correct": 9,
+        "overall_trials_total": 9,
+        "overall_trial_correctness_display": "9/9 (100.0%)",
+        "is_preliminary": true,
+        "sample_size_status": "PRELIMINARY",
+        "mean_target_error": 0.0524,
+        "peripheral_dwell_accuracy": 1.0,
+        "peripheral_dwell_passed": 4,
+        "peripheral_dwell_total": 4,
+        "peripheral_dwell_display": "4/4 (100.0%)",
+        "trial_results": [
+          {
+            "trial_name": "B3_1_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4974,
+            "median_y": 0.4706,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_2_DOWN",
+            "target_direction": "DOWN",
+            "median_x": 0.5031,
+            "median_y": 0.9049,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_3_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.495,
+            "median_y": 0.4664,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_4_LEFT",
+            "target_direction": "LEFT",
+            "median_x": 0.1714,
+            "median_y": 0.4735,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_5_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4966,
+            "median_y": 0.4716,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_6_UP",
+            "target_direction": "UP",
+            "median_x": 0.492,
+            "median_y": 0.3239,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_7_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4944,
+            "median_y": 0.4734,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_8_RIGHT",
+            "target_direction": "RIGHT",
+            "median_x": 0.8624,
+            "median_y": 0.4617,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_9_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4924,
+            "median_y": 0.4654,
+            "hit": true,
+            "frames_in_trial": 15
+          }
+        ],
+        "trial_selection_accuracy": 1.0,
+        "selection_accuracy": 1.0,
+        "trial_center_false_activation_rate": 0.0,
+        "dwell_selection_accuracy": 1.0
+      },
+      "evaluation_4dir_research_mode": {
+        "status": "VALID",
+        "peripheral_trial_accuracy": 1.0,
+        "peripheral_trials_passed": 3,
+        "peripheral_trials_total": 3,
+        "peripheral_trial_accuracy_display": "3/3 (100.0%)",
+        "center_return_false_activation_rate": 0.0,
+        "center_trials_false_act": 0,
+        "center_trials_stayed": 5,
+        "center_trials_total": 5,
+        "overall_trial_correctness_rate": 1.0,
+        "overall_trials_correct": 8,
+        "overall_trials_total": 8,
+        "is_preliminary": true,
+        "sample_size_status": "PRELIMINARY",
+        "mean_target_error": 0.0375,
+        "notice": "PROVISIONAL 4-DIRECTION RESEARCH MODE (OMITS UPWARD GAZE).",
+        "trial_selection_accuracy": 1.0,
+        "trial_center_false_activation_rate": 0.0
+      },
+      "end_to_end_latency_ms": {
+        "p50": 74.21,
+        "p95": 74.21,
+        "sample_count": 135,
+        "status": "VALID"
+      }
+    }
+  }
+}
