@@ -12,6 +12,8 @@ from scripts.run_controlled_model_comparison import (
     BLOCK_1_TARGETS,
     BLOCK_2_TARGETS,
     BLOCK_3_TARGETS,
+    BLOCK_4_TARGETS,
+    BLOCK_5_TARGETS,
     FrameComparisonRecord,
     TARGET_BBOXES,
     TARGET_COORDS,
@@ -24,13 +26,11 @@ from scripts.run_controlled_model_comparison import (
 
 
 def test_balanced_target_sequences():
-    # All 3 blocks must have equal length (9 items: 4 peripheral + 5 center)
-    assert len(BLOCK_1_TARGETS) == 9
-    assert len(BLOCK_2_TARGETS) == 9
-    assert len(BLOCK_3_TARGETS) == 9
-
-    # Each peripheral target must appear exactly once per block
-    for targets in [BLOCK_1_TARGETS, BLOCK_2_TARGETS, BLOCK_3_TARGETS]:
+    # All 5 blocks must have equal length (9 items: 4 peripheral + 5 center)
+    all_blocks = [BLOCK_1_TARGETS, BLOCK_2_TARGETS, BLOCK_3_TARGETS, BLOCK_4_TARGETS, BLOCK_5_TARGETS]
+    assert len(all_blocks) == 5
+    for targets in all_blocks:
+        assert len(targets) == 9
         assert targets.count("CENTER") == 5
         assert targets.count("LEFT") == 1
         assert targets.count("RIGHT") == 1
@@ -38,9 +38,16 @@ def test_balanced_target_sequences():
         assert targets.count("DOWN") == 1
 
     # Sequences must not be identical across blocks (prevent sequence-order bias)
-    assert BLOCK_1_TARGETS != BLOCK_2_TARGETS
-    assert BLOCK_2_TARGETS != BLOCK_3_TARGETS
-    assert BLOCK_1_TARGETS != BLOCK_3_TARGETS
+    for i in range(len(all_blocks)):
+        for j in range(i + 1, len(all_blocks)):
+            assert all_blocks[i] != all_blocks[j]
+
+    # Held-out blocks (3, 4, 5) must yield exactly 12 peripheral and 15 center targets
+    held_out_blocks = [BLOCK_3_TARGETS, BLOCK_4_TARGETS, BLOCK_5_TARGETS]
+    total_held_out_center = sum(b.count("CENTER") for b in held_out_blocks)
+    total_held_out_peripheral = sum(len([t for t in b if t != "CENTER"]) for b in held_out_blocks)
+    assert total_held_out_center == 15
+    assert total_held_out_peripheral == 12
 
 
 def test_bounding_box_hit_testing():
@@ -272,3 +279,114 @@ def test_adoption_gate_requires_all_criteria():
     assert res_high_fa["adopted"] is False
     assert res_high_fa["status"] == "REJECTED_CENTER_FALSE_ACTIVATION_HIGH"
     assert res_high_fa["criteria_gates"]["center_false_activation"] is False
+
+
+def test_real_timestamp_dwell():
+    """Verifies that 400 ms dwell requires actual elapsed time >= 0.400s, not frame counts."""
+    left_box = TARGET_BBOXES["LEFT"]
+
+    # Case A: 5 points spanning 0.50s (t=0.0 to t=0.50) -> PASS (>= 0.400s)
+    pts_pass = [
+        (0.15, 0.50, 10.00),
+        (0.15, 0.50, 10.15),
+        (0.15, 0.50, 10.30),
+        (0.15, 0.50, 10.45),
+        (0.15, 0.50, 10.50),
+    ]
+    assert evaluate_trial_dwell(pts_pass, left_box, min_dwell_s=0.400) is True
+
+    # Case B: 15 points spanning only 0.20s (e.g. 60 FPS burst: t=10.0 to t=10.20) -> FAIL (< 0.400s)
+    pts_short = [(0.15, 0.50, 10.0 + i * (0.20 / 14)) for i in range(15)]
+    assert evaluate_trial_dwell(pts_short, left_box, min_dwell_s=0.400) is False
+
+    # Case C: Interrupted dwell (stays inside for 0.3s, slips out, stays for 0.3s) -> FAIL
+    pts_interrupted = [
+        (0.15, 0.50, 10.00),
+        (0.15, 0.50, 10.30),
+        (0.50, 0.50, 10.35),  # Slips to center
+        (0.15, 0.50, 10.40),
+        (0.15, 0.50, 10.70),
+    ]
+    assert evaluate_trial_dwell(pts_interrupted, left_box, min_dwell_s=0.400) is False
+
+
+def test_transient_center_escapes_and_acquisition_latency_in_block_eval():
+    """Verifies that 5-block evaluation records transient escapes and target acquisition latency."""
+    # Build synthetic records across blocks 1-5
+    records = []
+    frame_idx = 0
+    base_t = 100.0
+
+    # Blocks 1 & 2 for training, 3 for test
+    for b_idx in [1, 2, 3]:
+        for c_idx, target in enumerate(["CENTER", "LEFT", "CENTER", "DOWN"]):
+            t_name = f"B{b_idx}_{c_idx+1}_{target}"
+            for f_i in range(15):
+                frame_idx += 1
+                t_frame = base_t + frame_idx * 0.0333  # ~30 FPS
+
+                # In block 3 trial 1 (CENTER), inject 2 transient flutter frames to LEFT
+                if b_idx == 3 and t_name == "B3_1_CENTER" and f_i in (5, 6):
+                    rh, rv = 0.41, 0.52  # Left geometry
+                    m1_yaw, m1_pitch = -18.0, -10.0
+                elif target == "CENTER":
+                    rh, rv = 0.50, 0.50
+                    m1_yaw, m1_pitch = -4.0, -10.0
+                elif target == "LEFT":
+                    rh, rv = 0.41, 0.52
+                    m1_yaw, m1_pitch = -18.0, -10.0
+                elif target == "DOWN":
+                    rh, rv = 0.50, 0.42
+                    m1_yaw, m1_pitch = -4.0, -22.0
+
+                rec = FrameComparisonRecord(
+                    session_id="test_sess",
+                    block_index=b_idx,
+                    condition_index=c_idx + 1,
+                    trial_name=t_name,
+                    target_direction=target,
+                    frame_index=frame_idx,
+                    monotonic_time_s=t_frame,
+                    face_detected=True,
+                    face_crop_valid=True,
+                    right_eye_h=rh,
+                    right_eye_v=rv,
+                    right_eye_ear=0.32,
+                    left_eye_h=rh,
+                    left_eye_v=rv,
+                    left_eye_ear=0.32,
+                    canthal_normal_px=-1.5,
+                    m1_valid=True,
+                    m1_yaw_deg=m1_yaw,
+                    m1_pitch_deg=m1_pitch,
+                    m1_end_to_end_ms=25.0,
+                    r34_valid=True,
+                    r34_yaw_deg=m1_yaw * 1.05,
+                    r34_pitch_deg=m1_pitch * 1.05,
+                    r34_end_to_end_ms=75.0,
+                )
+                records.append(rec)
+
+    # Evaluate MobileOne
+    m1_eval = analyze_block_evaluation(records, model_key="m1", feature_set=FeatureSetType.HYBRID)
+    assert m1_eval["status"] == "VALID"
+
+    # Check transient center escape analysis
+    assert "transient_center_escapes" in m1_eval
+    trans = m1_eval["transient_center_escapes"]
+    assert trans["total_center_trials"] == 2
+    assert trans["trials_with_transient_escapes"] >= 1
+    assert trans["transient_escape_frames_count"] >= 2
+
+    # Check target acquisition latency
+    assert "target_acquisition_latency" in m1_eval
+    acq = m1_eval["target_acquisition_latency"]
+    assert acq["successful_acquisitions_count"] >= 1
+    assert acq["p50_ms"] is not None
+    assert acq["p50_ms"] >= 0.0
+
+    # Check that preceding target is logged in both trial lists
+    assert len(trans["per_trial_breakdown"]) >= 1
+    assert "preceding_target" in trans["per_trial_breakdown"][0]
+    assert len(acq["per_trial_acquisitions"]) >= 1
+    assert "preceding_target" in acq["per_trial_acquisitions"][0]
