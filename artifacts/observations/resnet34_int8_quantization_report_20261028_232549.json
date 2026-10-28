@@ -1,0 +1,365 @@
+{
+  "timestamp": "2026-10-28 23:25:49",
+  "platform": "Windows CPU",
+  "fp32_baseline": {
+    "path": "D:\\VOXGAZE\\models\\resnet34_gaze.onnx",
+    "size_bytes": 85491644,
+    "size_mb": 81.53,
+    "benchmark": {
+      "warmup_iterations": 10,
+      "measured_iterations": 60,
+      "inference_latency_ms": {
+        "mean": 63.44,
+        "p50": 61.47,
+        "p95": 69.82,
+        "min": 59.5,
+        "max": 99.04
+      },
+      "preprocessing_latency_ms": {
+        "mean": 5.49,
+        "p50": 5.33,
+        "p95": 6.41,
+        "min": 4.31,
+        "max": 7.71
+      },
+      "total_latency_ms": {
+        "mean": 69.23,
+        "p50": 67.17,
+        "p95": 74.61,
+        "min": 65.1,
+        "max": 104.48
+      },
+      "estimated_throughput_fps": 16.3
+    }
+  },
+  "dynamic_int8": {
+    "quantization_type": "dynamic_linear_int8",
+    "output_path": "D:\\VOXGAZE\\models\\resnet34_gaze_dynamic_int8.onnx",
+    "duration_s": 0.662,
+    "size_bytes": 85222329,
+    "size_mb": 81.27,
+    "output_differences_vs_fp32": {
+      "num_test_crops": 8,
+      "yaw_mae_deg": 0.049,
+      "yaw_max_delta_deg": 0.101,
+      "pitch_mae_deg": 0.035,
+      "pitch_max_delta_deg": 0.09,
+      "mean_cosine_similarity": 1.0,
+      "min_cosine_similarity": 1.0,
+      "per_crop_breakdown": [
+        {
+          "crop_name": "synthetic_face_center",
+          "crop_shape": [
+            288,
+            288,
+            3
+          ],
+          "fp32_yaw_deg": -6.048,
+          "fp32_pitch_deg": -13.142,
+          "quant_yaw_deg": -6.001,
+          "quant_pitch_deg": -13.153,
+          "yaw_delta_deg": 0.047,
+          "pitch_delta_deg": 0.011,
+          "cosine_similarity": 1.0
+        },
+        {
+          "crop_name": "synthetic_face_left",
+          "crop_shape": [
+            276,
+            276,
+            3
+          ],
+          "fp32_yaw_deg": -15.775,
+          "fp32_pitch_deg": -11.368,
+          "quant_yaw_deg": -15.675,
+          "quant_pitch_deg": -11.349,
+          "yaw_delta_deg": 0.1,
+          "pitch_delta_deg": 0.019,
+          "cosine_similarity": 1.0
+        },
+        {
+          "crop_name": "synthetic_face_right",
+          "crop_shape": [
+            300,
+            300,
+            3
+          ],
+          "fp32_yaw_deg": -14.035,
+          "fp32_pitch_deg": -12.757,
+          "quant_yaw_deg": -14.003,
+          "quant_pitch_deg": -12.749,
+          "yaw_delta_deg": 0.031,
+          "pitch_delta_deg": 0.008,
+          "cosine_similarity": 1.0
+        },
+        {
+          "crop_name": "synthetic_noise_224",
+          "crop_shape": [
+            224,
+            224,
+            3
+          ],
+          "fp32_yaw_deg": -12.003,
+          "fp32_pitch_deg": -10.228,
+          "quant_yaw_deg": -12.104,
+          "quant_pitch_deg": -10.224,
+          "yaw_delta_deg": 0.101,
+          "pitch_delta_deg": 0.004,
+          "cosine_similarity": 1.0
+        },
+        {
+          "crop_name": "synthetic_stylized_face_180",
+          "crop_shape": [
+            180,
+            180,
+            3
+          ],
+          "fp32_yaw_deg": -59.727,
+          "fp32_pitch_deg": -2.478,
+          "quant_yaw_deg": -59.819,
+          "quant_pitch_deg": -2.568,
+          "yaw_delta_deg": 0.092,
+          "pitch_delta_deg": 0.09,
+          "cosine_similarity": 1.0
+        },
+        {
+          "crop_name": "synthetic_texture_300",
+          "crop_shape": [
+            300,
+            300,
+            3
+          ],
+          "fp32_yaw_deg": -71.184,
+          "fp32_pitch_deg": 6.236,
+          "quant_yaw_deg": -71.172,
+          "quant_pitch_deg": 6.166,
+          "yaw_delta_deg": 0.012,
+          "pitch_delta_deg": 0.07,
+          "cosine_similarity": 1.0
+        },
+        {
+          "crop_name": "synthetic_flat_gray_256",
+          "crop_shape": [
+            256,
+            256,
+            3
+          ],
+          "fp32_yaw_deg": -26.344,
+          "fp32_pitch_deg": -16.759,
+          "quant_yaw_deg": -26.353,
+          "quant_pitch_deg": -16.806,
+          "yaw_delta_deg": 0.009,
+          "pitch_delta_deg": 0.047,
+          "cosine_similarity": 1.0
+        },
+        {
+          "crop_name": "synthetic_high_contrast_128",
+          "crop_shape": [
+            128,
+            128,
+            3
+          ],
+          "fp32_yaw_deg": -63.985,
+          "fp32_pitch_deg": -14.685,
+          "quant_yaw_deg": -63.985,
+          "quant_pitch_deg": -14.717,
+          "yaw_delta_deg": 0.0,
+          "pitch_delta_deg": 0.032,
+          "cosine_similarity": 1.0
+        }
+      ]
+    },
+    "benchmark": {
+      "warmup_iterations": 10,
+      "measured_iterations": 60,
+      "inference_latency_ms": {
+        "mean": 65.64,
+        "p50": 63.95,
+        "p95": 78.97,
+        "min": 59.0,
+        "max": 89.65
+      },
+      "preprocessing_latency_ms": {
+        "mean": 5.76,
+        "p50": 5.52,
+        "p95": 7.06,
+        "min": 4.88,
+        "max": 8.31
+      },
+      "total_latency_ms": {
+        "mean": 71.69,
+        "p50": 70.03,
+        "p95": 85.2,
+        "min": 64.68,
+        "max": 96.39
+      },
+      "estimated_throughput_fps": 15.6
+    },
+    "speedup_vs_fp32_p50": 0.96
+  },
+  "static_int8": {
+    "quantization_type": "static_qdq",
+    "output_path": "D:\\VOXGAZE\\models\\resnet34_gaze_static_int8.onnx",
+    "duration_s": 3.875,
+    "size_bytes": 21587904,
+    "size_mb": 20.59,
+    "output_differences_vs_fp32": {
+      "num_test_crops": 8,
+      "yaw_mae_deg": 15.348,
+      "yaw_max_delta_deg": 39.567,
+      "pitch_mae_deg": 2.331,
+      "pitch_max_delta_deg": 6.106,
+      "mean_cosine_similarity": 0.94176,
+      "min_cosine_similarity": 0.78192,
+      "per_crop_breakdown": [
+        {
+          "crop_name": "synthetic_face_center",
+          "crop_shape": [
+            288,
+            288,
+            3
+          ],
+          "fp32_yaw_deg": -6.048,
+          "fp32_pitch_deg": -13.142,
+          "quant_yaw_deg": -33.233,
+          "quant_pitch_deg": -13.357,
+          "yaw_delta_deg": 27.185,
+          "pitch_delta_deg": 0.215,
+          "cosine_similarity": 0.89533
+        },
+        {
+          "crop_name": "synthetic_face_left",
+          "crop_shape": [
+            276,
+            276,
+            3
+          ],
+          "fp32_yaw_deg": -15.775,
+          "fp32_pitch_deg": -11.368,
+          "quant_yaw_deg": -41.914,
+          "quant_pitch_deg": -14.571,
+          "yaw_delta_deg": 26.14,
+          "pitch_delta_deg": 3.203,
+          "cosine_similarity": 0.90139
+        },
+        {
+          "crop_name": "synthetic_face_right",
+          "crop_shape": [
+            300,
+            300,
+            3
+          ],
+          "fp32_yaw_deg": -14.035,
+          "fp32_pitch_deg": -12.757,
+          "quant_yaw_deg": -53.602,
+          "quant_pitch_deg": -12.605,
+          "yaw_delta_deg": 39.567,
+          "pitch_delta_deg": 0.152,
+          "cosine_similarity": 0.78192
+        },
+        {
+          "crop_name": "synthetic_noise_224",
+          "crop_shape": [
+            224,
+            224,
+            3
+          ],
+          "fp32_yaw_deg": -12.003,
+          "fp32_pitch_deg": -10.228,
+          "quant_yaw_deg": -22.425,
+          "quant_pitch_deg": -10.864,
+          "yaw_delta_deg": 10.422,
+          "pitch_delta_deg": 0.636,
+          "cosine_similarity": 0.98399
+        },
+        {
+          "crop_name": "synthetic_stylized_face_180",
+          "crop_shape": [
+            180,
+            180,
+            3
+          ],
+          "fp32_yaw_deg": -59.727,
+          "fp32_pitch_deg": -2.478,
+          "quant_yaw_deg": -54.647,
+          "quant_pitch_deg": -4.209,
+          "yaw_delta_deg": 5.08,
+          "pitch_delta_deg": 1.731,
+          "cosine_similarity": 0.99563
+        },
+        {
+          "crop_name": "synthetic_texture_300",
+          "crop_shape": [
+            300,
+            300,
+            3
+          ],
+          "fp32_yaw_deg": -71.184,
+          "fp32_pitch_deg": 6.236,
+          "quant_yaw_deg": -72.957,
+          "quant_pitch_deg": 9.42,
+          "yaw_delta_deg": 1.773,
+          "pitch_delta_deg": 3.184,
+          "cosine_similarity": 0.99799
+        },
+        {
+          "crop_name": "synthetic_flat_gray_256",
+          "crop_shape": [
+            256,
+            256,
+            3
+          ],
+          "fp32_yaw_deg": -26.344,
+          "fp32_pitch_deg": -16.759,
+          "quant_yaw_deg": -36.083,
+          "quant_pitch_deg": -10.653,
+          "yaw_delta_deg": 9.739,
+          "pitch_delta_deg": 6.106,
+          "cosine_similarity": 0.98077
+        },
+        {
+          "crop_name": "synthetic_high_contrast_128",
+          "crop_shape": [
+            128,
+            128,
+            3
+          ],
+          "fp32_yaw_deg": -63.985,
+          "fp32_pitch_deg": -14.685,
+          "quant_yaw_deg": -61.104,
+          "quant_pitch_deg": -18.104,
+          "yaw_delta_deg": 2.882,
+          "pitch_delta_deg": 3.419,
+          "cosine_similarity": 0.99706
+        }
+      ]
+    },
+    "benchmark": {
+      "warmup_iterations": 10,
+      "measured_iterations": 60,
+      "inference_latency_ms": {
+        "mean": 22.49,
+        "p50": 21.91,
+        "p95": 23.84,
+        "min": 19.94,
+        "max": 49.46
+      },
+      "preprocessing_latency_ms": {
+        "mean": 5.42,
+        "p50": 5.2,
+        "p95": 6.28,
+        "min": 4.69,
+        "max": 6.48
+      },
+      "total_latency_ms": {
+        "mean": 28.2,
+        "p50": 27.62,
+        "p95": 30.1,
+        "min": 25.76,
+        "max": 54.62
+      },
+      "estimated_throughput_fps": 45.6
+    },
+    "speedup_vs_fp32_p50": 2.81
+  }
+}
