@@ -92,9 +92,12 @@ To prevent premature adoption from single-session flukes, a candidate model must
 | **Held-Out Peripheral Accuracy** | **12 / 12 (100.0%)** | 11 / 12 (91.7%) | $\ge 85\%$ (PASS) |
 | **Center False Activation (Trial Median)** | **0 / 15 (0.0%)** | **0 / 15 (0.0%)** | $\le 5\%$ (PASS) |
 | **Center Transient Escapes (Any Frame)** | 7 / 15 trials (1–3 frames/trial) | 9 / 15 trials (1–7 frames/trial) | Reported honestly |
-| **Dwell Containment ($\ge 400\text{ ms}$)** | 12 / 12 (100.0%) | 12 / 12 (100.0%) | Secondary validation |
+| **Dwell Containment ($\ge 400\text{ ms}$)** | 12 / 12 (100.0%) | 12 / 12 (100.0%) | Secondary criterion (Dwell) |
 | **Pipeline Latency (p50)** | **24.66 ms** | 130.19 ms | MobileOne ~5.3x faster |
 | **Pipeline Latency (p95)** | **28.53 ms** | 147.22 ms | Target $< 30\text{ ms}$ |
+
+> [!CAUTION]
+> **Preliminary Single-Session Status**: Session A results represent a single-session engineering trial. The system is **not validated** until an independent cross-day session (Session B) passes the multi-session acceptance gate. VoxGaze is a research prototype, not a clinically validated medical device.
 
 > [!NOTE]
 > **Transient Center Escapes**: Both models passed the median-based center safety gate ($0/15$), but frame-by-frame analysis revealed transient escapes on 7/15 (MobileOne) and 9/15 (ResNet-34) center trials. These excursions were brief (1–3 frames out of ~90) and predominantly biased upwards (`UP`), caused by baseline vertical calibration proximity rather than post-saccadic lag. Dwell hysteresis and explicit blink confirmation prevent these excursions from causing accidental selections, but selection remains intentionally disabled during evaluation.
@@ -103,7 +106,7 @@ To prevent premature adoption from single-session flukes, a candidate model must
 > **Omission of Target Acquisition Latency**: Initial prototype runs reported $0.0\text{ ms}$ acquisition latency because metric logging began after the 1.5 s settling window (when the eye was already fixated on target). This metric was methodologically invalid and has been formally removed from acceptance evaluation.
 
 ### Session B Physical Replication (Pending Friday)
-*Validation requirement: Independent session conducted on a separate calendar day.*
+*Gate requirement: Independent session conducted on a separate calendar day.*
 
 | Metric | MobileOne S0 Hybrid | ResNet-34 Hybrid | Target Gate |
 | :--- | :---: | :---: | :---: |
