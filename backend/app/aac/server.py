@@ -404,7 +404,18 @@ class AACService:
 def load_latest_calibration_gate_results() -> Dict[str, Any]:
     """Helper loading the most recent calibration summary from artifacts/observations."""
     obs_dir = Path(__file__).resolve().parent.parent.parent.parent / "artifacts" / "observations"
-    summaries = sorted(obs_dir.glob("calib_v15_*_summary.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+    def _extract_calib_ts(p: Path) -> str:
+        parts = p.stem.split("_")
+        for i in range(len(parts) - 1):
+            if len(parts[i]) == 8 and parts[i].isdigit() and len(parts[i + 1]) == 6 and parts[i + 1].isdigit():
+                return f"{parts[i]}_{parts[i + 1]}"
+        return ""
+
+    summaries = sorted(
+        obs_dir.glob("calib_v15_*_summary.json"),
+        key=lambda p: (_extract_calib_ts(p), p.stat().st_mtime),
+        reverse=True,
+    )
     if summaries:
         try:
             with open(summaries[0], "r", encoding="utf-8") as f:
