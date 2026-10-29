@@ -885,6 +885,22 @@ def analyze_block_evaluation(
     }
 
 
+def draw_centered_text(
+    img: np.ndarray,
+    text: str,
+    cx: int,
+    cy: int,
+    font_scale: float,
+    color: Tuple[int, int, int],
+    thickness: int = 1,
+) -> None:
+    """Helper to draw text centered horizontally and vertically at (cx, cy)."""
+    (tw, th), _ = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, font_scale, thickness)
+    tx = cx - tw // 2
+    ty = cy + th // 2
+    cv2.putText(img, text, (tx, ty), cv2.FONT_HERSHEY_SIMPLEX, font_scale, color, thickness, cv2.LINE_AA)
+
+
 def draw_target_canvas(
     canvas_w: int,
     canvas_h: int,
@@ -897,55 +913,76 @@ def draw_target_canvas(
     camera_preview: Optional[np.ndarray] = None,
     face_detected: bool = False,
 ) -> np.ndarray:
-    """Renders visual fixation target and clean status overlay."""
-    canvas = np.zeros((canvas_h, canvas_w, 3), dtype=np.uint8)
-    canvas[:] = (20, 24, 28)  # Dark neutral background
+    """
+    Renders visual fixation targets with full-screen black background and
+    5-button assistive layout matching the evaluator's TARGET_BBOXES.
+    """
+    canvas = np.zeros((canvas_h, canvas_w, 3), dtype=np.uint8)  # Full black background
 
-    # Target screen coordinate
-    norm_x, norm_y = TARGET_COORDS.get(target_name, (0.5, 0.5))
-    cx = int(norm_x * canvas_w)
-    cy = int(norm_y * canvas_h)
+    # 1. Draw 5-button layout using identical bounding boxes as the evaluator
+    for btn_name, (bx1, by1, bx2, by2) in TARGET_BBOXES.items():
+        x1 = int(bx1 * canvas_w)
+        y1 = int(by1 * canvas_h)
+        x2 = int(bx2 * canvas_w)
+        y2 = int(by2 * canvas_h)
+        cx = (x1 + x2) // 2
+        cy = (y1 + y2) // 2
+        is_target = (btn_name == target_name)
 
-    # Target styling based on phase
+        if is_target:
+            if phase == "SETTLING":
+                border_col = (0, 165, 255)  # Amber / Orange for settling
+                fill_col = (0, 45, 75)
+                cv2.rectangle(canvas, (x1, y1), (x2, y2), fill_col, -1)
+                cv2.rectangle(canvas, (x1, y1), (x2, y2), border_col, 3)
+                # Bullseye fixation center
+                cv2.circle(canvas, (cx, cy), 20, border_col, 2, cv2.LINE_AA)
+                cv2.circle(canvas, (cx, cy), 6, (0, 200, 255), -1, cv2.LINE_AA)
+                draw_centered_text(canvas, f"{btn_name} [SETTLE]", cx, cy - 36, 0.7, border_col, 2)
+            else:
+                border_col = (0, 255, 0)  # Bright green for active fixation recording
+                fill_col = (0, 60, 15)
+                cv2.rectangle(canvas, (x1, y1), (x2, y2), fill_col, -1)
+                cv2.rectangle(canvas, (x1, y1), (x2, y2), border_col, 4)
+                # Bullseye fixation center
+                cv2.circle(canvas, (cx, cy), 22, border_col, 3, cv2.LINE_AA)
+                cv2.circle(canvas, (cx, cy), 6, (50, 255, 50), -1, cv2.LINE_AA)
+                draw_centered_text(canvas, f"{btn_name} [FIXATE]", cx, cy - 36, 0.7, border_col, 2)
+        else:
+            border_col = (60, 60, 60)
+            cv2.rectangle(canvas, (x1, y1), (x2, y2), border_col, 1)
+            draw_centered_text(canvas, btn_name, cx, cy, 0.65, (110, 110, 110), 1)
+
+    # 2. Top status line
     if phase == "SETTLING":
-        col_outer = (0, 160, 255)  # Orange
-        col_inner = (0, 200, 255)
-        phase_label = f"PREPARE / SETTLING ({time_left_s:.1f}s)"
-        phase_col = (0, 180, 255)
+        status_line = f"Block {block_num}/5, Trial {trial_num}/{total_trials}, SETTLE ({time_left_s:.1f}s)"
+        status_col = (0, 180, 255)
     else:
-        col_outer = (0, 220, 0)    # Green
-        col_inner = (50, 255, 50)
-        phase_label = f"HOLD GAZE / RECORDING ({time_left_s:.1f}s)"
-        phase_col = (0, 255, 0)
+        status_line = f"Block {block_num}/5, Trial {trial_num}/{total_trials}, fixate now ({time_left_s:.1f}s)"
+        status_col = (0, 255, 0)
 
-    # Draw target bullseye
-    cv2.circle(canvas, (cx, cy), 32, col_outer, 3, cv2.LINE_AA)
-    cv2.circle(canvas, (cx, cy), 12, col_inner, -1, cv2.LINE_AA)
-    cv2.circle(canvas, (cx, cy), 3, (255, 255, 255), -1, cv2.LINE_AA)
+    draw_centered_text(canvas, status_line, canvas_w // 2, 40, 0.85, status_col, 2)
 
-    # Top Header & Instructions
-    header = f"VOXGAZE CONTROLLED COMPARISON - BLOCK {block_num}/5 | TRIAL {trial_num}/{total_trials}: {target_name}"
-    cv2.putText(canvas, header, (30, 45), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (255, 255, 255), 2, cv2.LINE_AA)
+    # 3. Bottom instructions
+    cv2.putText(
+        canvas,
+        "Press ESC or Q to abort (saves partial report)",
+        (30, canvas_h - 20),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.55,
+        (120, 120, 120),
+        1,
+        cv2.LINE_AA,
+    )
 
-    # Status pill
-    cv2.putText(canvas, phase_label, (30, 85), cv2.FONT_HERSHEY_SIMPLEX, 0.8, phase_col, 2, cv2.LINE_AA)
-
-    # Instruction subtext
-    if target_name == "CENTER":
-        instr = "Look naturally at the CENTER target circle."
-    else:
-        instr = f"Shift your eyes to the {target_name} circle without turning your head."
-    cv2.putText(canvas, instr, (30, canvas_h - 40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (200, 200, 200), 2, cv2.LINE_AA)
-    cv2.putText(canvas, "Press 'Q' to abort", (canvas_w - 200, canvas_h - 40), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (120, 120, 120), 1, cv2.LINE_AA)
-
-    # Camera preview pip (bottom right)
+    # 4. Camera preview (bottom right corner, outside buttons)
     if camera_preview is not None:
-        p_h, p_w = 140, 190
+        p_w = int(canvas_w * 0.15)
+        p_h = int(canvas_h * 0.15)
         small_cam = cv2.resize(camera_preview, (p_w, p_h))
-        # Mirror preview purely for natural user feedback
         mirrored = cv2.flip(small_cam, 1)
-        bx1 = canvas_w - p_w - 25
-        by1 = canvas_h - p_h - 70
+        bx1 = canvas_w - p_w - 20
+        by1 = canvas_h - p_h - 20
         bx2 = bx1 + p_w
         by2 = by1 + p_h
         canvas[by1:by2, bx1:bx2] = mirrored
@@ -953,7 +990,7 @@ def draw_target_canvas(
         stat_col = (0, 255, 0) if face_detected else (0, 0, 255)
         stat_txt = "FACE OK" if face_detected else "NO FACE"
         cv2.rectangle(canvas, (bx1, by1), (bx2, by2), stat_col, 2)
-        cv2.putText(canvas, stat_txt, (bx1 + 8, by1 + 22), cv2.FONT_HERSHEY_SIMPLEX, 0.55, stat_col, 2)
+        cv2.putText(canvas, stat_txt, (bx1 + 8, by1 + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, stat_col, 1, cv2.LINE_AA)
 
     return canvas
 
@@ -996,6 +1033,7 @@ def execute_comparison_session(
     ]
 
     frame_counter = 0
+    aborted = False
 
     if mock_mode:
         print("\n[INFO] Executing in mock/synthetic mode (15 frames per trial across 5 blocks)...")
@@ -1102,9 +1140,9 @@ def execute_comparison_session(
         )
         detector = mp_vision.FaceLandmarker.create_from_options(options)
 
-        win_name = "VoxGaze Controlled Model Comparison (Press Q to Abort)"
+        win_name = "VoxGaze Controlled Model Comparison (Press ESC or Q to Abort)"
         cv2.namedWindow(win_name, cv2.WINDOW_NORMAL)
-        cv2.resizeWindow(win_name, 1280, 720)
+        cv2.setWindowProperty(win_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 
         aborted = False
 
@@ -1114,7 +1152,7 @@ def execute_comparison_session(
                 if aborted:
                     break
 
-                print(f"\n>>> Starting Block {block_idx}/3 ({len(targets)} targets)...")
+                print(f"\n>>> Starting Block {block_idx}/5 ({len(targets)} targets)...")
                 emit_beep(freq=600, dur_ms=250)
 
                 for cond_idx, target in enumerate(targets):
@@ -1140,7 +1178,7 @@ def execute_comparison_session(
                         )
                         cv2.imshow(win_name, canvas)
                         key = cv2.waitKey(1) & 0xFF
-                        if key == ord("q") or key == 27:
+                        if key in (27, ord("q"), ord("Q")):
                             aborted = True
                             break
 
@@ -1281,7 +1319,7 @@ def execute_comparison_session(
                         )
                         cv2.imshow(win_name, canvas)
                         key = cv2.waitKey(1) & 0xFF
-                        if key == ord("q") or key == 27:
+                        if key in (27, ord("q"), ord("Q")):
                             aborted = True
                             break
 
@@ -1289,16 +1327,44 @@ def execute_comparison_session(
             cap.release()
             cv2.destroyAllWindows()
             if aborted:
-                print("\n[INFO] Session aborted by user.")
+                print("\n[INFO] Session aborted by user via ESC/Q.")
 
-    # Guard against early abort / insufficient records
-    if len(records) < 15:
-        print(f"\n[WARNING] Insufficient frames collected ({len(records)}). Session aborted early.")
-        return {
+    # Guard against early abort: Esc aborts and still writes a partial report marked INCOMPLETE
+    if aborted:
+        print(f"\n[INFO] Writing partial report marked INCOMPLETE ({len(records)} frames collected)...")
+        partial_summary = {
             "session_id": session_id,
-            "status": "ABORTED_INSUFFICIENT_FRAMES",
+            "timestamp_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "mock_mode": mock_mode,
+            "status": "INCOMPLETE",
+            "is_complete": False,
+            "aborted": True,
+            "validation_notice": "INCOMPLETE SESSION (ABORTED BY USER)",
             "total_frames_recorded": len(records),
+            "reasons": ["Session aborted by user via ESC or Q key press."],
         }
+        with open(report_path, "w", encoding="utf-8") as f:
+            json.dump(partial_summary, f, indent=2)
+        print(f"[SUCCESS] Partial comparison report saved to: {report_path}")
+        return partial_summary
+
+    if len(records) < 15:
+        print(f"\n[WARNING] Insufficient frames collected ({len(records)}). Session incomplete.")
+        incomplete_summary = {
+            "session_id": session_id,
+            "timestamp_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "mock_mode": mock_mode,
+            "status": "INCOMPLETE",
+            "is_complete": False,
+            "aborted": False,
+            "validation_notice": "INCOMPLETE SESSION (INSUFFICIENT FRAMES)",
+            "total_frames_recorded": len(records),
+            "reasons": [f"Insufficient frames collected ({len(records)} < 15)."],
+        }
+        with open(report_path, "w", encoding="utf-8") as f:
+            json.dump(incomplete_summary, f, indent=2)
+        print(f"[SUCCESS] Incomplete report saved to: {report_path}")
+        return incomplete_summary
 
     # Perform Blocks 3, 4, 5 Held-Out Evaluation on both models (12 peripheral, 15 center trials)
     print("\n[STEP 1] Evaluating MobileOne S0 (Hybrid & Angles on Blocks 3-5)...")

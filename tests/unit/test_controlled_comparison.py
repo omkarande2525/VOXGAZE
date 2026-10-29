@@ -5,6 +5,7 @@ block train/test splitting, and ResNet-34 adoption decision rule logic.
 """
 
 from pathlib import Path
+import numpy as np
 import pytest
 
 from backend.app.calibration.personalized_mapper import FeatureSetType
@@ -18,6 +19,7 @@ from scripts.run_controlled_model_comparison import (
     TARGET_BBOXES,
     TARGET_COORDS,
     analyze_block_evaluation,
+    draw_target_canvas,
     evaluate_model_adoption,
     evaluate_trial_dwell,
     execute_comparison_session,
@@ -390,3 +392,92 @@ def test_transient_center_escapes_and_acquisition_latency_in_block_eval():
     assert "preceding_target" in trans["per_trial_breakdown"][0]
     assert len(acq["per_trial_acquisitions"]) >= 1
     assert "preceding_target" in acq["per_trial_acquisitions"][0]
+
+
+def test_draw_target_canvas_black_background_and_button_layout():
+    """Verifies that draw_target_canvas renders a black background and 5-button layout."""
+    import numpy as np
+
+    # 1. Settling phase canvas
+    canvas_settle = draw_target_canvas(
+        canvas_w=1280,
+        canvas_h=720,
+        target_name="CENTER",
+        phase="SETTLING",
+        time_left_s=1.2,
+        block_num=1,
+        trial_num=1,
+        total_trials=9,
+    )
+    assert canvas_settle.shape == (720, 1280, 3)
+    # Background corner (outside all buttons) must be pure black
+    assert np.array_equal(canvas_settle[10, 10], [0, 0, 0])
+
+    # 2. Recording phase canvas
+    canvas_rec = draw_target_canvas(
+        canvas_w=1280,
+        canvas_h=720,
+        target_name="LEFT",
+        phase="RECORDING",
+        time_left_s=2.8,
+        block_num=2,
+        trial_num=2,
+        total_trials=9,
+    )
+    assert canvas_rec.shape == (720, 1280, 3)
+    assert np.array_equal(canvas_rec[10, 10], [0, 0, 0])
+
+
+def test_mock_mode_does_not_open_window(monkeypatch):
+    """Verifies that mock mode never initializes or opens an OpenCV window."""
+    from unittest.mock import MagicMock
+    import cv2
+
+    mock_named_window = MagicMock()
+    mock_imshow = MagicMock()
+    monkeypatch.setattr(cv2, "namedWindow", mock_named_window)
+    monkeypatch.setattr(cv2, "imshow", mock_imshow)
+
+    summary = execute_comparison_session(mock_mode=True)
+    assert summary is not None
+    assert mock_named_window.call_count == 0
+    assert mock_imshow.call_count == 0
+
+
+def test_abort_writes_partial_report_marked_incomplete(tmp_path, monkeypatch):
+    """Verifies that user abort (e.g. pressing ESC) writes a partial report marked INCOMPLETE."""
+    import json
+    import cv2
+    from unittest.mock import MagicMock
+
+    # Mock video capture where read immediately triggers abort via keypress 27 (ESC)
+    mock_cap = MagicMock()
+    fake_frame = np.zeros((480, 640, 3), dtype=np.uint8)
+    mock_cap.read.return_value = (True, fake_frame)
+    monkeypatch.setattr(cv2, "VideoCapture", lambda *args, **kwargs: mock_cap)
+    monkeypatch.setattr(cv2, "namedWindow", lambda *args, **kwargs: None)
+    monkeypatch.setattr(cv2, "setWindowProperty", lambda *args, **kwargs: None)
+    monkeypatch.setattr(cv2, "imshow", lambda *args, **kwargs: None)
+    monkeypatch.setattr(cv2, "destroyAllWindows", lambda: None)
+    # ESC key (27)
+    monkeypatch.setattr(cv2, "waitKey", lambda delay: 27)
+
+    summary = execute_comparison_session(
+        mock_mode=False,
+        trial_duration_s=0.5,
+        settling_duration_s=0.1,
+    )
+
+    assert summary["status"] == "INCOMPLETE"
+    assert summary["aborted"] is True
+    assert summary["is_complete"] is False
+
+    # Check report file on disk
+    obs_dir = Path("artifacts/observations")
+    report_file = obs_dir / f"{summary['session_id']}_comparison_report.json"
+    assert report_file.is_file()
+
+    with open(report_file, "r", encoding="utf-8") as f:
+        saved_data = json.load(f)
+    assert saved_data["status"] == "INCOMPLETE"
+    assert saved_data["aborted"] is True
