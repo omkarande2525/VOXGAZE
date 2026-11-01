@@ -68,6 +68,10 @@ Initial analysis prematurely suggested adopting ResNet-34 based solely on $4/4$ 
 ### C. Session B Physical Replication (2026-11-01)
 *Report: `artifacts/observations/cmp_v16_20261101_164725_06ac34_comparison_report.json`*
 *Protocol: Standard 5-Block Protocol (Identical conditions, independent calendar day).*
+*Execution Details:*
+- **Hardware & Environment**: Standard 720p/1080p USB webcam, Intel Core i7 Windows CPU, seated distance ~55 cm, identical indoor ambient illumination to Session A.
+- **Protocol Flags**: `--trial-duration 3.0 --settling-duration 1.5` (5 blocks = 18 calibration trials + 27 held-out trials).
+- **Session Timestamp**: 2026-11-01 16:47:25 local (11:21:08 UTC). Non-mock physical validation confirmed (`is_physical_validation: true`, 1,023 frames).
 
 | Metric | MobileOne S0 Hybrid | ResNet-34 Hybrid | Gate Threshold | Result |
 | :--- | :---: | :---: | :---: | :---: |
