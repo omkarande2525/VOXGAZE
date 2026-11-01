@@ -105,16 +105,27 @@ To prevent premature adoption from single-session flukes, a candidate model must
 > [!IMPORTANT]
 > **Omission of Target Acquisition Latency**: Initial prototype runs reported $0.0\text{ ms}$ acquisition latency because metric logging began after the 1.5 s settling window (when the eye was already fixated on target). This metric was methodologically invalid and has been formally removed from acceptance evaluation.
 
-### Session B Physical Replication (Pending Friday)
-*Gate requirement: Independent session conducted on a separate calendar day.*
+### Session B Physical Replication (2026-11-01)
+*Hardware: Intel Core i7 Windows CPU, 30 FPS USB Webcam. Report: `cmp_v16_20261101_164725_06ac34`.*
 
 | Metric | MobileOne S0 Hybrid | ResNet-34 Hybrid | Target Gate |
 | :--- | :---: | :---: | :---: |
-| **Peripheral Accuracy (Held-Out)** | *[Pending Session B]* | *[Pending Session B]* | $\ge 85\%$ ($11/12$) |
-| **Center False Activation Rate** | *[Pending Session B]* | *[Pending Session B]* | $\le 5\%$ ($0/15$) |
-| **Center Transient Escapes** | *[Pending Session B]* | *[Pending Session B]* | Characterized |
-| **Pipeline Latency (p50)** | *[Pending Session B]* | *[Pending Session B]* | $< 30\text{ ms}$ |
-| **Multi-Session Gate Decision** | *[Pending Session B]* | *[Pending Session B]* | `PASS` / `FAIL` |
+| **Held-Out Peripheral Accuracy** | 9 / 12 (75.0%) | 8 / 12 (66.7%) | $\ge 85\%$ (FAIL) |
+| **Center False Activation Rate (Median)** | **0 / 15 (0.0%)** | **0 / 15 (0.0%)** | $\le 5\%$ (PASS) |
+| **Center Transient Escapes (Any Frame)** | 9 / 15 trials | 9 / 15 trials | Characterized |
+| **Continuous Dwell ($\ge 400\text{ ms}$)** | 10 / 12 (83.3%) | 10 / 12 (83.3%) | Secondary criterion (Dwell) |
+| **Pipeline Latency (p50)** | **22.90 ms** | 111.50 ms | Target $< 30\text{ ms}$ |
+| **Pipeline Latency (p95)** | **38.20 ms** | 120.46 ms | Target $< 30\text{ ms}$ |
+| **Multi-Session Gate Decision** | **FAIL** (75.0% < 85.0%) | **FAIL** (66.7% < 85.0%) | Both sessions must PASS |
+
+> [!CAUTION]
+> **Empirical Gate Result (Gate FAIL)**:
+> In Session B, neither model achieved the $\ge 85.0\%$ held-out peripheral accuracy threshold ($9/12$ for MobileOne, $8/12$ for ResNet-34). Consequently, the multi-session acceptance gate evaluated by `scripts/evaluate_gate.py` returned **FAIL** for both backends.
+>
+> **Forensic Breakdown of Failures**:
+> - **Horizontal Gaze**: 100% robust across both sessions ($6/6$ trials for `LEFT` and `RIGHT` hit targets cleanly).
+> - **Vertical Axis Sensitivity**: All 3 missed trials in MobileOne (`B3_2_DOWN` at $y=0.612$, `B4_2_UP` at $y=0.374$, `B5_6_DOWN` at $y=0.606$) occurred on vertical targets that narrowly missed the default deadzone boundary ($y \le 0.35$ for UP, $y \ge 0.65$ for DOWN).
+> - **Safety Invariant Preserved**: Center false activation remained $0/15$ (0.0%) by trial median in both sessions. Live selection remains strictly disabled (`is_selection_enabled = False`).
 
 ---
 

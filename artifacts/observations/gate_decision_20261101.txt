@@ -1,0 +1,49 @@
+﻿
+================================================================================
+ VOXGAZE MULTI-SESSION ACCEPTANCE GATE EVALUATOR
+ Evaluated Model: mobileone_s0_hybrid | Sessions Count: 2
+================================================================================
+
+[FINAL STATUS]: >>> FAIL <<<
+ Dates Evaluated: [2026-10-29, 2026-11-01] (Unique Days: 2)
+
+[PER-SESSION RESULTS (EACH SESSION MUST PASS)]:
+  Session 1: cmp_v16_20261029_125352_0295b8 (2026-10-29) -> PASS
+    - Peripheral Target Accuracy:     12/12 (100.0%) (Required: >= 85.0% on >= 12 trials)
+    - Center False Activation (Med):  0/15 (0.0%) (Required: <= 5.0% on >= 15 trials)
+    - Center Transient Escapes (Any): 7/15
+    - Pipeline Latency (p50):         24.66 ms
+  Session 2: cmp_v16_20261101_164725_06ac34 (2026-11-01) -> FAIL
+    - Peripheral Target Accuracy:     9/12 (75.0%) (Required: >= 85.0% on >= 12 trials)
+    - Center False Activation (Med):  0/15 (0.0%) (Required: <= 5.0% on >= 15 trials)
+    - Center Transient Escapes (Any): 9/15
+    - Pipeline Latency (p50):         22.9 ms
+
+[DECISION REASONS & CRITERIA LOG]:
+  * Session 'cmp_v16_20261101_164725_06ac34' failed peripheral accuracy gate: 9/12 (75.0%) < required 85.0%.
+================================================================================
+
+
+================================================================================
+ VOXGAZE MULTI-SESSION ACCEPTANCE GATE EVALUATOR
+ Evaluated Model: resnet34_hybrid | Sessions Count: 2
+================================================================================
+
+[FINAL STATUS]: >>> FAIL <<<
+ Dates Evaluated: [2026-10-29, 2026-11-01] (Unique Days: 2)
+
+[PER-SESSION RESULTS (EACH SESSION MUST PASS)]:
+  Session 1: cmp_v16_20261029_125352_0295b8 (2026-10-29) -> PASS
+    - Peripheral Target Accuracy:     11/12 (91.7%) (Required: >= 85.0% on >= 12 trials)
+    - Center False Activation (Med):  0/15 (0.0%) (Required: <= 5.0% on >= 15 trials)
+    - Center Transient Escapes (Any): 9/15
+    - Pipeline Latency (p50):         130.19 ms
+  Session 2: cmp_v16_20261101_164725_06ac34 (2026-11-01) -> FAIL
+    - Peripheral Target Accuracy:     8/12 (66.7%) (Required: >= 85.0% on >= 12 trials)
+    - Center False Activation (Med):  0/15 (0.0%) (Required: <= 5.0% on >= 15 trials)
+    - Center Transient Escapes (Any): 9/15
+    - Pipeline Latency (p50):         111.5 ms
+
+[DECISION REASONS & CRITERIA LOG]:
+  * Session 'cmp_v16_20261101_164725_06ac34' failed peripheral accuracy gate: 8/12 (66.7%) < required 85.0%.
+================================================================================
