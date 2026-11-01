@@ -78,6 +78,26 @@ Initial analysis prematurely suggested adopting ResNet-34 based solely on $4/4$ 
 | **Pipeline Latency (p50)** | **22.90 ms** | 111.50 ms | $< 30.0\text{ ms}$ | MobileOne passed; ResNet failed |
 | **Pipeline Latency (p95)** | **38.20 ms** | 120.46 ms | $< 30.0\text{ ms}$ | MobileOne borderline; ResNet failed |
 
+**Sampling Rate & Transient Escapes**:
+- Across both physical sessions, both models execute sequentially on every frame within the comparison runner. Because ResNet-34 took ~110–130 ms per frame, the actual loop frequency was ~6.3 Hz in Session A (18–20 recorded frames per 3.0 s trial) and ~7.7 Hz in Session B (22–24 recorded frames per trial).
+- A transient escape of 1–3 frames therefore corresponds to ~130–400 ms of real time outside the deadzone.
+- 8 of the 9 center trials with transient escapes followed a peripheral fixation (highest following `LEFT`), indicating that the root cause of these brief excursions remains undetermined.
+
+---
+
+### D. Session B Aborted Runs & Mock Test Artifacts (2026-11-01)
+During the test and calibration runs on 2026-11-01, additional report artifacts were generated and are archived in `artifacts/observations/`:
+- **Aborted Physical Runs (`08b290`, `05ead8`)**:
+  - `cmp_v16_20261101_163909_08b290_comparison_report.json`
+  - `cmp_v16_20261101_164451_05ead8_comparison_report.json`
+  - *Status*: Two physical execution attempts aborted via ESC/Q at 0 frames before any fixation data was recorded. Both are saved and marked `INCOMPLETE` with `total_frames_recorded: 0`.
+- **Mock Test Artifacts (`084f58`, `088c48`, `01f914`, `04f1a0`)**:
+  - `cmp_v16_20261101_163909_084f58_comparison_report.json`
+  - `cmp_v16_20261101_163909_088c48_comparison_report.json`
+  - `cmp_v16_20261101_164450_01f914_comparison_report.json`
+  - `cmp_v16_20261101_164450_04f1a0_comparison_report.json`
+  - *Status*: Automated synthetic mock reports generated during pytest suite verification (`test_controlled_comparison.py`). All are clearly marked `mock_mode: true` and labeled *"MOCK, not physical validation"*. They are software regression checks only and can never confer physical validation or adoption.
+
 ---
 
 ## 3. Detailed Trial-by-Trial Breakdown: Session B

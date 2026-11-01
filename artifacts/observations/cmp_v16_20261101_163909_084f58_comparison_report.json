@@ -1,0 +1,4616 @@
+{
+  "session_id": "cmp_v16_20261101_163909_084f58",
+  "timestamp_utc": "2026-11-01T11:09:09Z",
+  "mock_mode": true,
+  "validation_notice": "MOCK, not physical validation",
+  "is_physical_validation": false,
+  "total_frames_recorded": 675,
+  "protocol": {
+    "blocks_count": 5,
+    "train_blocks": [
+      1,
+      2
+    ],
+    "held_out_test_blocks": [
+      3,
+      4,
+      5
+    ],
+    "targets_per_block": 9,
+    "total_trials": 45,
+    "held_out_trials_count": 27,
+    "held_out_peripheral_trials": 12,
+    "held_out_center_trials": 15,
+    "balanced_orders": {
+      "block_1": [
+        "CENTER",
+        "LEFT",
+        "CENTER",
+        "RIGHT",
+        "CENTER",
+        "UP",
+        "CENTER",
+        "DOWN",
+        "CENTER"
+      ],
+      "block_2": [
+        "CENTER",
+        "RIGHT",
+        "CENTER",
+        "DOWN",
+        "CENTER",
+        "LEFT",
+        "CENTER",
+        "UP",
+        "CENTER"
+      ],
+      "block_3": [
+        "CENTER",
+        "DOWN",
+        "CENTER",
+        "LEFT",
+        "CENTER",
+        "UP",
+        "CENTER",
+        "RIGHT",
+        "CENTER"
+      ],
+      "block_4": [
+        "CENTER",
+        "UP",
+        "CENTER",
+        "RIGHT",
+        "CENTER",
+        "DOWN",
+        "CENTER",
+        "LEFT",
+        "CENTER"
+      ],
+      "block_5": [
+        "CENTER",
+        "LEFT",
+        "CENTER",
+        "UP",
+        "CENTER",
+        "DOWN",
+        "CENTER",
+        "RIGHT",
+        "CENTER"
+      ]
+    }
+  },
+  "decision_rule": {
+    "rule_statement": "Adoption requires: peripheral accuracy >= 85% on >= 12 held-out trials, center false activations <= 5% on >= 15 held-out trials, and both passing across >= 2 independent sessions.",
+    "relative_advantage_requirement": "ResNet-34 requires exceeding MobileOne S0 by >= 15.0 percentage points in addition to meeting all absolute safety gates.",
+    "validation_label": "MOCK, not physical validation",
+    "is_physical_validation": false,
+    "mobileone_accuracy_pct": 100.0,
+    "resnet34_accuracy_pct": 100.0,
+    "delta_percentage_points": 0.0,
+    "meets_relative_delta": false,
+    "adopted": false,
+    "status": "MOCK_NOT_PHYSICAL_VALIDATION",
+    "model_evaluations": {
+      "mobileone_s0": {
+        "model_name": "MobileOne S0",
+        "adopted": false,
+        "status": "MOCK_REJECTED",
+        "is_preliminary": true,
+        "sample_size_status": "PRELIMINARY",
+        "validation_label": "MOCK, not physical validation",
+        "reasons": [
+          "MOCK report: Synthetic/mock data can never confer adoption or physical validation.",
+          "Insufficient independent sessions: 1/2 required across independent sessions."
+        ],
+        "metrics": {
+          "peripheral_trials_passed": 12,
+          "peripheral_trials_total": 12,
+          "peripheral_trial_accuracy": 1.0,
+          "peripheral_trial_accuracy_display": "12/12 (100.0%)",
+          "center_trials_false_act": 0,
+          "center_trials_stayed": 15,
+          "center_trials_total": 15,
+          "center_return_false_activation_rate": 0.0,
+          "center_return_false_activation_display": "0/15 (0.0%)",
+          "overall_trials_correct": 27,
+          "overall_trials_total": 27,
+          "overall_trial_correctness_rate": 1.0,
+          "overall_trial_correctness_display": "27/27 (100.0%)",
+          "latency_p50_ms": 16.21,
+          "independent_sessions_passed": 1,
+          "independent_sessions_required": 2
+        },
+        "criteria_gates": {
+          "non_mock": false,
+          "valid_latency": true,
+          "peripheral_accuracy": true,
+          "peripheral_sample_size": true,
+          "center_false_activation": true,
+          "center_sample_size": true,
+          "cross_session_generalization": false
+        }
+      },
+      "resnet34": {
+        "model_name": "ResNet-34",
+        "adopted": false,
+        "status": "MOCK_REJECTED",
+        "is_preliminary": true,
+        "sample_size_status": "PRELIMINARY",
+        "validation_label": "MOCK, not physical validation",
+        "reasons": [
+          "MOCK report: Synthetic/mock data can never confer adoption or physical validation.",
+          "Insufficient independent sessions: 1/2 required across independent sessions."
+        ],
+        "metrics": {
+          "peripheral_trials_passed": 12,
+          "peripheral_trials_total": 12,
+          "peripheral_trial_accuracy": 1.0,
+          "peripheral_trial_accuracy_display": "12/12 (100.0%)",
+          "center_trials_false_act": 0,
+          "center_trials_stayed": 15,
+          "center_trials_total": 15,
+          "center_return_false_activation_rate": 0.0,
+          "center_return_false_activation_display": "0/15 (0.0%)",
+          "overall_trials_correct": 27,
+          "overall_trials_total": 27,
+          "overall_trial_correctness_rate": 1.0,
+          "overall_trial_correctness_display": "27/27 (100.0%)",
+          "latency_p50_ms": 74.21,
+          "independent_sessions_passed": 1,
+          "independent_sessions_required": 2
+        },
+        "criteria_gates": {
+          "non_mock": false,
+          "valid_latency": true,
+          "peripheral_accuracy": true,
+          "peripheral_sample_size": true,
+          "center_false_activation": true,
+          "center_sample_size": true,
+          "cross_session_generalization": false
+        }
+      }
+    }
+  },
+  "models": {
+    "mobileone_s0_hybrid": {
+      "status": "VALID",
+      "model": "MobileOne S0",
+      "feature_set": "HYBRID",
+      "evaluation_5dir": {
+        "status": "VALID",
+        "peripheral_trial_accuracy": 1.0,
+        "peripheral_trials_passed": 12,
+        "peripheral_trials_total": 12,
+        "peripheral_trial_accuracy_display": "12/12 (100.0%)",
+        "center_return_false_activation_rate": 0.0,
+        "center_trials_false_act": 0,
+        "center_trials_stayed": 15,
+        "center_trials_total": 15,
+        "center_return_false_activation_display": "0/15 (0.0%)",
+        "overall_trial_correctness_rate": 1.0,
+        "overall_trials_correct": 27,
+        "overall_trials_total": 27,
+        "overall_trial_correctness_display": "27/27 (100.0%)",
+        "is_preliminary": false,
+        "sample_size_status": "CONCLUSIVE",
+        "mean_target_error": 0.028,
+        "peripheral_dwell_accuracy": 1.0,
+        "peripheral_dwell_passed": 12,
+        "peripheral_dwell_total": 12,
+        "peripheral_dwell_display": "12/12 (100.0%)",
+        "target_acquisition_latency": {
+          "p50_ms": 0.0,
+          "p95_ms": 0.0,
+          "mean_ms": 0.0,
+          "successful_acquisitions_count": 12,
+          "total_peripheral_trials": 12,
+          "acquisition_rate": 1.0,
+          "per_trial_acquisitions": [
+            {
+              "trial_name": "B3_2_DOWN",
+              "target_direction": "DOWN",
+              "block_index": 3,
+              "condition_index": 2,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B3_4_LEFT",
+              "target_direction": "LEFT",
+              "block_index": 3,
+              "condition_index": 4,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B3_6_UP",
+              "target_direction": "UP",
+              "block_index": 3,
+              "condition_index": 6,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B3_8_RIGHT",
+              "target_direction": "RIGHT",
+              "block_index": 3,
+              "condition_index": 8,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B4_2_UP",
+              "target_direction": "UP",
+              "block_index": 4,
+              "condition_index": 2,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B4_4_RIGHT",
+              "target_direction": "RIGHT",
+              "block_index": 4,
+              "condition_index": 4,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B4_6_DOWN",
+              "target_direction": "DOWN",
+              "block_index": 4,
+              "condition_index": 6,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B4_8_LEFT",
+              "target_direction": "LEFT",
+              "block_index": 4,
+              "condition_index": 8,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B5_2_LEFT",
+              "target_direction": "LEFT",
+              "block_index": 5,
+              "condition_index": 2,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B5_4_UP",
+              "target_direction": "UP",
+              "block_index": 5,
+              "condition_index": 4,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B5_6_DOWN",
+              "target_direction": "DOWN",
+              "block_index": 5,
+              "condition_index": 6,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B5_8_RIGHT",
+              "target_direction": "RIGHT",
+              "block_index": 5,
+              "condition_index": 8,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            }
+          ]
+        },
+        "transient_center_escapes": {
+          "total_center_trials": 15,
+          "trials_with_transient_escapes": 0,
+          "transient_escape_trial_rate": 0.0,
+          "trials_with_transient_button_entries": 0,
+          "transient_button_entry_trial_rate": 0.0,
+          "total_center_frames": 225,
+          "transient_escape_frames_count": 0,
+          "transient_escape_frame_rate": 0.0,
+          "transient_button_entry_frames_count": 0,
+          "transient_button_entry_frame_rate": 0.0,
+          "per_trial_breakdown": [
+            {
+              "trial_name": "B3_1_CENTER",
+              "block_index": 3,
+              "condition_index": 1,
+              "preceding_target": "NONE_START_OF_BLOCK",
+              "total_frames": 15,
+              "median_x": 0.5001,
+              "median_y": 0.4732,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B3_3_CENTER",
+              "block_index": 3,
+              "condition_index": 3,
+              "preceding_target": "DOWN",
+              "total_frames": 15,
+              "median_x": 0.4977,
+              "median_y": 0.4797,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B3_5_CENTER",
+              "block_index": 3,
+              "condition_index": 5,
+              "preceding_target": "LEFT",
+              "total_frames": 15,
+              "median_x": 0.4968,
+              "median_y": 0.4908,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B3_7_CENTER",
+              "block_index": 3,
+              "condition_index": 7,
+              "preceding_target": "UP",
+              "total_frames": 15,
+              "median_x": 0.4955,
+              "median_y": 0.4882,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B3_9_CENTER",
+              "block_index": 3,
+              "condition_index": 9,
+              "preceding_target": "RIGHT",
+              "total_frames": 15,
+              "median_x": 0.4968,
+              "median_y": 0.4985,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B4_1_CENTER",
+              "block_index": 4,
+              "condition_index": 1,
+              "preceding_target": "NONE_START_OF_BLOCK",
+              "total_frames": 15,
+              "median_x": 0.4963,
+              "median_y": 0.4879,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B4_3_CENTER",
+              "block_index": 4,
+              "condition_index": 3,
+              "preceding_target": "UP",
+              "total_frames": 15,
+              "median_x": 0.4985,
+              "median_y": 0.4974,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B4_5_CENTER",
+              "block_index": 4,
+              "condition_index": 5,
+              "preceding_target": "RIGHT",
+              "total_frames": 15,
+              "median_x": 0.4962,
+              "median_y": 0.4833,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B4_7_CENTER",
+              "block_index": 4,
+              "condition_index": 7,
+              "preceding_target": "DOWN",
+              "total_frames": 15,
+              "median_x": 0.498,
+              "median_y": 0.4811,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B4_9_CENTER",
+              "block_index": 4,
+              "condition_index": 9,
+              "preceding_target": "LEFT",
+              "total_frames": 15,
+              "median_x": 0.4995,
+              "median_y": 0.4902,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B5_1_CENTER",
+              "block_index": 5,
+              "condition_index": 1,
+              "preceding_target": "NONE_START_OF_BLOCK",
+              "total_frames": 15,
+              "median_x": 0.4979,
+              "median_y": 0.4977,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B5_3_CENTER",
+              "block_index": 5,
+              "condition_index": 3,
+              "preceding_target": "LEFT",
+              "total_frames": 15,
+              "median_x": 0.499,
+              "median_y": 0.5148,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B5_5_CENTER",
+              "block_index": 5,
+              "condition_index": 5,
+              "preceding_target": "UP",
+              "total_frames": 15,
+              "median_x": 0.498,
+              "median_y": 0.4867,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B5_7_CENTER",
+              "block_index": 5,
+              "condition_index": 7,
+              "preceding_target": "DOWN",
+              "total_frames": 15,
+              "median_x": 0.4988,
+              "median_y": 0.4923,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B5_9_CENTER",
+              "block_index": 5,
+              "condition_index": 9,
+              "preceding_target": "RIGHT",
+              "total_frames": 15,
+              "median_x": 0.498,
+              "median_y": 0.485,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            }
+          ]
+        },
+        "trial_results": [
+          {
+            "trial_name": "B3_1_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.5001,
+            "median_y": 0.4732,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_2_DOWN",
+            "target_direction": "DOWN",
+            "median_x": 0.5006,
+            "median_y": 0.8487,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_3_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4977,
+            "median_y": 0.4797,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_4_LEFT",
+            "target_direction": "LEFT",
+            "median_x": 0.1541,
+            "median_y": 0.5266,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_5_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4968,
+            "median_y": 0.4908,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_6_UP",
+            "target_direction": "UP",
+            "median_x": 0.4994,
+            "median_y": 0.1703,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_7_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4955,
+            "median_y": 0.4882,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_8_RIGHT",
+            "target_direction": "RIGHT",
+            "median_x": 0.851,
+            "median_y": 0.5247,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_9_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4968,
+            "median_y": 0.4985,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_1_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4963,
+            "median_y": 0.4879,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_2_UP",
+            "target_direction": "UP",
+            "median_x": 0.501,
+            "median_y": 0.1833,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_3_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4985,
+            "median_y": 0.4974,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_4_RIGHT",
+            "target_direction": "RIGHT",
+            "median_x": 0.8514,
+            "median_y": 0.5359,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_5_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4962,
+            "median_y": 0.4833,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_6_DOWN",
+            "target_direction": "DOWN",
+            "median_x": 0.502,
+            "median_y": 0.8514,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_7_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.498,
+            "median_y": 0.4811,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_8_LEFT",
+            "target_direction": "LEFT",
+            "median_x": 0.1516,
+            "median_y": 0.537,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_9_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4995,
+            "median_y": 0.4902,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_1_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4979,
+            "median_y": 0.4977,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_2_LEFT",
+            "target_direction": "LEFT",
+            "median_x": 0.1548,
+            "median_y": 0.5317,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_3_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.499,
+            "median_y": 0.5148,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_4_UP",
+            "target_direction": "UP",
+            "median_x": 0.5009,
+            "median_y": 0.1733,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_5_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.498,
+            "median_y": 0.4867,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_6_DOWN",
+            "target_direction": "DOWN",
+            "median_x": 0.4983,
+            "median_y": 0.8522,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_7_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4988,
+            "median_y": 0.4923,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_8_RIGHT",
+            "target_direction": "RIGHT",
+            "median_x": 0.8516,
+            "median_y": 0.5059,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_9_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.498,
+            "median_y": 0.485,
+            "hit": true,
+            "frames_in_trial": 15
+          }
+        ],
+        "trial_selection_accuracy": 1.0,
+        "selection_accuracy": 1.0,
+        "trial_center_false_activation_rate": 0.0,
+        "dwell_selection_accuracy": 1.0
+      },
+      "evaluation_4dir_research_mode": {
+        "status": "VALID",
+        "peripheral_trial_accuracy": 1.0,
+        "peripheral_trials_passed": 9,
+        "peripheral_trials_total": 9,
+        "peripheral_trial_accuracy_display": "9/9 (100.0%)",
+        "center_return_false_activation_rate": 0.0,
+        "center_trials_false_act": 0,
+        "center_trials_stayed": 15,
+        "center_trials_total": 15,
+        "overall_trial_correctness_rate": 1.0,
+        "overall_trials_correct": 24,
+        "overall_trials_total": 24,
+        "is_preliminary": true,
+        "sample_size_status": "PRELIMINARY",
+        "mean_target_error": 0.0274,
+        "notice": "PROVISIONAL 4-DIRECTION RESEARCH MODE (OMITS UPWARD GAZE).",
+        "trial_selection_accuracy": 1.0,
+        "trial_center_false_activation_rate": 0.0
+      },
+      "target_acquisition_latency": {
+        "p50_ms": 0.0,
+        "p95_ms": 0.0,
+        "mean_ms": 0.0,
+        "successful_acquisitions_count": 12,
+        "total_peripheral_trials": 12,
+        "acquisition_rate": 1.0,
+        "per_trial_acquisitions": [
+          {
+            "trial_name": "B3_2_DOWN",
+            "target_direction": "DOWN",
+            "block_index": 3,
+            "condition_index": 2,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B3_4_LEFT",
+            "target_direction": "LEFT",
+            "block_index": 3,
+            "condition_index": 4,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B3_6_UP",
+            "target_direction": "UP",
+            "block_index": 3,
+            "condition_index": 6,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B3_8_RIGHT",
+            "target_direction": "RIGHT",
+            "block_index": 3,
+            "condition_index": 8,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B4_2_UP",
+            "target_direction": "UP",
+            "block_index": 4,
+            "condition_index": 2,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B4_4_RIGHT",
+            "target_direction": "RIGHT",
+            "block_index": 4,
+            "condition_index": 4,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B4_6_DOWN",
+            "target_direction": "DOWN",
+            "block_index": 4,
+            "condition_index": 6,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B4_8_LEFT",
+            "target_direction": "LEFT",
+            "block_index": 4,
+            "condition_index": 8,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B5_2_LEFT",
+            "target_direction": "LEFT",
+            "block_index": 5,
+            "condition_index": 2,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B5_4_UP",
+            "target_direction": "UP",
+            "block_index": 5,
+            "condition_index": 4,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B5_6_DOWN",
+            "target_direction": "DOWN",
+            "block_index": 5,
+            "condition_index": 6,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B5_8_RIGHT",
+            "target_direction": "RIGHT",
+            "block_index": 5,
+            "condition_index": 8,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          }
+        ]
+      },
+      "transient_center_escapes": {
+        "total_center_trials": 15,
+        "trials_with_transient_escapes": 0,
+        "transient_escape_trial_rate": 0.0,
+        "trials_with_transient_button_entries": 0,
+        "transient_button_entry_trial_rate": 0.0,
+        "total_center_frames": 225,
+        "transient_escape_frames_count": 0,
+        "transient_escape_frame_rate": 0.0,
+        "transient_button_entry_frames_count": 0,
+        "transient_button_entry_frame_rate": 0.0,
+        "per_trial_breakdown": [
+          {
+            "trial_name": "B3_1_CENTER",
+            "block_index": 3,
+            "condition_index": 1,
+            "preceding_target": "NONE_START_OF_BLOCK",
+            "total_frames": 15,
+            "median_x": 0.5001,
+            "median_y": 0.4732,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B3_3_CENTER",
+            "block_index": 3,
+            "condition_index": 3,
+            "preceding_target": "DOWN",
+            "total_frames": 15,
+            "median_x": 0.4977,
+            "median_y": 0.4797,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B3_5_CENTER",
+            "block_index": 3,
+            "condition_index": 5,
+            "preceding_target": "LEFT",
+            "total_frames": 15,
+            "median_x": 0.4968,
+            "median_y": 0.4908,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B3_7_CENTER",
+            "block_index": 3,
+            "condition_index": 7,
+            "preceding_target": "UP",
+            "total_frames": 15,
+            "median_x": 0.4955,
+            "median_y": 0.4882,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B3_9_CENTER",
+            "block_index": 3,
+            "condition_index": 9,
+            "preceding_target": "RIGHT",
+            "total_frames": 15,
+            "median_x": 0.4968,
+            "median_y": 0.4985,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B4_1_CENTER",
+            "block_index": 4,
+            "condition_index": 1,
+            "preceding_target": "NONE_START_OF_BLOCK",
+            "total_frames": 15,
+            "median_x": 0.4963,
+            "median_y": 0.4879,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B4_3_CENTER",
+            "block_index": 4,
+            "condition_index": 3,
+            "preceding_target": "UP",
+            "total_frames": 15,
+            "median_x": 0.4985,
+            "median_y": 0.4974,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B4_5_CENTER",
+            "block_index": 4,
+            "condition_index": 5,
+            "preceding_target": "RIGHT",
+            "total_frames": 15,
+            "median_x": 0.4962,
+            "median_y": 0.4833,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B4_7_CENTER",
+            "block_index": 4,
+            "condition_index": 7,
+            "preceding_target": "DOWN",
+            "total_frames": 15,
+            "median_x": 0.498,
+            "median_y": 0.4811,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B4_9_CENTER",
+            "block_index": 4,
+            "condition_index": 9,
+            "preceding_target": "LEFT",
+            "total_frames": 15,
+            "median_x": 0.4995,
+            "median_y": 0.4902,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B5_1_CENTER",
+            "block_index": 5,
+            "condition_index": 1,
+            "preceding_target": "NONE_START_OF_BLOCK",
+            "total_frames": 15,
+            "median_x": 0.4979,
+            "median_y": 0.4977,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B5_3_CENTER",
+            "block_index": 5,
+            "condition_index": 3,
+            "preceding_target": "LEFT",
+            "total_frames": 15,
+            "median_x": 0.499,
+            "median_y": 0.5148,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B5_5_CENTER",
+            "block_index": 5,
+            "condition_index": 5,
+            "preceding_target": "UP",
+            "total_frames": 15,
+            "median_x": 0.498,
+            "median_y": 0.4867,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B5_7_CENTER",
+            "block_index": 5,
+            "condition_index": 7,
+            "preceding_target": "DOWN",
+            "total_frames": 15,
+            "median_x": 0.4988,
+            "median_y": 0.4923,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B5_9_CENTER",
+            "block_index": 5,
+            "condition_index": 9,
+            "preceding_target": "RIGHT",
+            "total_frames": 15,
+            "median_x": 0.498,
+            "median_y": 0.485,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          }
+        ]
+      },
+      "end_to_end_latency_ms": {
+        "p50": 16.21,
+        "p95": 16.21,
+        "sample_count": 405,
+        "status": "VALID"
+      }
+    },
+    "mobileone_s0_angles": {
+      "status": "VALID",
+      "model": "MobileOne S0",
+      "feature_set": "ANGLES_ONLY",
+      "evaluation_5dir": {
+        "status": "VALID",
+        "peripheral_trial_accuracy": 1.0,
+        "peripheral_trials_passed": 12,
+        "peripheral_trials_total": 12,
+        "peripheral_trial_accuracy_display": "12/12 (100.0%)",
+        "center_return_false_activation_rate": 0.0,
+        "center_trials_false_act": 0,
+        "center_trials_stayed": 15,
+        "center_trials_total": 15,
+        "center_return_false_activation_display": "0/15 (0.0%)",
+        "overall_trial_correctness_rate": 1.0,
+        "overall_trials_correct": 27,
+        "overall_trials_total": 27,
+        "overall_trial_correctness_display": "27/27 (100.0%)",
+        "is_preliminary": false,
+        "sample_size_status": "CONCLUSIVE",
+        "mean_target_error": 0.052,
+        "peripheral_dwell_accuracy": 0.8333,
+        "peripheral_dwell_passed": 10,
+        "peripheral_dwell_total": 12,
+        "peripheral_dwell_display": "10/12 (83.3%)",
+        "target_acquisition_latency": {
+          "p50_ms": 0.0,
+          "p95_ms": 0.0,
+          "mean_ms": 0.0,
+          "successful_acquisitions_count": 12,
+          "total_peripheral_trials": 12,
+          "acquisition_rate": 1.0,
+          "per_trial_acquisitions": [
+            {
+              "trial_name": "B3_2_DOWN",
+              "target_direction": "DOWN",
+              "block_index": 3,
+              "condition_index": 2,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B3_4_LEFT",
+              "target_direction": "LEFT",
+              "block_index": 3,
+              "condition_index": 4,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B3_6_UP",
+              "target_direction": "UP",
+              "block_index": 3,
+              "condition_index": 6,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B3_8_RIGHT",
+              "target_direction": "RIGHT",
+              "block_index": 3,
+              "condition_index": 8,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B4_2_UP",
+              "target_direction": "UP",
+              "block_index": 4,
+              "condition_index": 2,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B4_4_RIGHT",
+              "target_direction": "RIGHT",
+              "block_index": 4,
+              "condition_index": 4,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B4_6_DOWN",
+              "target_direction": "DOWN",
+              "block_index": 4,
+              "condition_index": 6,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B4_8_LEFT",
+              "target_direction": "LEFT",
+              "block_index": 4,
+              "condition_index": 8,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B5_2_LEFT",
+              "target_direction": "LEFT",
+              "block_index": 5,
+              "condition_index": 2,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B5_4_UP",
+              "target_direction": "UP",
+              "block_index": 5,
+              "condition_index": 4,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B5_6_DOWN",
+              "target_direction": "DOWN",
+              "block_index": 5,
+              "condition_index": 6,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B5_8_RIGHT",
+              "target_direction": "RIGHT",
+              "block_index": 5,
+              "condition_index": 8,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            }
+          ]
+        },
+        "transient_center_escapes": {
+          "total_center_trials": 15,
+          "trials_with_transient_escapes": 0,
+          "transient_escape_trial_rate": 0.0,
+          "trials_with_transient_button_entries": 0,
+          "transient_button_entry_trial_rate": 0.0,
+          "total_center_frames": 225,
+          "transient_escape_frames_count": 0,
+          "transient_escape_frame_rate": 0.0,
+          "transient_button_entry_frames_count": 0,
+          "transient_button_entry_frame_rate": 0.0,
+          "per_trial_breakdown": [
+            {
+              "trial_name": "B3_1_CENTER",
+              "block_index": 3,
+              "condition_index": 1,
+              "preceding_target": "NONE_START_OF_BLOCK",
+              "total_frames": 15,
+              "median_x": 0.4955,
+              "median_y": 0.4605,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B3_3_CENTER",
+              "block_index": 3,
+              "condition_index": 3,
+              "preceding_target": "DOWN",
+              "total_frames": 15,
+              "median_x": 0.4965,
+              "median_y": 0.4648,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B3_5_CENTER",
+              "block_index": 3,
+              "condition_index": 5,
+              "preceding_target": "LEFT",
+              "total_frames": 15,
+              "median_x": 0.4908,
+              "median_y": 0.4716,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B3_7_CENTER",
+              "block_index": 3,
+              "condition_index": 7,
+              "preceding_target": "UP",
+              "total_frames": 15,
+              "median_x": 0.4874,
+              "median_y": 0.4654,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B3_9_CENTER",
+              "block_index": 3,
+              "condition_index": 9,
+              "preceding_target": "RIGHT",
+              "total_frames": 15,
+              "median_x": 0.4943,
+              "median_y": 0.4742,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B4_1_CENTER",
+              "block_index": 4,
+              "condition_index": 1,
+              "preceding_target": "NONE_START_OF_BLOCK",
+              "total_frames": 15,
+              "median_x": 0.4959,
+              "median_y": 0.4699,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B4_3_CENTER",
+              "block_index": 4,
+              "condition_index": 3,
+              "preceding_target": "UP",
+              "total_frames": 15,
+              "median_x": 0.499,
+              "median_y": 0.4738,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B4_5_CENTER",
+              "block_index": 4,
+              "condition_index": 5,
+              "preceding_target": "RIGHT",
+              "total_frames": 15,
+              "median_x": 0.4901,
+              "median_y": 0.4656,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B4_7_CENTER",
+              "block_index": 4,
+              "condition_index": 7,
+              "preceding_target": "DOWN",
+              "total_frames": 15,
+              "median_x": 0.4935,
+              "median_y": 0.4655,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B4_9_CENTER",
+              "block_index": 4,
+              "condition_index": 9,
+              "preceding_target": "LEFT",
+              "total_frames": 15,
+              "median_x": 0.4953,
+              "median_y": 0.4667,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B5_1_CENTER",
+              "block_index": 5,
+              "condition_index": 1,
+              "preceding_target": "NONE_START_OF_BLOCK",
+              "total_frames": 15,
+              "median_x": 0.497,
+              "median_y": 0.4752,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B5_3_CENTER",
+              "block_index": 5,
+              "condition_index": 3,
+              "preceding_target": "LEFT",
+              "total_frames": 15,
+              "median_x": 0.5001,
+              "median_y": 0.4839,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B5_5_CENTER",
+              "block_index": 5,
+              "condition_index": 5,
+              "preceding_target": "UP",
+              "total_frames": 15,
+              "median_x": 0.4938,
+              "median_y": 0.4677,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B5_7_CENTER",
+              "block_index": 5,
+              "condition_index": 7,
+              "preceding_target": "DOWN",
+              "total_frames": 15,
+              "median_x": 0.4937,
+              "median_y": 0.4727,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B5_9_CENTER",
+              "block_index": 5,
+              "condition_index": 9,
+              "preceding_target": "RIGHT",
+              "total_frames": 15,
+              "median_x": 0.4967,
+              "median_y": 0.4656,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            }
+          ]
+        },
+        "trial_results": [
+          {
+            "trial_name": "B3_1_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4955,
+            "median_y": 0.4605,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_2_DOWN",
+            "target_direction": "DOWN",
+            "median_x": 0.4964,
+            "median_y": 0.8993,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_3_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4965,
+            "median_y": 0.4648,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_4_LEFT",
+            "target_direction": "LEFT",
+            "median_x": 0.1782,
+            "median_y": 0.4703,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_5_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4908,
+            "median_y": 0.4716,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_6_UP",
+            "target_direction": "UP",
+            "median_x": 0.4902,
+            "median_y": 0.3166,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_7_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4874,
+            "median_y": 0.4654,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_8_RIGHT",
+            "target_direction": "RIGHT",
+            "median_x": 0.8623,
+            "median_y": 0.4721,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_9_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4943,
+            "median_y": 0.4742,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_1_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4959,
+            "median_y": 0.4699,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_2_UP",
+            "target_direction": "UP",
+            "median_x": 0.493,
+            "median_y": 0.3253,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_3_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.499,
+            "median_y": 0.4738,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_4_RIGHT",
+            "target_direction": "RIGHT",
+            "median_x": 0.8597,
+            "median_y": 0.4822,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_5_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4901,
+            "median_y": 0.4656,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_6_DOWN",
+            "target_direction": "DOWN",
+            "median_x": 0.5003,
+            "median_y": 0.9046,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_7_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4935,
+            "median_y": 0.4655,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_8_LEFT",
+            "target_direction": "LEFT",
+            "median_x": 0.1664,
+            "median_y": 0.4743,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_9_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4953,
+            "median_y": 0.4667,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_1_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.497,
+            "median_y": 0.4752,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_2_LEFT",
+            "target_direction": "LEFT",
+            "median_x": 0.176,
+            "median_y": 0.475,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_3_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.5001,
+            "median_y": 0.4839,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_4_UP",
+            "target_direction": "UP",
+            "median_x": 0.4915,
+            "median_y": 0.3188,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_5_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4938,
+            "median_y": 0.4677,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_6_DOWN",
+            "target_direction": "DOWN",
+            "median_x": 0.4992,
+            "median_y": 0.9065,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_7_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4937,
+            "median_y": 0.4727,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_8_RIGHT",
+            "target_direction": "RIGHT",
+            "median_x": 0.8666,
+            "median_y": 0.4643,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_9_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4967,
+            "median_y": 0.4656,
+            "hit": true,
+            "frames_in_trial": 15
+          }
+        ],
+        "trial_selection_accuracy": 1.0,
+        "selection_accuracy": 1.0,
+        "trial_center_false_activation_rate": 0.0,
+        "dwell_selection_accuracy": 0.8333
+      },
+      "evaluation_4dir_research_mode": {
+        "status": "VALID",
+        "peripheral_trial_accuracy": 1.0,
+        "peripheral_trials_passed": 9,
+        "peripheral_trials_total": 9,
+        "peripheral_trial_accuracy_display": "9/9 (100.0%)",
+        "center_return_false_activation_rate": 0.0,
+        "center_trials_false_act": 0,
+        "center_trials_stayed": 15,
+        "center_trials_total": 15,
+        "overall_trial_correctness_rate": 1.0,
+        "overall_trials_correct": 24,
+        "overall_trials_total": 24,
+        "is_preliminary": true,
+        "sample_size_status": "PRELIMINARY",
+        "mean_target_error": 0.0368,
+        "notice": "PROVISIONAL 4-DIRECTION RESEARCH MODE (OMITS UPWARD GAZE).",
+        "trial_selection_accuracy": 1.0,
+        "trial_center_false_activation_rate": 0.0
+      },
+      "target_acquisition_latency": {
+        "p50_ms": 0.0,
+        "p95_ms": 0.0,
+        "mean_ms": 0.0,
+        "successful_acquisitions_count": 12,
+        "total_peripheral_trials": 12,
+        "acquisition_rate": 1.0,
+        "per_trial_acquisitions": [
+          {
+            "trial_name": "B3_2_DOWN",
+            "target_direction": "DOWN",
+            "block_index": 3,
+            "condition_index": 2,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B3_4_LEFT",
+            "target_direction": "LEFT",
+            "block_index": 3,
+            "condition_index": 4,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B3_6_UP",
+            "target_direction": "UP",
+            "block_index": 3,
+            "condition_index": 6,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B3_8_RIGHT",
+            "target_direction": "RIGHT",
+            "block_index": 3,
+            "condition_index": 8,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B4_2_UP",
+            "target_direction": "UP",
+            "block_index": 4,
+            "condition_index": 2,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B4_4_RIGHT",
+            "target_direction": "RIGHT",
+            "block_index": 4,
+            "condition_index": 4,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B4_6_DOWN",
+            "target_direction": "DOWN",
+            "block_index": 4,
+            "condition_index": 6,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B4_8_LEFT",
+            "target_direction": "LEFT",
+            "block_index": 4,
+            "condition_index": 8,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B5_2_LEFT",
+            "target_direction": "LEFT",
+            "block_index": 5,
+            "condition_index": 2,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B5_4_UP",
+            "target_direction": "UP",
+            "block_index": 5,
+            "condition_index": 4,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B5_6_DOWN",
+            "target_direction": "DOWN",
+            "block_index": 5,
+            "condition_index": 6,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B5_8_RIGHT",
+            "target_direction": "RIGHT",
+            "block_index": 5,
+            "condition_index": 8,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          }
+        ]
+      },
+      "transient_center_escapes": {
+        "total_center_trials": 15,
+        "trials_with_transient_escapes": 0,
+        "transient_escape_trial_rate": 0.0,
+        "trials_with_transient_button_entries": 0,
+        "transient_button_entry_trial_rate": 0.0,
+        "total_center_frames": 225,
+        "transient_escape_frames_count": 0,
+        "transient_escape_frame_rate": 0.0,
+        "transient_button_entry_frames_count": 0,
+        "transient_button_entry_frame_rate": 0.0,
+        "per_trial_breakdown": [
+          {
+            "trial_name": "B3_1_CENTER",
+            "block_index": 3,
+            "condition_index": 1,
+            "preceding_target": "NONE_START_OF_BLOCK",
+            "total_frames": 15,
+            "median_x": 0.4955,
+            "median_y": 0.4605,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B3_3_CENTER",
+            "block_index": 3,
+            "condition_index": 3,
+            "preceding_target": "DOWN",
+            "total_frames": 15,
+            "median_x": 0.4965,
+            "median_y": 0.4648,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B3_5_CENTER",
+            "block_index": 3,
+            "condition_index": 5,
+            "preceding_target": "LEFT",
+            "total_frames": 15,
+            "median_x": 0.4908,
+            "median_y": 0.4716,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B3_7_CENTER",
+            "block_index": 3,
+            "condition_index": 7,
+            "preceding_target": "UP",
+            "total_frames": 15,
+            "median_x": 0.4874,
+            "median_y": 0.4654,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B3_9_CENTER",
+            "block_index": 3,
+            "condition_index": 9,
+            "preceding_target": "RIGHT",
+            "total_frames": 15,
+            "median_x": 0.4943,
+            "median_y": 0.4742,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B4_1_CENTER",
+            "block_index": 4,
+            "condition_index": 1,
+            "preceding_target": "NONE_START_OF_BLOCK",
+            "total_frames": 15,
+            "median_x": 0.4959,
+            "median_y": 0.4699,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B4_3_CENTER",
+            "block_index": 4,
+            "condition_index": 3,
+            "preceding_target": "UP",
+            "total_frames": 15,
+            "median_x": 0.499,
+            "median_y": 0.4738,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B4_5_CENTER",
+            "block_index": 4,
+            "condition_index": 5,
+            "preceding_target": "RIGHT",
+            "total_frames": 15,
+            "median_x": 0.4901,
+            "median_y": 0.4656,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B4_7_CENTER",
+            "block_index": 4,
+            "condition_index": 7,
+            "preceding_target": "DOWN",
+            "total_frames": 15,
+            "median_x": 0.4935,
+            "median_y": 0.4655,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B4_9_CENTER",
+            "block_index": 4,
+            "condition_index": 9,
+            "preceding_target": "LEFT",
+            "total_frames": 15,
+            "median_x": 0.4953,
+            "median_y": 0.4667,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B5_1_CENTER",
+            "block_index": 5,
+            "condition_index": 1,
+            "preceding_target": "NONE_START_OF_BLOCK",
+            "total_frames": 15,
+            "median_x": 0.497,
+            "median_y": 0.4752,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B5_3_CENTER",
+            "block_index": 5,
+            "condition_index": 3,
+            "preceding_target": "LEFT",
+            "total_frames": 15,
+            "median_x": 0.5001,
+            "median_y": 0.4839,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B5_5_CENTER",
+            "block_index": 5,
+            "condition_index": 5,
+            "preceding_target": "UP",
+            "total_frames": 15,
+            "median_x": 0.4938,
+            "median_y": 0.4677,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B5_7_CENTER",
+            "block_index": 5,
+            "condition_index": 7,
+            "preceding_target": "DOWN",
+            "total_frames": 15,
+            "median_x": 0.4937,
+            "median_y": 0.4727,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B5_9_CENTER",
+            "block_index": 5,
+            "condition_index": 9,
+            "preceding_target": "RIGHT",
+            "total_frames": 15,
+            "median_x": 0.4967,
+            "median_y": 0.4656,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          }
+        ]
+      },
+      "end_to_end_latency_ms": {
+        "p50": 16.21,
+        "p95": 16.21,
+        "sample_count": 405,
+        "status": "VALID"
+      }
+    },
+    "resnet34_hybrid": {
+      "status": "VALID",
+      "model": "ResNet-34",
+      "feature_set": "HYBRID",
+      "evaluation_5dir": {
+        "status": "VALID",
+        "peripheral_trial_accuracy": 1.0,
+        "peripheral_trials_passed": 12,
+        "peripheral_trials_total": 12,
+        "peripheral_trial_accuracy_display": "12/12 (100.0%)",
+        "center_return_false_activation_rate": 0.0,
+        "center_trials_false_act": 0,
+        "center_trials_stayed": 15,
+        "center_trials_total": 15,
+        "center_return_false_activation_display": "0/15 (0.0%)",
+        "overall_trial_correctness_rate": 1.0,
+        "overall_trials_correct": 27,
+        "overall_trials_total": 27,
+        "overall_trial_correctness_display": "27/27 (100.0%)",
+        "is_preliminary": false,
+        "sample_size_status": "CONCLUSIVE",
+        "mean_target_error": 0.0221,
+        "peripheral_dwell_accuracy": 1.0,
+        "peripheral_dwell_passed": 12,
+        "peripheral_dwell_total": 12,
+        "peripheral_dwell_display": "12/12 (100.0%)",
+        "target_acquisition_latency": {
+          "p50_ms": 0.0,
+          "p95_ms": 0.0,
+          "mean_ms": 0.0,
+          "successful_acquisitions_count": 12,
+          "total_peripheral_trials": 12,
+          "acquisition_rate": 1.0,
+          "per_trial_acquisitions": [
+            {
+              "trial_name": "B3_2_DOWN",
+              "target_direction": "DOWN",
+              "block_index": 3,
+              "condition_index": 2,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B3_4_LEFT",
+              "target_direction": "LEFT",
+              "block_index": 3,
+              "condition_index": 4,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B3_6_UP",
+              "target_direction": "UP",
+              "block_index": 3,
+              "condition_index": 6,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B3_8_RIGHT",
+              "target_direction": "RIGHT",
+              "block_index": 3,
+              "condition_index": 8,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B4_2_UP",
+              "target_direction": "UP",
+              "block_index": 4,
+              "condition_index": 2,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B4_4_RIGHT",
+              "target_direction": "RIGHT",
+              "block_index": 4,
+              "condition_index": 4,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B4_6_DOWN",
+              "target_direction": "DOWN",
+              "block_index": 4,
+              "condition_index": 6,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B4_8_LEFT",
+              "target_direction": "LEFT",
+              "block_index": 4,
+              "condition_index": 8,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B5_2_LEFT",
+              "target_direction": "LEFT",
+              "block_index": 5,
+              "condition_index": 2,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B5_4_UP",
+              "target_direction": "UP",
+              "block_index": 5,
+              "condition_index": 4,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B5_6_DOWN",
+              "target_direction": "DOWN",
+              "block_index": 5,
+              "condition_index": 6,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B5_8_RIGHT",
+              "target_direction": "RIGHT",
+              "block_index": 5,
+              "condition_index": 8,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            }
+          ]
+        },
+        "transient_center_escapes": {
+          "total_center_trials": 15,
+          "trials_with_transient_escapes": 0,
+          "transient_escape_trial_rate": 0.0,
+          "trials_with_transient_button_entries": 0,
+          "transient_button_entry_trial_rate": 0.0,
+          "total_center_frames": 225,
+          "transient_escape_frames_count": 0,
+          "transient_escape_frame_rate": 0.0,
+          "transient_button_entry_frames_count": 0,
+          "transient_button_entry_frame_rate": 0.0,
+          "per_trial_breakdown": [
+            {
+              "trial_name": "B3_1_CENTER",
+              "block_index": 3,
+              "condition_index": 1,
+              "preceding_target": "NONE_START_OF_BLOCK",
+              "total_frames": 15,
+              "median_x": 0.4997,
+              "median_y": 0.4953,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B3_3_CENTER",
+              "block_index": 3,
+              "condition_index": 3,
+              "preceding_target": "DOWN",
+              "total_frames": 15,
+              "median_x": 0.4948,
+              "median_y": 0.4985,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B3_5_CENTER",
+              "block_index": 3,
+              "condition_index": 5,
+              "preceding_target": "LEFT",
+              "total_frames": 15,
+              "median_x": 0.4974,
+              "median_y": 0.4838,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B3_7_CENTER",
+              "block_index": 3,
+              "condition_index": 7,
+              "preceding_target": "UP",
+              "total_frames": 15,
+              "median_x": 0.4982,
+              "median_y": 0.482,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B3_9_CENTER",
+              "block_index": 3,
+              "condition_index": 9,
+              "preceding_target": "RIGHT",
+              "total_frames": 15,
+              "median_x": 0.498,
+              "median_y": 0.4866,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B4_1_CENTER",
+              "block_index": 4,
+              "condition_index": 1,
+              "preceding_target": "NONE_START_OF_BLOCK",
+              "total_frames": 15,
+              "median_x": 0.498,
+              "median_y": 0.4784,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B4_3_CENTER",
+              "block_index": 4,
+              "condition_index": 3,
+              "preceding_target": "UP",
+              "total_frames": 15,
+              "median_x": 0.4989,
+              "median_y": 0.479,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B4_5_CENTER",
+              "block_index": 4,
+              "condition_index": 5,
+              "preceding_target": "RIGHT",
+              "total_frames": 15,
+              "median_x": 0.4954,
+              "median_y": 0.4853,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B4_7_CENTER",
+              "block_index": 4,
+              "condition_index": 7,
+              "preceding_target": "DOWN",
+              "total_frames": 15,
+              "median_x": 0.4969,
+              "median_y": 0.485,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B4_9_CENTER",
+              "block_index": 4,
+              "condition_index": 9,
+              "preceding_target": "LEFT",
+              "total_frames": 15,
+              "median_x": 0.4983,
+              "median_y": 0.4728,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B5_1_CENTER",
+              "block_index": 5,
+              "condition_index": 1,
+              "preceding_target": "NONE_START_OF_BLOCK",
+              "total_frames": 15,
+              "median_x": 0.4969,
+              "median_y": 0.4856,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B5_3_CENTER",
+              "block_index": 5,
+              "condition_index": 3,
+              "preceding_target": "LEFT",
+              "total_frames": 15,
+              "median_x": 0.4983,
+              "median_y": 0.4957,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B5_5_CENTER",
+              "block_index": 5,
+              "condition_index": 5,
+              "preceding_target": "UP",
+              "total_frames": 15,
+              "median_x": 0.4991,
+              "median_y": 0.492,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B5_7_CENTER",
+              "block_index": 5,
+              "condition_index": 7,
+              "preceding_target": "DOWN",
+              "total_frames": 15,
+              "median_x": 0.4969,
+              "median_y": 0.4847,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B5_9_CENTER",
+              "block_index": 5,
+              "condition_index": 9,
+              "preceding_target": "RIGHT",
+              "total_frames": 15,
+              "median_x": 0.4956,
+              "median_y": 0.4922,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            }
+          ]
+        },
+        "trial_results": [
+          {
+            "trial_name": "B3_1_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4997,
+            "median_y": 0.4953,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_2_DOWN",
+            "target_direction": "DOWN",
+            "median_x": 0.5012,
+            "median_y": 0.8592,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_3_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4948,
+            "median_y": 0.4985,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_4_LEFT",
+            "target_direction": "LEFT",
+            "median_x": 0.1538,
+            "median_y": 0.5231,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_5_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4974,
+            "median_y": 0.4838,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_6_UP",
+            "target_direction": "UP",
+            "median_x": 0.5016,
+            "median_y": 0.1699,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_7_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4982,
+            "median_y": 0.482,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_8_RIGHT",
+            "target_direction": "RIGHT",
+            "median_x": 0.8525,
+            "median_y": 0.5057,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_9_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.498,
+            "median_y": 0.4866,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_1_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.498,
+            "median_y": 0.4784,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_2_UP",
+            "target_direction": "UP",
+            "median_x": 0.5036,
+            "median_y": 0.1675,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_3_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4989,
+            "median_y": 0.479,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_4_RIGHT",
+            "target_direction": "RIGHT",
+            "median_x": 0.8525,
+            "median_y": 0.5277,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_5_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4954,
+            "median_y": 0.4853,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_6_DOWN",
+            "target_direction": "DOWN",
+            "median_x": 0.5021,
+            "median_y": 0.8549,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_7_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4969,
+            "median_y": 0.485,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_8_LEFT",
+            "target_direction": "LEFT",
+            "median_x": 0.1518,
+            "median_y": 0.5188,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_9_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4983,
+            "median_y": 0.4728,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_1_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4969,
+            "median_y": 0.4856,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_2_LEFT",
+            "target_direction": "LEFT",
+            "median_x": 0.1542,
+            "median_y": 0.5193,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_3_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4983,
+            "median_y": 0.4957,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_4_UP",
+            "target_direction": "UP",
+            "median_x": 0.5015,
+            "median_y": 0.1722,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_5_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4991,
+            "median_y": 0.492,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_6_DOWN",
+            "target_direction": "DOWN",
+            "median_x": 0.4997,
+            "median_y": 0.8568,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_7_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4969,
+            "median_y": 0.4847,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_8_RIGHT",
+            "target_direction": "RIGHT",
+            "median_x": 0.8518,
+            "median_y": 0.5154,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_9_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4956,
+            "median_y": 0.4922,
+            "hit": true,
+            "frames_in_trial": 15
+          }
+        ],
+        "trial_selection_accuracy": 1.0,
+        "selection_accuracy": 1.0,
+        "trial_center_false_activation_rate": 0.0,
+        "dwell_selection_accuracy": 1.0
+      },
+      "evaluation_4dir_research_mode": {
+        "status": "VALID",
+        "peripheral_trial_accuracy": 1.0,
+        "peripheral_trials_passed": 9,
+        "peripheral_trials_total": 9,
+        "peripheral_trial_accuracy_display": "9/9 (100.0%)",
+        "center_return_false_activation_rate": 0.0,
+        "center_trials_false_act": 0,
+        "center_trials_stayed": 15,
+        "center_trials_total": 15,
+        "overall_trial_correctness_rate": 1.0,
+        "overall_trials_correct": 24,
+        "overall_trials_total": 24,
+        "is_preliminary": true,
+        "sample_size_status": "PRELIMINARY",
+        "mean_target_error": 0.0221,
+        "notice": "PROVISIONAL 4-DIRECTION RESEARCH MODE (OMITS UPWARD GAZE).",
+        "trial_selection_accuracy": 1.0,
+        "trial_center_false_activation_rate": 0.0
+      },
+      "target_acquisition_latency": {
+        "p50_ms": 0.0,
+        "p95_ms": 0.0,
+        "mean_ms": 0.0,
+        "successful_acquisitions_count": 12,
+        "total_peripheral_trials": 12,
+        "acquisition_rate": 1.0,
+        "per_trial_acquisitions": [
+          {
+            "trial_name": "B3_2_DOWN",
+            "target_direction": "DOWN",
+            "block_index": 3,
+            "condition_index": 2,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B3_4_LEFT",
+            "target_direction": "LEFT",
+            "block_index": 3,
+            "condition_index": 4,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B3_6_UP",
+            "target_direction": "UP",
+            "block_index": 3,
+            "condition_index": 6,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B3_8_RIGHT",
+            "target_direction": "RIGHT",
+            "block_index": 3,
+            "condition_index": 8,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B4_2_UP",
+            "target_direction": "UP",
+            "block_index": 4,
+            "condition_index": 2,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B4_4_RIGHT",
+            "target_direction": "RIGHT",
+            "block_index": 4,
+            "condition_index": 4,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B4_6_DOWN",
+            "target_direction": "DOWN",
+            "block_index": 4,
+            "condition_index": 6,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B4_8_LEFT",
+            "target_direction": "LEFT",
+            "block_index": 4,
+            "condition_index": 8,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B5_2_LEFT",
+            "target_direction": "LEFT",
+            "block_index": 5,
+            "condition_index": 2,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B5_4_UP",
+            "target_direction": "UP",
+            "block_index": 5,
+            "condition_index": 4,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B5_6_DOWN",
+            "target_direction": "DOWN",
+            "block_index": 5,
+            "condition_index": 6,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B5_8_RIGHT",
+            "target_direction": "RIGHT",
+            "block_index": 5,
+            "condition_index": 8,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          }
+        ]
+      },
+      "transient_center_escapes": {
+        "total_center_trials": 15,
+        "trials_with_transient_escapes": 0,
+        "transient_escape_trial_rate": 0.0,
+        "trials_with_transient_button_entries": 0,
+        "transient_button_entry_trial_rate": 0.0,
+        "total_center_frames": 225,
+        "transient_escape_frames_count": 0,
+        "transient_escape_frame_rate": 0.0,
+        "transient_button_entry_frames_count": 0,
+        "transient_button_entry_frame_rate": 0.0,
+        "per_trial_breakdown": [
+          {
+            "trial_name": "B3_1_CENTER",
+            "block_index": 3,
+            "condition_index": 1,
+            "preceding_target": "NONE_START_OF_BLOCK",
+            "total_frames": 15,
+            "median_x": 0.4997,
+            "median_y": 0.4953,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B3_3_CENTER",
+            "block_index": 3,
+            "condition_index": 3,
+            "preceding_target": "DOWN",
+            "total_frames": 15,
+            "median_x": 0.4948,
+            "median_y": 0.4985,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B3_5_CENTER",
+            "block_index": 3,
+            "condition_index": 5,
+            "preceding_target": "LEFT",
+            "total_frames": 15,
+            "median_x": 0.4974,
+            "median_y": 0.4838,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B3_7_CENTER",
+            "block_index": 3,
+            "condition_index": 7,
+            "preceding_target": "UP",
+            "total_frames": 15,
+            "median_x": 0.4982,
+            "median_y": 0.482,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B3_9_CENTER",
+            "block_index": 3,
+            "condition_index": 9,
+            "preceding_target": "RIGHT",
+            "total_frames": 15,
+            "median_x": 0.498,
+            "median_y": 0.4866,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B4_1_CENTER",
+            "block_index": 4,
+            "condition_index": 1,
+            "preceding_target": "NONE_START_OF_BLOCK",
+            "total_frames": 15,
+            "median_x": 0.498,
+            "median_y": 0.4784,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B4_3_CENTER",
+            "block_index": 4,
+            "condition_index": 3,
+            "preceding_target": "UP",
+            "total_frames": 15,
+            "median_x": 0.4989,
+            "median_y": 0.479,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B4_5_CENTER",
+            "block_index": 4,
+            "condition_index": 5,
+            "preceding_target": "RIGHT",
+            "total_frames": 15,
+            "median_x": 0.4954,
+            "median_y": 0.4853,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B4_7_CENTER",
+            "block_index": 4,
+            "condition_index": 7,
+            "preceding_target": "DOWN",
+            "total_frames": 15,
+            "median_x": 0.4969,
+            "median_y": 0.485,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B4_9_CENTER",
+            "block_index": 4,
+            "condition_index": 9,
+            "preceding_target": "LEFT",
+            "total_frames": 15,
+            "median_x": 0.4983,
+            "median_y": 0.4728,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B5_1_CENTER",
+            "block_index": 5,
+            "condition_index": 1,
+            "preceding_target": "NONE_START_OF_BLOCK",
+            "total_frames": 15,
+            "median_x": 0.4969,
+            "median_y": 0.4856,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B5_3_CENTER",
+            "block_index": 5,
+            "condition_index": 3,
+            "preceding_target": "LEFT",
+            "total_frames": 15,
+            "median_x": 0.4983,
+            "median_y": 0.4957,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B5_5_CENTER",
+            "block_index": 5,
+            "condition_index": 5,
+            "preceding_target": "UP",
+            "total_frames": 15,
+            "median_x": 0.4991,
+            "median_y": 0.492,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B5_7_CENTER",
+            "block_index": 5,
+            "condition_index": 7,
+            "preceding_target": "DOWN",
+            "total_frames": 15,
+            "median_x": 0.4969,
+            "median_y": 0.4847,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B5_9_CENTER",
+            "block_index": 5,
+            "condition_index": 9,
+            "preceding_target": "RIGHT",
+            "total_frames": 15,
+            "median_x": 0.4956,
+            "median_y": 0.4922,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          }
+        ]
+      },
+      "end_to_end_latency_ms": {
+        "p50": 74.21,
+        "p95": 74.21,
+        "sample_count": 405,
+        "status": "VALID"
+      }
+    },
+    "resnet34_angles": {
+      "status": "VALID",
+      "model": "ResNet-34",
+      "feature_set": "ANGLES_ONLY",
+      "evaluation_5dir": {
+        "status": "VALID",
+        "peripheral_trial_accuracy": 1.0,
+        "peripheral_trials_passed": 12,
+        "peripheral_trials_total": 12,
+        "peripheral_trial_accuracy_display": "12/12 (100.0%)",
+        "center_return_false_activation_rate": 0.0,
+        "center_trials_false_act": 0,
+        "center_trials_stayed": 15,
+        "center_trials_total": 15,
+        "center_return_false_activation_display": "0/15 (0.0%)",
+        "overall_trial_correctness_rate": 1.0,
+        "overall_trials_correct": 27,
+        "overall_trials_total": 27,
+        "overall_trial_correctness_display": "27/27 (100.0%)",
+        "is_preliminary": false,
+        "sample_size_status": "CONCLUSIVE",
+        "mean_target_error": 0.0533,
+        "peripheral_dwell_accuracy": 1.0,
+        "peripheral_dwell_passed": 12,
+        "peripheral_dwell_total": 12,
+        "peripheral_dwell_display": "12/12 (100.0%)",
+        "target_acquisition_latency": {
+          "p50_ms": 0.0,
+          "p95_ms": 0.0,
+          "mean_ms": 0.0,
+          "successful_acquisitions_count": 12,
+          "total_peripheral_trials": 12,
+          "acquisition_rate": 1.0,
+          "per_trial_acquisitions": [
+            {
+              "trial_name": "B3_2_DOWN",
+              "target_direction": "DOWN",
+              "block_index": 3,
+              "condition_index": 2,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B3_4_LEFT",
+              "target_direction": "LEFT",
+              "block_index": 3,
+              "condition_index": 4,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B3_6_UP",
+              "target_direction": "UP",
+              "block_index": 3,
+              "condition_index": 6,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B3_8_RIGHT",
+              "target_direction": "RIGHT",
+              "block_index": 3,
+              "condition_index": 8,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B4_2_UP",
+              "target_direction": "UP",
+              "block_index": 4,
+              "condition_index": 2,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B4_4_RIGHT",
+              "target_direction": "RIGHT",
+              "block_index": 4,
+              "condition_index": 4,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B4_6_DOWN",
+              "target_direction": "DOWN",
+              "block_index": 4,
+              "condition_index": 6,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B4_8_LEFT",
+              "target_direction": "LEFT",
+              "block_index": 4,
+              "condition_index": 8,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B5_2_LEFT",
+              "target_direction": "LEFT",
+              "block_index": 5,
+              "condition_index": 2,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B5_4_UP",
+              "target_direction": "UP",
+              "block_index": 5,
+              "condition_index": 4,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B5_6_DOWN",
+              "target_direction": "DOWN",
+              "block_index": 5,
+              "condition_index": 6,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            },
+            {
+              "trial_name": "B5_8_RIGHT",
+              "target_direction": "RIGHT",
+              "block_index": 5,
+              "condition_index": 8,
+              "preceding_target": "CENTER",
+              "acquired": true,
+              "latency_to_first_entry_ms": 0.0
+            }
+          ]
+        },
+        "transient_center_escapes": {
+          "total_center_trials": 15,
+          "trials_with_transient_escapes": 0,
+          "transient_escape_trial_rate": 0.0,
+          "trials_with_transient_button_entries": 0,
+          "transient_button_entry_trial_rate": 0.0,
+          "total_center_frames": 225,
+          "transient_escape_frames_count": 0,
+          "transient_escape_frame_rate": 0.0,
+          "transient_button_entry_frames_count": 0,
+          "transient_button_entry_frame_rate": 0.0,
+          "per_trial_breakdown": [
+            {
+              "trial_name": "B3_1_CENTER",
+              "block_index": 3,
+              "condition_index": 1,
+              "preceding_target": "NONE_START_OF_BLOCK",
+              "total_frames": 15,
+              "median_x": 0.4913,
+              "median_y": 0.4731,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B3_3_CENTER",
+              "block_index": 3,
+              "condition_index": 3,
+              "preceding_target": "DOWN",
+              "total_frames": 15,
+              "median_x": 0.4932,
+              "median_y": 0.4741,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B3_5_CENTER",
+              "block_index": 3,
+              "condition_index": 5,
+              "preceding_target": "LEFT",
+              "total_frames": 15,
+              "median_x": 0.4946,
+              "median_y": 0.4627,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B3_7_CENTER",
+              "block_index": 3,
+              "condition_index": 7,
+              "preceding_target": "UP",
+              "total_frames": 15,
+              "median_x": 0.495,
+              "median_y": 0.4644,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B3_9_CENTER",
+              "block_index": 3,
+              "condition_index": 9,
+              "preceding_target": "RIGHT",
+              "total_frames": 15,
+              "median_x": 0.499,
+              "median_y": 0.4686,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B4_1_CENTER",
+              "block_index": 4,
+              "condition_index": 1,
+              "preceding_target": "NONE_START_OF_BLOCK",
+              "total_frames": 15,
+              "median_x": 0.499,
+              "median_y": 0.4631,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B4_3_CENTER",
+              "block_index": 4,
+              "condition_index": 3,
+              "preceding_target": "UP",
+              "total_frames": 15,
+              "median_x": 0.4983,
+              "median_y": 0.463,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B4_5_CENTER",
+              "block_index": 4,
+              "condition_index": 5,
+              "preceding_target": "RIGHT",
+              "total_frames": 15,
+              "median_x": 0.49,
+              "median_y": 0.472,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B4_7_CENTER",
+              "block_index": 4,
+              "condition_index": 7,
+              "preceding_target": "DOWN",
+              "total_frames": 15,
+              "median_x": 0.4884,
+              "median_y": 0.4675,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B4_9_CENTER",
+              "block_index": 4,
+              "condition_index": 9,
+              "preceding_target": "LEFT",
+              "total_frames": 15,
+              "median_x": 0.493,
+              "median_y": 0.4589,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B5_1_CENTER",
+              "block_index": 5,
+              "condition_index": 1,
+              "preceding_target": "NONE_START_OF_BLOCK",
+              "total_frames": 15,
+              "median_x": 0.4942,
+              "median_y": 0.4661,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B5_3_CENTER",
+              "block_index": 5,
+              "condition_index": 3,
+              "preceding_target": "LEFT",
+              "total_frames": 15,
+              "median_x": 0.4951,
+              "median_y": 0.4717,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B5_5_CENTER",
+              "block_index": 5,
+              "condition_index": 5,
+              "preceding_target": "UP",
+              "total_frames": 15,
+              "median_x": 0.4974,
+              "median_y": 0.471,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B5_7_CENTER",
+              "block_index": 5,
+              "condition_index": 7,
+              "preceding_target": "DOWN",
+              "total_frames": 15,
+              "median_x": 0.49,
+              "median_y": 0.4665,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            },
+            {
+              "trial_name": "B5_9_CENTER",
+              "block_index": 5,
+              "condition_index": 9,
+              "preceding_target": "RIGHT",
+              "total_frames": 15,
+              "median_x": 0.4901,
+              "median_y": 0.471,
+              "median_hit_deadzone": true,
+              "frames_escaped_deadzone": 0,
+              "frames_in_buttons": 0,
+              "transient_clean": true,
+              "button_entries_by_dir": {
+                "LEFT": 0,
+                "RIGHT": 0,
+                "UP": 0,
+                "DOWN": 0
+              }
+            }
+          ]
+        },
+        "trial_results": [
+          {
+            "trial_name": "B3_1_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4913,
+            "median_y": 0.4731,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_2_DOWN",
+            "target_direction": "DOWN",
+            "median_x": 0.4977,
+            "median_y": 0.9058,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_3_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4932,
+            "median_y": 0.4741,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_4_LEFT",
+            "target_direction": "LEFT",
+            "median_x": 0.1736,
+            "median_y": 0.465,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_5_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4946,
+            "median_y": 0.4627,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_6_UP",
+            "target_direction": "UP",
+            "median_x": 0.4932,
+            "median_y": 0.3256,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_7_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.495,
+            "median_y": 0.4644,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_8_RIGHT",
+            "target_direction": "RIGHT",
+            "median_x": 0.8607,
+            "median_y": 0.4619,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B3_9_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.499,
+            "median_y": 0.4686,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_1_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.499,
+            "median_y": 0.4631,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_2_UP",
+            "target_direction": "UP",
+            "median_x": 0.4947,
+            "median_y": 0.319,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_3_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4983,
+            "median_y": 0.463,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_4_RIGHT",
+            "target_direction": "RIGHT",
+            "median_x": 0.8633,
+            "median_y": 0.4751,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_5_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.49,
+            "median_y": 0.472,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_6_DOWN",
+            "target_direction": "DOWN",
+            "median_x": 0.5002,
+            "median_y": 0.9034,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_7_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4884,
+            "median_y": 0.4675,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_8_LEFT",
+            "target_direction": "LEFT",
+            "median_x": 0.1691,
+            "median_y": 0.4625,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B4_9_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.493,
+            "median_y": 0.4589,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_1_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4942,
+            "median_y": 0.4661,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_2_LEFT",
+            "target_direction": "LEFT",
+            "median_x": 0.1755,
+            "median_y": 0.4667,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_3_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4951,
+            "median_y": 0.4717,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_4_UP",
+            "target_direction": "UP",
+            "median_x": 0.4932,
+            "median_y": 0.3238,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_5_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4974,
+            "median_y": 0.471,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_6_DOWN",
+            "target_direction": "DOWN",
+            "median_x": 0.496,
+            "median_y": 0.9057,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_7_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.49,
+            "median_y": 0.4665,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_8_RIGHT",
+            "target_direction": "RIGHT",
+            "median_x": 0.8644,
+            "median_y": 0.4681,
+            "hit": true,
+            "frames_in_trial": 15
+          },
+          {
+            "trial_name": "B5_9_CENTER",
+            "target_direction": "CENTER",
+            "median_x": 0.4901,
+            "median_y": 0.471,
+            "hit": true,
+            "frames_in_trial": 15
+          }
+        ],
+        "trial_selection_accuracy": 1.0,
+        "selection_accuracy": 1.0,
+        "trial_center_false_activation_rate": 0.0,
+        "dwell_selection_accuracy": 1.0
+      },
+      "evaluation_4dir_research_mode": {
+        "status": "VALID",
+        "peripheral_trial_accuracy": 1.0,
+        "peripheral_trials_passed": 9,
+        "peripheral_trials_total": 9,
+        "peripheral_trial_accuracy_display": "9/9 (100.0%)",
+        "center_return_false_activation_rate": 0.0,
+        "center_trials_false_act": 0,
+        "center_trials_stayed": 15,
+        "center_trials_total": 15,
+        "overall_trial_correctness_rate": 1.0,
+        "overall_trials_correct": 24,
+        "overall_trials_total": 24,
+        "is_preliminary": true,
+        "sample_size_status": "PRELIMINARY",
+        "mean_target_error": 0.0383,
+        "notice": "PROVISIONAL 4-DIRECTION RESEARCH MODE (OMITS UPWARD GAZE).",
+        "trial_selection_accuracy": 1.0,
+        "trial_center_false_activation_rate": 0.0
+      },
+      "target_acquisition_latency": {
+        "p50_ms": 0.0,
+        "p95_ms": 0.0,
+        "mean_ms": 0.0,
+        "successful_acquisitions_count": 12,
+        "total_peripheral_trials": 12,
+        "acquisition_rate": 1.0,
+        "per_trial_acquisitions": [
+          {
+            "trial_name": "B3_2_DOWN",
+            "target_direction": "DOWN",
+            "block_index": 3,
+            "condition_index": 2,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B3_4_LEFT",
+            "target_direction": "LEFT",
+            "block_index": 3,
+            "condition_index": 4,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B3_6_UP",
+            "target_direction": "UP",
+            "block_index": 3,
+            "condition_index": 6,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B3_8_RIGHT",
+            "target_direction": "RIGHT",
+            "block_index": 3,
+            "condition_index": 8,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B4_2_UP",
+            "target_direction": "UP",
+            "block_index": 4,
+            "condition_index": 2,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B4_4_RIGHT",
+            "target_direction": "RIGHT",
+            "block_index": 4,
+            "condition_index": 4,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B4_6_DOWN",
+            "target_direction": "DOWN",
+            "block_index": 4,
+            "condition_index": 6,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B4_8_LEFT",
+            "target_direction": "LEFT",
+            "block_index": 4,
+            "condition_index": 8,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B5_2_LEFT",
+            "target_direction": "LEFT",
+            "block_index": 5,
+            "condition_index": 2,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B5_4_UP",
+            "target_direction": "UP",
+            "block_index": 5,
+            "condition_index": 4,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B5_6_DOWN",
+            "target_direction": "DOWN",
+            "block_index": 5,
+            "condition_index": 6,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          },
+          {
+            "trial_name": "B5_8_RIGHT",
+            "target_direction": "RIGHT",
+            "block_index": 5,
+            "condition_index": 8,
+            "preceding_target": "CENTER",
+            "acquired": true,
+            "latency_to_first_entry_ms": 0.0
+          }
+        ]
+      },
+      "transient_center_escapes": {
+        "total_center_trials": 15,
+        "trials_with_transient_escapes": 0,
+        "transient_escape_trial_rate": 0.0,
+        "trials_with_transient_button_entries": 0,
+        "transient_button_entry_trial_rate": 0.0,
+        "total_center_frames": 225,
+        "transient_escape_frames_count": 0,
+        "transient_escape_frame_rate": 0.0,
+        "transient_button_entry_frames_count": 0,
+        "transient_button_entry_frame_rate": 0.0,
+        "per_trial_breakdown": [
+          {
+            "trial_name": "B3_1_CENTER",
+            "block_index": 3,
+            "condition_index": 1,
+            "preceding_target": "NONE_START_OF_BLOCK",
+            "total_frames": 15,
+            "median_x": 0.4913,
+            "median_y": 0.4731,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B3_3_CENTER",
+            "block_index": 3,
+            "condition_index": 3,
+            "preceding_target": "DOWN",
+            "total_frames": 15,
+            "median_x": 0.4932,
+            "median_y": 0.4741,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B3_5_CENTER",
+            "block_index": 3,
+            "condition_index": 5,
+            "preceding_target": "LEFT",
+            "total_frames": 15,
+            "median_x": 0.4946,
+            "median_y": 0.4627,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B3_7_CENTER",
+            "block_index": 3,
+            "condition_index": 7,
+            "preceding_target": "UP",
+            "total_frames": 15,
+            "median_x": 0.495,
+            "median_y": 0.4644,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B3_9_CENTER",
+            "block_index": 3,
+            "condition_index": 9,
+            "preceding_target": "RIGHT",
+            "total_frames": 15,
+            "median_x": 0.499,
+            "median_y": 0.4686,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B4_1_CENTER",
+            "block_index": 4,
+            "condition_index": 1,
+            "preceding_target": "NONE_START_OF_BLOCK",
+            "total_frames": 15,
+            "median_x": 0.499,
+            "median_y": 0.4631,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B4_3_CENTER",
+            "block_index": 4,
+            "condition_index": 3,
+            "preceding_target": "UP",
+            "total_frames": 15,
+            "median_x": 0.4983,
+            "median_y": 0.463,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B4_5_CENTER",
+            "block_index": 4,
+            "condition_index": 5,
+            "preceding_target": "RIGHT",
+            "total_frames": 15,
+            "median_x": 0.49,
+            "median_y": 0.472,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B4_7_CENTER",
+            "block_index": 4,
+            "condition_index": 7,
+            "preceding_target": "DOWN",
+            "total_frames": 15,
+            "median_x": 0.4884,
+            "median_y": 0.4675,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B4_9_CENTER",
+            "block_index": 4,
+            "condition_index": 9,
+            "preceding_target": "LEFT",
+            "total_frames": 15,
+            "median_x": 0.493,
+            "median_y": 0.4589,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B5_1_CENTER",
+            "block_index": 5,
+            "condition_index": 1,
+            "preceding_target": "NONE_START_OF_BLOCK",
+            "total_frames": 15,
+            "median_x": 0.4942,
+            "median_y": 0.4661,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B5_3_CENTER",
+            "block_index": 5,
+            "condition_index": 3,
+            "preceding_target": "LEFT",
+            "total_frames": 15,
+            "median_x": 0.4951,
+            "median_y": 0.4717,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B5_5_CENTER",
+            "block_index": 5,
+            "condition_index": 5,
+            "preceding_target": "UP",
+            "total_frames": 15,
+            "median_x": 0.4974,
+            "median_y": 0.471,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B5_7_CENTER",
+            "block_index": 5,
+            "condition_index": 7,
+            "preceding_target": "DOWN",
+            "total_frames": 15,
+            "median_x": 0.49,
+            "median_y": 0.4665,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          },
+          {
+            "trial_name": "B5_9_CENTER",
+            "block_index": 5,
+            "condition_index": 9,
+            "preceding_target": "RIGHT",
+            "total_frames": 15,
+            "median_x": 0.4901,
+            "median_y": 0.471,
+            "median_hit_deadzone": true,
+            "frames_escaped_deadzone": 0,
+            "frames_in_buttons": 0,
+            "transient_clean": true,
+            "button_entries_by_dir": {
+              "LEFT": 0,
+              "RIGHT": 0,
+              "UP": 0,
+              "DOWN": 0
+            }
+          }
+        ]
+      },
+      "end_to_end_latency_ms": {
+        "p50": 74.21,
+        "p95": 74.21,
+        "sample_count": 405,
+        "status": "VALID"
+      }
+    }
+  }
+}

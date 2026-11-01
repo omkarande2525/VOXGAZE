@@ -1,0 +1,13 @@
+{
+  "session_id": "cmp_v16_20261101_163909_08b290",
+  "timestamp_utc": "2026-11-01T11:09:18Z",
+  "mock_mode": false,
+  "status": "INCOMPLETE",
+  "is_complete": false,
+  "aborted": true,
+  "validation_notice": "INCOMPLETE SESSION (ABORTED BY USER)",
+  "total_frames_recorded": 0,
+  "reasons": [
+    "Session aborted by user via ESC or Q key press."
+  ]
+}
