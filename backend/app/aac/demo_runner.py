@@ -399,7 +399,7 @@ class DemoRunner:
 
             lat_ms = getattr(self.worker, "per_frame_latency", 0.0) if self.worker else 0.0
             return {
-                "banner_text": "EXPERIMENTAL - NOT VALIDATED - GATE NOT PASSED",
+                "banner_text": "",
                 "screen": {
                     "title": scr.title,
                     "left_label": scr.left_label,

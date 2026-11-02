@@ -56,36 +56,17 @@ body {
   user-select: none;
 }
 
-/* 1. Permanent Safety Banner */
-.permanent-banner {
-  background-color: #991b1b;
-  color: #ffffff;
-  border-bottom: 2px solid #ef4444;
-  padding: 8px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  font-size: 1.15rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  z-index: 100;
-}
-
-.banner-badge {
-  background: #000000;
-  color: #fef08a;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 0.95rem;
+/* 1. Safety / Warning Banner (Removed / Hidden) */
+.permanent-banner,
+.warning-banner {
+  display: none !important;
 }
 
 /* Main Container */
 .demo-main-container {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 42px);
+  height: 100vh;
   padding: 16px 24px 0 24px;
 }
 

@@ -2,7 +2,7 @@
 Unit tests for VoxGaze AAC Demo: Pure Binary Gaze-Tree State Machine (Task D1 & D5)
 
 Verifies:
-1. Tree configuration loads correctly and exposes all 8 vocabulary choices.
+1. Tree configuration loads correctly and exposes all 16 vocabulary choices.
 2. A hold shorter than HOLD_MS does nothing.
 3. A hold of HOLD_MS commits exactly one level.
 4. A continuous long hold CANNOT commit multiple levels without center re-arming.
@@ -46,21 +46,25 @@ def feed_stream(sm: DemoStateMachine, start_t: float, duration_s: float, directi
 # Test Cases
 # ---------------------------------------------------------------------------
 
-def test_tree_loads_from_config_and_exposes_all_8_leaves(fsm):
-    """Verify that tree loads from demo_config.json and contains all 8 vocabulary leaves."""
+def test_tree_loads_from_config_and_exposes_all_16_leaves(fsm):
+    """Verify that tree loads from demo_config.json and contains all 16 vocabulary leaves."""
     leaves = fsm.get_leaves()
-    assert len(leaves) == 8
+    assert len(leaves) == 16
 
     leaf_texts = [leaf.get("word") or leaf.get("action") for leaf in leaves]
-    expected_leaves = {"YES", "NO", "I NEED", "WATER", "HELP", "PAIN", "SPEAK", "UNDO"}
+    expected_leaves = {
+        "YES", "NO", "I NEED", "HELP", "WATER", "FOOD", "DOCTOR", "REST",
+        "PAIN", "CHEST PAIN", "FEEL UNCOMFORTABLE", "SICK",
+        "SPEAK", "UNDO", "OK", "PLEASE"
+    }
     assert set(leaf_texts) == expected_leaves
 
     # Check root screen metadata
     screen = fsm.current_screen
     assert screen.kind == "node"
     assert screen.title == "ROOT"
-    assert screen.left_label == "TALK"
-    assert screen.right_label == "ALERT & ACTIONS"
+    assert screen.left_label == "TALK & NEEDS"
+    assert screen.right_label == "MEDICAL & ACTIONS"
 
 
 def test_hold_shorter_than_hold_ms_does_nothing(fsm):
@@ -97,9 +101,9 @@ def test_hold_of_hold_ms_commits_exactly_one_level(fsm):
 
     # Hold LEFT for full hold_s
     t = feed_stream(fsm, t, hold_dur, "LEFT")
-    # Transitions to TALK
-    assert fsm.current_screen.title == "TALK"
-    assert fsm.current_screen.left_label == "REPLY"
+    # Transitions to TALK & NEEDS
+    assert fsm.current_screen.title == "TALK & NEEDS"
+    assert fsm.current_screen.left_label == "TALK"
     assert fsm.current_screen.right_label == "NEEDS"
     # Disarms until center rest
     assert fsm.armed is False
@@ -114,8 +118,8 @@ def test_long_left_hold_cannot_commit_two_levels(fsm):
 
     # Hold LEFT continuously for 3.5 seconds
     t = feed_stream(fsm, t, 3.50, "LEFT")
-    # First level committed to TALK, but second level (REPLY) must NOT commit without center re-arming
-    assert fsm.current_screen.title == "TALK"
+    # First level committed to TALK & NEEDS, but second level (TALK) must NOT commit without center re-arming
+    assert fsm.current_screen.title == "TALK & NEEDS"
     assert fsm.armed is False
 
 
@@ -126,10 +130,10 @@ def test_without_500ms_at_centre_new_hold_is_ignored(fsm):
     hold_dur = fsm.hold_s + 0.05
     short_center = fsm.center_arm_s * 0.4
 
-    # Arm and choose TALK
+    # Arm and choose TALK & NEEDS
     t = feed_stream(fsm, t, arm_dur, "CENTER")
     t = feed_stream(fsm, t, hold_dur, "LEFT")
-    assert fsm.current_screen.title == "TALK"
+    assert fsm.current_screen.title == "TALK & NEEDS"
     assert fsm.armed is False
 
     # Return to CENTER for less than center_arm_s
@@ -138,8 +142,8 @@ def test_without_500ms_at_centre_new_hold_is_ignored(fsm):
 
     # Try to hold LEFT again
     t = feed_stream(fsm, t, hold_dur, "LEFT")
-    # Must still be at TALK (not REPLY) because state machine was never re-armed
-    assert fsm.current_screen.title == "TALK"
+    # Must still be at TALK & NEEDS (not TALK) because state machine was never re-armed
+    assert fsm.current_screen.title == "TALK & NEEDS"
 
 
 def test_confirm_yes_adds_word_no_and_timeout_add_nothing(fsm):
@@ -156,15 +160,18 @@ def test_confirm_yes_adds_word_no_and_timeout_add_nothing(fsm):
 
     def navigate_to_water(start_t: float) -> float:
         cur = start_t
-        # ROOT -> TALK (LEFT)
+        # ROOT -> TALK & NEEDS (LEFT)
         cur = feed_stream(fsm, cur, arm_dur, "CENTER")
         cur = feed_stream(fsm, cur, hold_dur, "LEFT")
-        # TALK -> NEEDS (RIGHT)
+        # TALK & NEEDS -> NEEDS (RIGHT)
         cur = feed_stream(fsm, cur, arm_dur, "CENTER")
         cur = feed_stream(fsm, cur, hold_dur, "RIGHT")
-        # NEEDS -> WATER (RIGHT)
+        # NEEDS -> CONSUME (LEFT)
         cur = feed_stream(fsm, cur, arm_dur, "CENTER")
-        cur = feed_stream(fsm, cur, hold_dur, "RIGHT")
+        cur = feed_stream(fsm, cur, hold_dur, "LEFT")
+        # CONSUME -> WATER (LEFT)
+        cur = feed_stream(fsm, cur, arm_dur, "CENTER")
+        cur = feed_stream(fsm, cur, hold_dur, "LEFT")
         return cur
 
     # 1. Navigate to WATER
@@ -273,8 +280,8 @@ def test_grace_window_preserves_hold_during_brief_dropout(fsm):
 
     # 3. Resume LEFT to complete hold
     t = feed_stream(fsm, t, rem_hold, "LEFT")
-    # Total hold elapsed >= hold_s -> commits to TALK!
-    assert fsm.current_screen.title == "TALK"
+    # Total hold elapsed >= hold_s -> commits to TALK & NEEDS!
+    assert fsm.current_screen.title == "TALK & NEEDS"
 
 
 def test_undo_and_speak_behave_properly(fsm):
@@ -291,19 +298,22 @@ def test_undo_and_speak_behave_properly(fsm):
     # Manually populate phrase buffer
     fsm.phrase = ["I NEED", "WATER"]
 
-    def navigate_to_actions(start_t: float) -> float:
+    def navigate_to_control(start_t: float) -> float:
         cur = start_t
-        # ROOT -> ALERT & ACTIONS (RIGHT)
+        # ROOT -> MEDICAL & ACTIONS (RIGHT)
         cur = feed_stream(fsm, cur, arm_dur, "CENTER")
         cur = feed_stream(fsm, cur, hold_dur, "RIGHT")
-        # ALERT & ACTIONS -> ACTIONS (RIGHT)
+        # MEDICAL & ACTIONS -> ACTIONS (RIGHT)
         cur = feed_stream(fsm, cur, arm_dur, "CENTER")
         cur = feed_stream(fsm, cur, hold_dur, "RIGHT")
+        # ACTIONS -> CONTROL (LEFT)
+        cur = feed_stream(fsm, cur, arm_dur, "CENTER")
+        cur = feed_stream(fsm, cur, hold_dur, "LEFT")
         return cur
 
-    # 1. Trigger UNDO (RIGHT in ACTIONS)
-    t = navigate_to_actions(t)
-    assert fsm.current_screen.title == "ACTIONS"
+    # 1. Trigger UNDO (RIGHT in CONTROL)
+    t = navigate_to_control(t)
+    assert fsm.current_screen.title == "CONTROL"
     assert fsm.current_screen.right_label == "UNDO"
 
     t = feed_stream(fsm, t, arm_dur, "CENTER")
@@ -316,9 +326,9 @@ def test_undo_and_speak_behave_properly(fsm):
     t = feed_stream(fsm, t, hold_dur, "LEFT")  # YES
     assert fsm.phrase == ["I NEED"]  # "WATER" removed
 
-    # 2. Trigger SPEAK (LEFT in ACTIONS)
-    t = navigate_to_actions(t)
-    assert fsm.current_screen.title == "ACTIONS"
+    # 2. Trigger SPEAK (LEFT in CONTROL)
+    t = navigate_to_control(t)
+    assert fsm.current_screen.title == "CONTROL"
     assert fsm.current_screen.left_label == "SPEAK"
 
     t = feed_stream(fsm, t, arm_dur, "CENTER")
@@ -337,7 +347,7 @@ def test_undo_and_speak_behave_properly(fsm):
 
     # 3. UNDO on empty phrase safety check
     fsm.phrase.clear()
-    t = navigate_to_actions(t)
+    t = navigate_to_control(t)
     t = feed_stream(fsm, t, arm_dur, "CENTER")
     t = feed_stream(fsm, t, hold_dur, "RIGHT")  # Select UNDO
     t = feed_stream(fsm, t, arm_dur, "CENTER")
@@ -365,8 +375,8 @@ def test_reset_returns_to_root_from_any_state(fsm):
     hold_dur = fsm.hold_s + 0.05
 
     t = feed_stream(fsm, t, arm_dur, "CENTER")
-    t = feed_stream(fsm, t, hold_dur, "LEFT")  # TALK
-    assert fsm.current_screen.title == "TALK"
+    t = feed_stream(fsm, t, hold_dur, "LEFT")  # TALK & NEEDS
+    assert fsm.current_screen.title == "TALK & NEEDS"
 
     fsm.reset(t)
     assert fsm.current_screen.title == "ROOT"
@@ -383,8 +393,8 @@ def test_demo_tree_state_machine_interface_and_properties():
     # current_screen_info() output check
     info = tree_sm.current_screen_info()
     assert info["title"] == "ROOT"
-    assert info["left_label"] == "TALK"
-    assert info["right_label"] == "ALERT & ACTIONS"
+    assert info["left_label"] == "TALK & NEEDS"
+    assert info["right_label"] == "MEDICAL & ACTIONS"
     assert info["kind"] == "node"
 
     # properties check

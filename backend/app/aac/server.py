@@ -71,7 +71,7 @@ class DemoStateHolder:
 
         if self.fsm is None:
             return {
-                "banner_text": "EXPERIMENTAL - NOT VALIDATED - GATE NOT PASSED",
+                "banner_text": "",
                 "screen": {
                     "title": "ERROR",
                     "left_label": "",
@@ -91,7 +91,7 @@ class DemoStateHolder:
 
         scr = self.fsm.current_screen
         return {
-            "banner_text": "EXPERIMENTAL - NOT VALIDATED - GATE NOT PASSED",
+            "banner_text": "",
             "screen": {
                 "title": scr.title,
                 "left_label": scr.left_label,

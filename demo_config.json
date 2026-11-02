@@ -15,44 +15,60 @@
   "tree": {
     "label": "ROOT",
     "left": {
-      "label": "TALK",
+      "label": "TALK & NEEDS",
       "left": {
-        "label": "REPLY",
+        "label": "TALK",
         "left": {
-          "word": "YES"
+          "label": "REPLY",
+          "left": { "word": "YES" },
+          "right": { "word": "NO" }
         },
         "right": {
-          "word": "NO"
+          "label": "GENERAL",
+          "left": { "word": "I NEED" },
+          "right": { "word": "HELP" }
         }
       },
       "right": {
         "label": "NEEDS",
         "left": {
-          "word": "I NEED"
+          "label": "CONSUME",
+          "left": { "word": "WATER" },
+          "right": { "word": "FOOD" }
         },
         "right": {
-          "word": "WATER"
+          "label": "CARE",
+          "left": { "word": "DOCTOR" },
+          "right": { "word": "REST" }
         }
       }
     },
     "right": {
-      "label": "ALERT & ACTIONS",
+      "label": "MEDICAL & ACTIONS",
       "left": {
-        "label": "ALERT",
+        "label": "MEDICAL",
         "left": {
-          "word": "HELP"
+          "label": "PAIN",
+          "left": { "word": "PAIN" },
+          "right": { "word": "CHEST PAIN" }
         },
         "right": {
-          "word": "PAIN"
+          "label": "FEELING",
+          "left": { "word": "FEEL UNCOMFORTABLE" },
+          "right": { "word": "SICK" }
         }
       },
       "right": {
         "label": "ACTIONS",
         "left": {
-          "action": "SPEAK"
+          "label": "CONTROL",
+          "left": { "action": "SPEAK" },
+          "right": { "action": "UNDO" }
         },
         "right": {
-          "action": "UNDO"
+          "label": "UTILITY",
+          "left": { "word": "OK" },
+          "right": { "word": "PLEASE" }
         }
       }
     }

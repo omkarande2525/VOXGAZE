@@ -5,7 +5,7 @@ Verifies:
 1. Route registration: /demo is ONLY registered when experimental_demo=True; absent when False.
 2. Endpoint execution: GET /demo returns FileResponse pointing to static/demo.html.
 3. HTML content & accessibility invariants:
-   - Permanent warning banner: 'EXPERIMENTAL - NOT VALIDATED - GATE NOT PASSED'
+   - Top warning banner removed
    - Phrase container ('PHRASE:') and speaking indicator ('SPEAKING...')
    - Dual selection panels (LEFT and RIGHT)
    - Hold-progress indicator bar
@@ -63,10 +63,10 @@ def test_demo_html_file_exists():
     assert DEMO_CSS.is_file(), f"Missing {DEMO_CSS}"
 
 
-def test_demo_html_contains_required_warning_banner():
-    """Verify that the permanent unvalidated warning header is present."""
+def test_demo_html_warning_banner_removed():
+    """Verify that the permanent unvalidated warning header is removed."""
     content = DEMO_HTML.read_text(encoding="utf-8")
-    assert "EXPERIMENTAL - NOT VALIDATED - GATE NOT PASSED" in content
+    assert "EXPERIMENTAL - NOT VALIDATED - GATE NOT PASSED" not in content
 
 
 def test_demo_html_contains_phrase_and_speech_indicator():
@@ -160,7 +160,7 @@ def test_demo_api_reset_and_pause_via_app():
     key_endpoint = endpoints["/api/demo/key"]
 
     initial_state = state_endpoint()
-    assert initial_state["banner_text"] == "EXPERIMENTAL - NOT VALIDATED - GATE NOT PASSED"
+    assert initial_state["banner_text"] == ""
     assert "screen" in initial_state
 
     # Pause toggles tracking status

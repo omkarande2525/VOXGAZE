@@ -55,8 +55,8 @@
   function renderState(state) {
     if (!state) return;
 
-    // 1. Permanent Banner
-    if (state.banner_text && bannerText.textContent !== state.banner_text) {
+    // 1. Permanent Banner (if present)
+    if (bannerText && state.banner_text && bannerText.textContent !== state.banner_text) {
       bannerText.textContent = state.banner_text;
     }
 

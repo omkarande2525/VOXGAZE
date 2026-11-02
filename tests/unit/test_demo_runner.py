@@ -187,24 +187,32 @@ def test_simulated_samples_drive_full_phrase_and_speak():
     assert runner.fsm.armed is True
 
     # --- WORD 1: "I NEED" ---
-    # ROOT: Hold LEFT for 1.0s -> TALK
+    # ROOT: Hold LEFT -> TALK & NEEDS
     t = feed_continuous_samples(runner, t, hold_dur, x=0.20)
-    assert runner.fsm.current_node.label == "TALK"
+    assert runner.fsm.current_node.label == "TALK & NEEDS"
     assert runner.fsm.armed is False
-
-    # Center re-arm (500 ms)
-    t = feed_continuous_samples(runner, t, arm_dur, x=0.50)
-    assert runner.fsm.armed is True
-
-    # TALK: Hold RIGHT for 1.0s -> NEEDS
-    t = feed_continuous_samples(runner, t, hold_dur, x=0.80)
-    assert runner.fsm.current_node.label == "NEEDS"
 
     # Center re-arm
     t = feed_continuous_samples(runner, t, arm_dur, x=0.50)
     assert runner.fsm.armed is True
 
-    # NEEDS: Hold LEFT for 1.0s -> leaf "I NEED" -> enters CONFIRM
+    # TALK & NEEDS: Hold LEFT -> TALK
+    t = feed_continuous_samples(runner, t, hold_dur, x=0.20)
+    assert runner.fsm.current_node.label == "TALK"
+
+    # Center re-arm
+    t = feed_continuous_samples(runner, t, arm_dur, x=0.50)
+    assert runner.fsm.armed is True
+
+    # TALK: Hold RIGHT -> GENERAL
+    t = feed_continuous_samples(runner, t, hold_dur, x=0.80)
+    assert runner.fsm.current_node.label == "GENERAL"
+
+    # Center re-arm
+    t = feed_continuous_samples(runner, t, arm_dur, x=0.50)
+    assert runner.fsm.armed is True
+
+    # GENERAL: Hold LEFT -> leaf "I NEED" -> enters CONFIRM
     t = feed_continuous_samples(runner, t, hold_dur, x=0.20)
     assert runner.fsm.state == "CONFIRM"
     assert runner.fsm.confirm_leaf.word == "I NEED"
@@ -213,7 +221,7 @@ def test_simulated_samples_drive_full_phrase_and_speak():
     t = feed_continuous_samples(runner, t, arm_dur, x=0.50)
     assert runner.fsm.armed is True
 
-    # CONFIRM: Hold LEFT (YES) for 1.0s -> commits word
+    # CONFIRM: Hold LEFT (YES) -> commits word
     t = feed_continuous_samples(runner, t, hold_dur, x=0.20)
     assert runner.fsm.phrase == ["I NEED"]
     assert runner.fsm.state == "NODE"
@@ -224,22 +232,29 @@ def test_simulated_samples_drive_full_phrase_and_speak():
     t = feed_continuous_samples(runner, t, arm_dur, x=0.50)
     assert runner.fsm.armed is True
 
-    # ROOT: Hold LEFT -> TALK
+    # ROOT: Hold LEFT -> TALK & NEEDS
     t = feed_continuous_samples(runner, t, hold_dur, x=0.20)
-    assert runner.fsm.current_node.label == "TALK"
+    assert runner.fsm.current_node.label == "TALK & NEEDS"
 
     # Center re-arm
     t = feed_continuous_samples(runner, t, arm_dur, x=0.50)
 
-    # TALK: Hold RIGHT -> NEEDS
+    # TALK & NEEDS: Hold RIGHT -> NEEDS
     t = feed_continuous_samples(runner, t, hold_dur, x=0.80)
     assert runner.fsm.current_node.label == "NEEDS"
 
     # Center re-arm
     t = feed_continuous_samples(runner, t, arm_dur, x=0.50)
 
-    # NEEDS: Hold RIGHT -> leaf "WATER" -> enters CONFIRM
-    t = feed_continuous_samples(runner, t, hold_dur, x=0.80)
+    # NEEDS: Hold LEFT -> CONSUME
+    t = feed_continuous_samples(runner, t, hold_dur, x=0.20)
+    assert runner.fsm.current_node.label == "CONSUME"
+
+    # Center re-arm
+    t = feed_continuous_samples(runner, t, arm_dur, x=0.50)
+
+    # CONSUME: Hold LEFT -> leaf "WATER" -> enters CONFIRM
+    t = feed_continuous_samples(runner, t, hold_dur, x=0.20)
     assert runner.fsm.state == "CONFIRM"
     assert runner.fsm.confirm_leaf.word == "WATER"
 
@@ -254,21 +269,28 @@ def test_simulated_samples_drive_full_phrase_and_speak():
     # Center re-arm
     t = feed_continuous_samples(runner, t, arm_dur, x=0.50)
 
-    # ROOT: Hold RIGHT -> ALERT & ACTIONS
+    # ROOT: Hold RIGHT -> MEDICAL & ACTIONS
     t = feed_continuous_samples(runner, t, hold_dur, x=0.80)
-    assert runner.fsm.current_node.label == "ALERT & ACTIONS"
+    assert runner.fsm.current_node.label == "MEDICAL & ACTIONS"
 
     # Center re-arm
     t = feed_continuous_samples(runner, t, arm_dur, x=0.50)
 
-    # ALERT & ACTIONS: Hold RIGHT -> ACTIONS
+    # MEDICAL & ACTIONS: Hold RIGHT -> ACTIONS
     t = feed_continuous_samples(runner, t, hold_dur, x=0.80)
     assert runner.fsm.current_node.label == "ACTIONS"
 
     # Center re-arm
     t = feed_continuous_samples(runner, t, arm_dur, x=0.50)
 
-    # ACTIONS: Hold LEFT -> leaf "SPEAK" -> enters CONFIRM
+    # ACTIONS: Hold LEFT -> CONTROL
+    t = feed_continuous_samples(runner, t, hold_dur, x=0.20)
+    assert runner.fsm.current_node.label == "CONTROL"
+
+    # Center re-arm
+    t = feed_continuous_samples(runner, t, arm_dur, x=0.50)
+
+    # CONTROL: Hold LEFT -> leaf "SPEAK" -> enters CONFIRM
     t = feed_continuous_samples(runner, t, hold_dur, x=0.20)
     assert runner.fsm.state == "CONFIRM"
     assert runner.fsm.confirm_leaf.action == "SPEAK"
