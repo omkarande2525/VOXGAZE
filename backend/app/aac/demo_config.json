@@ -1,7 +1,7 @@
 {
   "timing": {
-    "hold_ms": 1000,
-    "center_arm_ms": 500,
+    "hold_ms": 1300,
+    "center_arm_ms": 700,
     "grace_ms": 150,
     "confirm_timeout_s": 10,
     "tracking_loss_ms": 300

@@ -165,14 +165,16 @@ def test_rest_test_detection_of_accidental_decision_fail(tmp_path: Path):
     def _feed_accidental_escape():
         time.sleep(0.02)
         base_t = time.perf_counter()
-        # 1. Arm at center (dwell >= 0.5s)
-        for i in range(15):
+        # 1. Arm at center (dwell >= center_arm_s)
+        arm_steps = int(round((runner.fsm.center_arm_s + 0.1) / 0.05))
+        for i in range(arm_steps):
             t = base_t + (i * 0.05)
             runner.process_sample(timestamp=t, x=0.50, valid=True, face_detected=True)
 
-        # 2. Hold LEFT to trigger unintended decision (> 1.0s)
+        # 2. Hold LEFT to trigger unintended decision (> hold_s)
         base_t2 = base_t + 1.0
-        for i in range(25):
+        hold_steps = int(round((runner.fsm.hold_s + 0.2) / 0.05))
+        for i in range(hold_steps):
             t = base_t2 + (i * 0.05)
             runner.process_sample(timestamp=t, x=0.10, valid=True, face_detected=True)
 

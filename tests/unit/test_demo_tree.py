@@ -1,21 +1,19 @@
 """
-Unit tests for VoxGaze Demo State Machine (Task D1)
+Unit tests for VoxGaze AAC Demo: Pure Binary Gaze-Tree State Machine (Task D1 & D5)
 
-Test Requirements (from Section 18):
-1. Tree loads from config and exposes all 8 leaves.
+Verifies:
+1. Tree configuration loads correctly and exposes all 8 vocabulary choices.
 2. A hold shorter than HOLD_MS does nothing.
 3. A hold of HOLD_MS commits exactly one level.
-4. One long LEFT hold cannot commit two levels (needs re-arm at centre).
-5. Without 500 ms at centre, a new hold is ignored.
-6. A confirm YES adds the word; NO and timeout add nothing.
-7. A word is never added if no confirm screen was shown (property test over random sequences).
-8. UP/DOWN do not exist as inputs; NONE never triggers a decision.
-9. NONE longer than TRACKING_LOSS_MS pauses and clears the hold.
-10. A dropout shorter than GRACE_MS does not reset a hold.
-11. SPEAK emits a speak_request only after confirm YES, with the current phrase.
-12. UNDO removes the last word and is safe on an empty phrase.
-13. Timestamps, not call counts, drive timing (feed irregular intervals).
-14. Esc/reset returns to root from any state.
+4. A continuous long hold CANNOT commit multiple levels without center re-arming.
+5. Without center_arm_ms at centre, a new hold is ignored.
+6. Reaching leaf displays confirm screen; word is NEVER added without confirm YES.
+7. Confirm NO or timeout returns to ROOT.
+8. UP, DOWN, or NONE never advance tree.
+9. NONE > 300 ms pauses state machine cleanly.
+10. Brief dropouts <= 150 ms grace do not reset hold timer.
+11. UNDO removes last word; SPEAK generates speak_request event with phrase.
+12. Timestamps strictly drive state transitions, not call counts.
 """
 
 from pathlib import Path
@@ -66,17 +64,20 @@ def test_tree_loads_from_config_and_exposes_all_8_leaves(fsm):
 
 
 def test_hold_shorter_than_hold_ms_does_nothing(fsm):
-    """Verify that holding a direction for less than HOLD_MS (e.g. 800 ms < 1000 ms) causes no transition."""
+    """Verify that holding a direction for less than HOLD_MS causes no transition."""
     t = 0.0
-    # 1. Arm at CENTER for 500 ms
-    t = feed_stream(fsm, t, 0.50, "CENTER")
+    arm_dur = fsm.center_arm_s + 0.05
+    short_hold = fsm.hold_s * 0.7
+
+    # 1. Arm at CENTER
+    t = feed_stream(fsm, t, arm_dur, "CENTER")
     assert fsm.armed is True
     assert fsm.current_screen.title == "ROOT"
 
-    # 2. Hold LEFT for 800 ms (< 1000 ms)
-    t = feed_stream(fsm, t, 0.80, "LEFT")
+    # 2. Hold LEFT shorter than hold_s
+    t = feed_stream(fsm, t, short_hold, "LEFT")
     assert fsm.current_screen.title == "ROOT"  # Stays at ROOT
-    assert fsm.hold_progress > 0.7
+    assert fsm.hold_progress > 0.5
 
     # 3. Return to CENTER
     t = feed_stream(fsm, t, 0.20, "CENTER")
@@ -85,14 +86,17 @@ def test_hold_shorter_than_hold_ms_does_nothing(fsm):
 
 
 def test_hold_of_hold_ms_commits_exactly_one_level(fsm):
-    """Verify that a full 1000 ms hold commits exactly one hierarchical level."""
+    """Verify that a full HOLD_MS hold commits exactly one hierarchical level."""
     t = 0.0
+    arm_dur = fsm.center_arm_s + 0.05
+    hold_dur = fsm.hold_s + 0.05
+
     # Arm at CENTER
-    t = feed_stream(fsm, t, 0.50, "CENTER")
+    t = feed_stream(fsm, t, arm_dur, "CENTER")
     assert fsm.armed is True
 
-    # Hold LEFT for 1000 ms
-    t = feed_stream(fsm, t, 1.05, "LEFT")
+    # Hold LEFT for full hold_s
+    t = feed_stream(fsm, t, hold_dur, "LEFT")
     # Transitions to TALK
     assert fsm.current_screen.title == "TALK"
     assert fsm.current_screen.left_label == "REPLY"
@@ -104,31 +108,36 @@ def test_hold_of_hold_ms_commits_exactly_one_level(fsm):
 def test_long_left_hold_cannot_commit_two_levels(fsm):
     """CRITICAL SAFETY INVARIANT: A continuous 3000 ms hold cannot jump two levels."""
     t = 0.0
-    t = feed_stream(fsm, t, 0.50, "CENTER")
+    arm_dur = fsm.center_arm_s + 0.05
+    t = feed_stream(fsm, t, arm_dur, "CENTER")
     assert fsm.armed is True
 
-    # Hold LEFT continuously for 3.0 seconds
-    t = feed_stream(fsm, t, 3.00, "LEFT")
+    # Hold LEFT continuously for 3.5 seconds
+    t = feed_stream(fsm, t, 3.50, "LEFT")
     # First level committed to TALK, but second level (REPLY) must NOT commit without center re-arming
     assert fsm.current_screen.title == "TALK"
     assert fsm.armed is False
 
 
 def test_without_500ms_at_centre_new_hold_is_ignored(fsm):
-    """Verify that returning to CENTER for only 200 ms (< 500 ms) does NOT arm the next choice."""
+    """Verify that returning to CENTER for less than center_arm_ms does NOT arm the next choice."""
     t = 0.0
+    arm_dur = fsm.center_arm_s + 0.05
+    hold_dur = fsm.hold_s + 0.05
+    short_center = fsm.center_arm_s * 0.4
+
     # Arm and choose TALK
-    t = feed_stream(fsm, t, 0.50, "CENTER")
-    t = feed_stream(fsm, t, 1.05, "LEFT")
+    t = feed_stream(fsm, t, arm_dur, "CENTER")
+    t = feed_stream(fsm, t, hold_dur, "LEFT")
     assert fsm.current_screen.title == "TALK"
     assert fsm.armed is False
 
-    # Return to CENTER for only 200 ms (< 500 ms)
-    t = feed_stream(fsm, t, 0.20, "CENTER")
+    # Return to CENTER for less than center_arm_s
+    t = feed_stream(fsm, t, short_center, "CENTER")
     assert fsm.armed is False
 
     # Try to hold LEFT again
-    t = feed_stream(fsm, t, 1.20, "LEFT")
+    t = feed_stream(fsm, t, hold_dur, "LEFT")
     # Must still be at TALK (not REPLY) because state machine was never re-armed
     assert fsm.current_screen.title == "TALK"
 
@@ -142,18 +151,20 @@ def test_confirm_yes_adds_word_no_and_timeout_add_nothing(fsm):
     4. Confirm Timeout cancels back to ROOT without adding word.
     """
     t = 0.0
+    arm_dur = fsm.center_arm_s + 0.05
+    hold_dur = fsm.hold_s + 0.05
 
     def navigate_to_water(start_t: float) -> float:
         cur = start_t
         # ROOT -> TALK (LEFT)
-        cur = feed_stream(fsm, cur, 0.50, "CENTER")
-        cur = feed_stream(fsm, cur, 1.05, "LEFT")
+        cur = feed_stream(fsm, cur, arm_dur, "CENTER")
+        cur = feed_stream(fsm, cur, hold_dur, "LEFT")
         # TALK -> NEEDS (RIGHT)
-        cur = feed_stream(fsm, cur, 0.50, "CENTER")
-        cur = feed_stream(fsm, cur, 1.05, "RIGHT")
+        cur = feed_stream(fsm, cur, arm_dur, "CENTER")
+        cur = feed_stream(fsm, cur, hold_dur, "RIGHT")
         # NEEDS -> WATER (RIGHT)
-        cur = feed_stream(fsm, cur, 0.50, "CENTER")
-        cur = feed_stream(fsm, cur, 1.05, "RIGHT")
+        cur = feed_stream(fsm, cur, arm_dur, "CENTER")
+        cur = feed_stream(fsm, cur, hold_dur, "RIGHT")
         return cur
 
     # 1. Navigate to WATER
@@ -163,16 +174,16 @@ def test_confirm_yes_adds_word_no_and_timeout_add_nothing(fsm):
     assert fsm.phrase == []  # Word is NOT added yet
 
     # Confirm YES (re-arm at center, then hold LEFT)
-    t = feed_stream(fsm, t, 0.50, "CENTER")
-    t = feed_stream(fsm, t, 1.05, "LEFT")
+    t = feed_stream(fsm, t, arm_dur, "CENTER")
+    t = feed_stream(fsm, t, hold_dur, "LEFT")
     assert fsm.phrase == ["WATER"]
     assert fsm.current_screen.title == "ROOT"
 
     # 2. Navigate to WATER again and test Confirm NO
     t = navigate_to_water(t)
     assert fsm.current_screen.kind == "confirm"
-    t = feed_stream(fsm, t, 0.50, "CENTER")
-    t = feed_stream(fsm, t, 1.05, "RIGHT")  # NO cancels
+    t = feed_stream(fsm, t, arm_dur, "CENTER")
+    t = feed_stream(fsm, t, hold_dur, "RIGHT")  # NO cancels
     assert fsm.phrase == ["WATER"]  # Unchanged
     assert fsm.current_screen.title == "ROOT"
 
@@ -224,9 +235,10 @@ def test_up_down_and_none_never_trigger_transitions(fsm):
 def test_none_longer_than_tracking_loss_ms_pauses_and_clears_hold(fsm):
     """Verify that tracking loss (NONE >= 300 ms) pauses tracking, disarms, and resets active hold."""
     t = 0.0
-    # Arm and start holding LEFT for 400 ms
-    t = feed_stream(fsm, t, 0.50, "CENTER")
-    t = feed_stream(fsm, t, 0.40, "LEFT")
+    arm_dur = fsm.center_arm_s + 0.05
+    # Arm and start holding LEFT for 500 ms
+    t = feed_stream(fsm, t, arm_dur, "CENTER")
+    t = feed_stream(fsm, t, 0.50, "LEFT")
     assert fsm.hold_progress > 0.3
 
     # Tracking drops for 400 ms (> 300 ms TRACKING_LOSS_MS)
@@ -243,22 +255,25 @@ def test_none_longer_than_tracking_loss_ms_pauses_and_clears_hold(fsm):
 def test_grace_window_preserves_hold_during_brief_dropout(fsm):
     """
     Verify that a brief dropout <= GRACE_MS (150 ms) does NOT reset an active hold.
-    Hold 500 ms LEFT + 100 ms CENTER (grace) + 500 ms LEFT -> total 1000 ms -> commits!
     """
     t = 0.0
-    t = feed_stream(fsm, t, 0.50, "CENTER")
+    arm_dur = fsm.center_arm_s + 0.05
+    half_hold = fsm.hold_s * 0.5
+    rem_hold = fsm.hold_s * 0.55
 
-    # 1. Hold LEFT for 500 ms
-    t = feed_stream(fsm, t, 0.50, "LEFT")
-    assert fsm.hold_progress >= 0.45
+    t = feed_stream(fsm, t, arm_dur, "CENTER")
+
+    # 1. Hold LEFT for half duration
+    t = feed_stream(fsm, t, half_hold, "LEFT")
+    assert fsm.hold_progress >= 0.40
 
     # 2. Brief 100 ms dropout to CENTER (<= 150 ms GRACE_MS)
     t = feed_stream(fsm, t, 0.10, "CENTER")
     assert fsm.current_screen.title == "ROOT"  # Stays at ROOT
 
-    # 3. Resume LEFT for 500 ms
-    t = feed_stream(fsm, t, 0.55, "LEFT")
-    # Total hold elapsed >= 1.0s -> commits to TALK!
+    # 3. Resume LEFT to complete hold
+    t = feed_stream(fsm, t, rem_hold, "LEFT")
+    # Total hold elapsed >= hold_s -> commits to TALK!
     assert fsm.current_screen.title == "TALK"
 
 
@@ -270,6 +285,8 @@ def test_undo_and_speak_behave_properly(fsm):
     3. UNDO on empty phrase is completely safe.
     """
     t = 0.0
+    arm_dur = fsm.center_arm_s + 0.05
+    hold_dur = fsm.hold_s + 0.05
 
     # Manually populate phrase buffer
     fsm.phrase = ["I NEED", "WATER"]
@@ -277,11 +294,11 @@ def test_undo_and_speak_behave_properly(fsm):
     def navigate_to_actions(start_t: float) -> float:
         cur = start_t
         # ROOT -> ALERT & ACTIONS (RIGHT)
-        cur = feed_stream(fsm, cur, 0.50, "CENTER")
-        cur = feed_stream(fsm, cur, 1.05, "RIGHT")
+        cur = feed_stream(fsm, cur, arm_dur, "CENTER")
+        cur = feed_stream(fsm, cur, hold_dur, "RIGHT")
         # ALERT & ACTIONS -> ACTIONS (RIGHT)
-        cur = feed_stream(fsm, cur, 0.50, "CENTER")
-        cur = feed_stream(fsm, cur, 1.05, "RIGHT")
+        cur = feed_stream(fsm, cur, arm_dur, "CENTER")
+        cur = feed_stream(fsm, cur, hold_dur, "RIGHT")
         return cur
 
     # 1. Trigger UNDO (RIGHT in ACTIONS)
@@ -289,14 +306,14 @@ def test_undo_and_speak_behave_properly(fsm):
     assert fsm.current_screen.title == "ACTIONS"
     assert fsm.current_screen.right_label == "UNDO"
 
-    t = feed_stream(fsm, t, 0.50, "CENTER")
-    t = feed_stream(fsm, t, 1.05, "RIGHT")  # Select UNDO
+    t = feed_stream(fsm, t, arm_dur, "CENTER")
+    t = feed_stream(fsm, t, hold_dur, "RIGHT")  # Select UNDO
     assert fsm.current_screen.kind == "confirm"
     assert fsm.current_screen.candidate == "UNDO"
 
     # Confirm UNDO
-    t = feed_stream(fsm, t, 0.50, "CENTER")
-    t = feed_stream(fsm, t, 1.05, "LEFT")  # YES
+    t = feed_stream(fsm, t, arm_dur, "CENTER")
+    t = feed_stream(fsm, t, hold_dur, "LEFT")  # YES
     assert fsm.phrase == ["I NEED"]  # "WATER" removed
 
     # 2. Trigger SPEAK (LEFT in ACTIONS)
@@ -304,14 +321,14 @@ def test_undo_and_speak_behave_properly(fsm):
     assert fsm.current_screen.title == "ACTIONS"
     assert fsm.current_screen.left_label == "SPEAK"
 
-    t = feed_stream(fsm, t, 0.50, "CENTER")
-    t = feed_stream(fsm, t, 1.05, "LEFT")  # Select SPEAK
+    t = feed_stream(fsm, t, arm_dur, "CENTER")
+    t = feed_stream(fsm, t, hold_dur, "LEFT")  # Select SPEAK
     assert fsm.current_screen.kind == "confirm"
     assert fsm.current_screen.candidate == "SPEAK"
 
     # Confirm SPEAK
-    t = feed_stream(fsm, t, 0.50, "CENTER")
-    t = feed_stream(fsm, t, 1.05, "LEFT")  # YES
+    t = feed_stream(fsm, t, arm_dur, "CENTER")
+    t = feed_stream(fsm, t, hold_dur, "LEFT")  # YES
 
     speak_events = [e for e in fsm.events if e.type == "speak_request"]
     assert len(speak_events) >= 1
@@ -321,31 +338,34 @@ def test_undo_and_speak_behave_properly(fsm):
     # 3. UNDO on empty phrase safety check
     fsm.phrase.clear()
     t = navigate_to_actions(t)
-    t = feed_stream(fsm, t, 0.50, "CENTER")
-    t = feed_stream(fsm, t, 1.05, "RIGHT")  # Select UNDO
-    t = feed_stream(fsm, t, 0.50, "CENTER")
-    t = feed_stream(fsm, t, 1.05, "LEFT")   # Confirm YES
+    t = feed_stream(fsm, t, arm_dur, "CENTER")
+    t = feed_stream(fsm, t, hold_dur, "RIGHT")  # Select UNDO
+    t = feed_stream(fsm, t, arm_dur, "CENTER")
+    t = feed_stream(fsm, t, hold_dur, "LEFT")   # Confirm YES
     assert fsm.phrase == []  # Safe, no exception
 
 
 def test_timestamps_not_call_counts_drive_timing(fsm):
     """Verify that irregular sample intervals evaluate strictly based on timestamps, not call counts."""
-    # 100 samples in 100 ms -> should NOT arm (500 ms needed)
+    # Samples over 100 ms -> should NOT arm (center_arm_s needed)
     for i in range(100):
         fsm.on_sample(i * 0.001, "CENTER")
     assert fsm.armed is False
 
-    # Just 2 samples spanning 510 ms -> arms!
-    fsm.on_sample(0.50, "CENTER")
-    fsm.on_sample(1.02, "CENTER")
+    # 2 samples spanning center_arm_s + 0.05s -> arms!
+    fsm.on_sample(1.0, "CENTER")
+    fsm.on_sample(1.0 + fsm.center_arm_s + 0.05, "CENTER")
     assert fsm.armed is True
 
 
 def test_reset_returns_to_root_from_any_state(fsm):
     """Verify that calling reset() immediately aborts back to ROOT and clears hold."""
     t = 0.0
-    t = feed_stream(fsm, t, 0.50, "CENTER")
-    t = feed_stream(fsm, t, 1.05, "LEFT")  # TALK
+    arm_dur = fsm.center_arm_s + 0.05
+    hold_dur = fsm.hold_s + 0.05
+
+    t = feed_stream(fsm, t, arm_dur, "CENTER")
+    t = feed_stream(fsm, t, hold_dur, "LEFT")  # TALK
     assert fsm.current_screen.title == "TALK"
 
     fsm.reset(t)
@@ -374,7 +394,7 @@ def test_demo_tree_state_machine_interface_and_properties():
     assert isinstance(tree_sm.events, list)
 
     # Arm and test events dict access
-    feed_stream(tree_sm, 0.0, 0.50, "CENTER")
+    feed_stream(tree_sm, 0.0, tree_sm.center_arm_s + 0.05, "CENTER")
     assert tree_sm.armed is True
     assert len(tree_sm.events) > 0
     # Test dictionary-style access on event
