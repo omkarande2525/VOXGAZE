@@ -368,3 +368,59 @@ def test_no_image_or_frame_files_written_to_disk():
 
     images_after = list(obs_dir.glob("*.jpg")) + list(obs_dir.glob("*.png")) + list(obs_dir.glob("*.mp4"))
     assert len(images_after) == 0
+
+
+def test_demo_runner_status_dictionary_and_reset():
+    """Verify DemoRunner exposes status dict with all Task D2b fields and reset clears phrase."""
+    runner = DemoRunner(worker=None, fsm=DemoStateMachine(), speech_engine=FakeSpeechEngine())
+    runner.fsm.phrase = ["I NEED", "WATER"]
+
+    state = runner.get_state()
+    # Check all fields specified in Task D2b:
+    assert "screen" in state
+    assert "hold_progress" in state
+    assert "armed" in state
+    assert "phrase" in state
+    assert "phrase_text" in state
+    assert state["phrase_text"] == "I NEED WATER"
+    assert "speaking" in state
+    assert "tracking_status" in state
+    assert "fps" in state
+    assert "per_frame_latency_ms" in state
+
+    # Test reset() resets tree to root and clears phrase
+    runner.reset()
+    assert runner.fsm.current_node == runner.fsm.root_node
+    assert runner.fsm.phrase == []
+    reset_state = runner.get_state()
+    assert reset_state["phrase"] == []
+    assert reset_state["phrase_text"] == ""
+
+
+def test_demo_api_endpoints_state_reset_pause():
+    """Verify /api/demo/state, /api/demo/reset, and /api/demo/pause endpoints."""
+    runner = DemoRunner(worker=None, fsm=DemoStateMachine(), speech_engine=FakeSpeechEngine())
+    runner.fsm.phrase = ["HELP"]
+    app = create_app(experimental_demo=True, demo_runner=runner)
+
+    # Map endpoints registered on app
+    routes = {r.path: r.endpoint for r in app.routes if hasattr(r, "endpoint")}
+    assert "/api/demo/state" in routes
+    assert "/api/demo/reset" in routes
+    assert "/api/demo/pause" in routes
+
+    # 1. GET /api/demo/state
+    state = routes["/api/demo/state"]()
+    assert state["phrase"] == ["HELP"]
+    assert state["phrase_text"] == "HELP"
+    assert state["screen"]["title"] == "ROOT"
+
+    # 2. POST /api/demo/pause
+    pause_res = routes["/api/demo/pause"]()
+    assert pause_res["paused"] is True
+
+    # 3. POST /api/demo/reset
+    reset_res = routes["/api/demo/reset"]()
+    assert reset_res["status"] == "SUCCESS"
+    assert runner.fsm.phrase == []
+    assert runner.fsm.current_node == runner.fsm.root_node

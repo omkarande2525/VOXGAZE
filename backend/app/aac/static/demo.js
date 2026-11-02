@@ -6,7 +6,7 @@
  * 2. Real-time rendering of screen nodes, candidate preview, and hold progress.
  * 3. Multi-modal state cues (ARMED vs LOOK TO CENTRE, Tracking OK vs PAUSED).
  * 4. Keyboard shortcuts (Esc=Reset, P=Pause/Resume, C=Recalibrate, Arrows=Key Nav).
- * 5. Strictly ZERO getUserMedia calls (Backend maintains exclusive camera control).
+ * 5. Strictly ZERO browser camera requests (Backend maintains exclusive camera control).
  */
 
 (function () {
@@ -31,6 +31,7 @@
   const dirNameRight = document.getElementById("dir-name-right");
   const progressLeft = document.getElementById("progress-left");
   const progressRight = document.getElementById("progress-right");
+  const progressBarFill = document.getElementById("progress-bar-fill");
 
   const centerPill = document.getElementById("center-pill");
   const centerDot = document.getElementById("center-dot");
@@ -40,6 +41,8 @@
   const valDirection = document.getElementById("val-direction");
   const valTracking = document.getElementById("val-tracking");
   const valFps = document.getElementById("val-fps");
+  const valLatency = document.getElementById("val-latency");
+  const valSpeakingContainer = document.getElementById("val-speaking-container");
 
   // State Tracking
   let isPolling = true;
@@ -108,8 +111,12 @@
     // 4. Hold Progress & Panel Highlights
     const hold = state.hold || {};
     const holdDir = (hold.direction || "").toUpperCase();
-    const holdProg = Math.max(0.0, Math.min(1.0, hold.progress || 0.0));
+    const holdProg = Math.max(0.0, Math.min(1.0, state.hold_progress !== undefined ? state.hold_progress : (hold.progress || 0.0)));
     const holdPct = `${Math.round(holdProg * 100)}%`;
+
+    if (progressBarFill) {
+      progressBarFill.style.width = holdPct;
+    }
 
     if (holdDir === "LEFT") {
       panelLeft.classList.add("panel-holding");
@@ -141,19 +148,19 @@
     if (isArmed) {
       centerPill.classList.add("is-armed");
       centerDot.textContent = "●";
-      armCueBadge.textContent = "ARMED";
+      armCueBadge.textContent = "ARMED / LOOK TO CENTRE";
       armExplanation.textContent = "Ready: Look LEFT or RIGHT and hold to select";
     } else {
       centerPill.classList.remove("is-armed");
       centerDot.textContent = "○";
-      armCueBadge.textContent = "LOOK TO CENTRE";
+      armCueBadge.textContent = "RE-ARMING AT CENTRE...";
       armExplanation.textContent = "Hold eyes at CENTER (500 ms) to arm next decision";
     }
 
     // 6. Bottom Telemetry
     valDirection.textContent = detDir;
 
-    const trackingStatus = (state.tracking || "ok").toLowerCase();
+    const trackingStatus = (state.tracking || state.tracking_status || "ok").toLowerCase();
     if (trackingStatus === "ok") {
       valTracking.textContent = "● OK";
       valTracking.className = "item-value status-ok";
@@ -165,10 +172,23 @@
       valTracking.className = "item-value status-danger";
     }
 
-    if (state.measured_fps !== undefined && state.measured_fps !== null) {
-      valFps.textContent = `${Math.round(state.measured_fps)} fps`;
+    const fpsVal = state.fps !== undefined ? state.fps : state.measured_fps;
+    if (fpsVal !== undefined && fpsVal !== null) {
+      valFps.textContent = `${Math.round(fpsVal)} fps`;
     } else {
       valFps.textContent = "-- fps";
+    }
+
+    if (valLatency) {
+      if (state.per_frame_latency_ms !== undefined && state.per_frame_latency_ms !== null) {
+        valLatency.textContent = `${Math.round(state.per_frame_latency_ms)} ms`;
+      } else {
+        valLatency.textContent = "-- ms";
+      }
+    }
+
+    if (valSpeakingContainer) {
+      valSpeakingContainer.style.display = state.speaking ? "flex" : "none";
     }
   }
 

@@ -79,6 +79,9 @@ class TreeEvent:
     def to_dict(self) -> Dict[str, Any]:
         return {"t": round(self.t, 3), "type": self.type, "detail": self.detail}
 
+    def __getitem__(self, key: str) -> Any:
+        return getattr(self, key)
+
 
 def parse_tree_node(data: Dict[str, Any]) -> DemoTreeNode:
     """Recursively constructs a DemoTreeNode hierarchy from JSON dictionary."""
@@ -401,3 +404,24 @@ class DemoStateMachine:
             "phrase": list(self.phrase),
             "phrase_text": " ".join(self.phrase),
         }
+
+    @property
+    def phrase_list(self) -> List[str]:
+        """Exposes current phrase buffer as a list of strings."""
+        return list(self.phrase)
+
+    def current_screen_info(self) -> Dict[str, Any]:
+        """Exposes current active screen information as a dictionary."""
+        screen = self.current_screen
+        return {
+            "title": screen.title,
+            "left_label": screen.left_label,
+            "right_label": screen.right_label,
+            "kind": screen.kind,
+            "candidate": screen.candidate,
+            "candidate_type": screen.candidate_type,
+        }
+
+
+# Alias for Task D1 specification naming
+DemoTreeStateMachine = DemoStateMachine

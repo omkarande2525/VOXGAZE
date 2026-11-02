@@ -26,6 +26,7 @@ SAFETY INVARIANTS:
 
 from collections import deque
 from dataclasses import dataclass
+import math
 from pathlib import Path
 import threading
 import time
@@ -100,6 +101,12 @@ class GazeSample:
     latency_ms: float = 0.0   # End-to-end perception latency
     yaw_deg: Optional[float] = None
     pitch_deg: Optional[float] = None
+
+    def __iter__(self):
+        return iter((self.timestamp, self.x, self.y, self.valid, self.face_detected))
+
+    def as_tuple(self) -> Tuple[float, float, float, bool, bool]:
+        return (self.timestamp, self.x, self.y, self.valid, self.face_detected)
 
 
 @dataclass(frozen=True)
@@ -354,6 +361,92 @@ def extract_gaze_features_from_frame(
     )
 
 
+def process_frame(
+    raw_frame: np.ndarray,
+    detector: Any,
+    estimator: Any,
+    mapper: Optional[PersonalizedGazeMapper] = None,
+    ts_ms: Optional[int] = None,
+    target_direction: str = "CENTER",
+    target_x: float = 0.50,
+    target_y: float = 0.50,
+    condition_name: str = "",
+    trial_index: int = 0,
+) -> Tuple[ExtractedFrameFeatures, GazeSample, Optional[CalibrationSample]]:
+    """
+    Unified single per-frame perception function shared by run_calibration and LiveGazeWorker.
+    Extracts ocular geometry, face crop, MobileOne S0 gaze angles, builds a CalibrationSample
+    (if valid), and evaluates mapper prediction (if fitted mapper is provided) into a GazeSample.
+    Enforces strictly increasing timestamps per detector instance.
+    """
+    t0 = time.perf_counter()
+
+    if ts_ms is None:
+        now_ms = int(t0 * 1000)
+        last_ts = getattr(detector, "_last_ts_ms", -1) if detector is not None else -1
+        if now_ms <= last_ts:
+            now_ms = last_ts + 1
+        ts_ms = now_ms
+
+    if detector is not None:
+        try:
+            detector._last_ts_ms = ts_ms
+        except Exception:
+            pass
+
+    feats = extract_gaze_features_from_frame(raw_frame, detector, estimator, ts_ms=ts_ms)
+
+    calib_sample: Optional[CalibrationSample] = None
+    if (
+        feats.face_crop_valid
+        and feats.estimator_valid
+        and feats.yaw_deg is not None
+        and feats.pitch_deg is not None
+    ):
+        calib_sample = CalibrationSample(
+            target_x=target_x,
+            target_y=target_y,
+            target_direction=target_direction,
+            yaw_deg=feats.yaw_deg,
+            pitch_deg=feats.pitch_deg,
+            right_eye_h=feats.right_eye_h,
+            right_eye_v=feats.right_eye_v,
+            left_eye_h=feats.left_eye_h,
+            left_eye_v=feats.left_eye_v,
+            canthal_normal=feats.canthal_normal_px,
+            condition_name=condition_name,
+            trial_index=trial_index,
+        )
+
+    valid = False
+    mapped_x = 0.50
+    mapped_y = 0.50
+    if (
+        calib_sample is not None
+        and mapper is not None
+        and getattr(mapper, "is_fitted", False)
+    ):
+        pred = mapper.predict(calib_sample)
+        if pred.is_valid:
+            valid = True
+            mapped_x = pred.screen_x
+            mapped_y = pred.screen_y
+
+    total_latency = feats.detector_ms + feats.crop_ms + feats.infer_ms
+    gaze_sample = GazeSample(
+        timestamp=t0,
+        x=mapped_x,
+        y=mapped_y,
+        valid=valid,
+        face_detected=feats.face_detected,
+        latency_ms=round(total_latency, 2),
+        yaw_deg=feats.yaw_deg,
+        pitch_deg=feats.pitch_deg,
+    )
+
+    return feats, gaze_sample, calib_sample
+
+
 def run_calibration(
     camera_idx: int = 0,
     cap: Optional[Any] = None,
@@ -363,6 +456,7 @@ def run_calibration(
     recording_duration_s: float = 3.0,
     headless: bool = False,
     on_trial_start: Optional[Callable[[int, int, str], None]] = None,
+    min_valid_fraction_per_trial: float = 0.5,
 ) -> Tuple[Optional[PersonalizedGazeMapper], Optional[Any]]:
     """
     Runs a 2-block 5-point visual fixation calibration (BLOCK_1_TARGETS + BLOCK_2_TARGETS = 18 trials)
@@ -392,12 +486,20 @@ def run_calibration(
     if estimator is None and not headless:
         estimator = create_gaze_estimator("mobileone_s0")
 
+    if cap is not None:
+        try:
+            cap._detector = detector
+            cap._estimator = estimator
+        except Exception:
+            pass
+
     blocks = [
         (1, BLOCK_1_TARGETS),
         (2, BLOCK_2_TARGETS),
     ]
 
     training_samples: List[CalibrationSample] = []
+    trial_stats: Dict[str, Tuple[int, int, float]] = {}
     win_name = "VoxGaze Demo Calibration (Press ESC to Abort)"
     aborted = False
 
@@ -427,12 +529,14 @@ def run_calibration(
                         time.sleep(0.005)
                         continue
 
+                    feats, _, _ = process_frame(raw_frame, detector, estimator, mapper=None)
+
                     if not headless:
                         rem_s = max(0.0, settling_duration_s - (time.monotonic() - t_settle_start))
                         canvas = draw_target_canvas(
                             1280, 720, target, "SETTLING", rem_s,
                             block_idx, cond_idx + 1, total_trials_per_block,
-                            camera_preview=raw_frame, face_detected=True,
+                            camera_preview=raw_frame, face_detected=feats.face_detected,
                         )
                         cv2.imshow(win_name, canvas)
                         key = cv2.waitKey(1) & 0xFF
@@ -449,36 +553,32 @@ def run_calibration(
 
                 # Phase 2: RECORDING
                 t_rec_start = time.monotonic()
+                trial_valid_frames = 0
+                trial_total_frames = 0
+
                 while (time.monotonic() - t_rec_start) < recording_duration_s:
                     ret, raw_frame = cap.read()
                     if not ret or raw_frame is None:
                         time.sleep(0.005)
                         continue
 
-                    feats = extract_gaze_features_from_frame(raw_frame, detector, estimator)
-                    if (
-                        feats.face_crop_valid
-                        and feats.estimator_valid
-                        and feats.yaw_deg is not None
-                        and feats.pitch_deg is not None
-                    ):
-                        tx, ty = TARGET_COORDS.get(target, (0.50, 0.50))
-                        training_samples.append(
-                            CalibrationSample(
-                                target_x=tx,
-                                target_y=ty,
-                                target_direction=target,
-                                yaw_deg=feats.yaw_deg,
-                                pitch_deg=feats.pitch_deg,
-                                right_eye_h=feats.right_eye_h,
-                                right_eye_v=feats.right_eye_v,
-                                left_eye_h=feats.left_eye_h,
-                                left_eye_v=feats.left_eye_v,
-                                canthal_normal=feats.canthal_normal_px,
-                                condition_name=trial_name,
-                                trial_index=cond_idx + 1,
-                            )
-                        )
+                    tx, ty = TARGET_COORDS.get(target, (0.50, 0.50))
+                    feats, _, calib_sample = process_frame(
+                        raw_frame,
+                        detector,
+                        estimator,
+                        mapper=None,
+                        target_direction=target,
+                        target_x=tx,
+                        target_y=ty,
+                        condition_name=trial_name,
+                        trial_index=cond_idx + 1,
+                    )
+                    trial_total_frames += 1
+
+                    if calib_sample is not None:
+                        training_samples.append(calib_sample)
+                        trial_valid_frames += 1
 
                     if not headless:
                         rem_s = max(0.0, recording_duration_s - (time.monotonic() - t_rec_start))
@@ -497,6 +597,13 @@ def run_calibration(
                             aborted = True
                             break
 
+                frac = (trial_valid_frames / trial_total_frames) if trial_total_frames > 0 else 0.0
+                trial_stats[trial_name] = (trial_valid_frames, trial_total_frames, frac)
+                print(
+                    f"  [Calibration] Trial {trial_name}: {trial_valid_frames}/{trial_total_frames} "
+                    f"valid frames ({frac * 100:.1f}%)"
+                )
+
     finally:
         if not headless:
             try:
@@ -508,14 +615,37 @@ def run_calibration(
     if aborted:
         return None, cap
 
-    if len(training_samples) < 5:
+    # Require minimum valid-frame fraction per calibration trial
+    all_trials_passed = True
+    for trial_name, (v_cnt, t_cnt, frac) in trial_stats.items():
+        if t_cnt == 0 or frac < min_valid_fraction_per_trial:
+            all_trials_passed = False
+            print(
+                f"  [Calibration Gate FAIL] {trial_name}: {v_cnt}/{t_cnt} valid frames ({frac * 100:.1f}%) "
+                f"< required {min_valid_fraction_per_trial * 100:.1f}%"
+            )
+
+    if not all_trials_passed:
+        print("  [Calibration Gate FAIL] Calibration rejected: one or more trials had insufficient valid frames.")
         return None, cap
+
+    print(f"  [Calibration] Total valid frames used for fit: {len(training_samples)}")
 
     # Fit PersonalizedGazeMapper on Phase 1 calibration data
     mapper = PersonalizedGazeMapper(feature_set=FeatureSetType.HYBRID, alpha=1.0)
     fit_ok = mapper.fit(training_samples)
     if not fit_ok:
+        print("  [Calibration Gate FAIL] PersonalizedGazeMapper.fit failed.")
         return None, cap
+
+    # Compute and print fit residual (RMSE across training samples)
+    sq_residuals = []
+    for s in training_samples:
+        pred = mapper.predict(s)
+        if pred.is_valid:
+            sq_residuals.append((pred.screen_x - s.target_x) ** 2 + (pred.screen_y - s.target_y) ** 2)
+    fit_residual = math.sqrt(float(np.mean(sq_residuals))) if sq_residuals else 0.0
+    print(f"  [Calibration] Fit residual (RMSE): {fit_residual:.4f}")
 
     return mapper, cap
 
@@ -538,8 +668,8 @@ class LiveGazeWorker:
     ):
         self.cap = cap
         self.mapper = mapper
-        self.estimator = estimator or create_gaze_estimator("mobileone_s0")
-        self.detector = detector or create_face_landmarker()
+        self.detector = detector or getattr(cap, "_detector", None) or create_face_landmarker()
+        self.estimator = estimator or getattr(cap, "_estimator", None) or create_gaze_estimator("mobileone_s0")
         self.samples: Deque[GazeSample] = deque(maxlen=max_deque_len)
         self.latest_sample: Optional[GazeSample] = None
         self.fps: float = 0.0
@@ -555,6 +685,16 @@ class LiveGazeWorker:
         self._stop_event.clear()
         self._thread = threading.Thread(target=self._run_loop, daemon=True, name="LiveGazeWorker")
         self._thread.start()
+
+    @property
+    def measured_fps(self) -> float:
+        """Exposes measured acquisition FPS."""
+        return self.fps
+
+    @property
+    def per_frame_latency_ms(self) -> float:
+        """Exposes per-frame perception latency in milliseconds."""
+        return self.per_frame_latency
 
     def stop(self) -> None:
         """Stops the worker thread cleanly and releases the camera."""
@@ -572,52 +712,16 @@ class LiveGazeWorker:
         frame_times: Deque[float] = deque(maxlen=30)
 
         while not self._stop_event.is_set():
-            t0 = time.perf_counter()
             ret, frame = self.cap.read()
             if not ret or frame is None:
                 time.sleep(0.005)
                 continue
 
-            feats = extract_gaze_features_from_frame(frame, self.detector, self.estimator)
-            valid = False
-            mapped_x = 0.50
-            mapped_y = 0.50
-
-            if feats.face_detected and feats.face_crop_valid and feats.estimator_valid:
-                if (
-                    feats.yaw_deg is not None
-                    and feats.pitch_deg is not None
-                    and self.mapper is not None
-                    and getattr(self.mapper, "is_fitted", False)
-                ):
-                    sample = CalibrationSample(
-                        target_x=0.50,
-                        target_y=0.50,
-                        target_direction="CENTER",
-                        yaw_deg=feats.yaw_deg,
-                        pitch_deg=feats.pitch_deg,
-                        right_eye_h=feats.right_eye_h,
-                        right_eye_v=feats.right_eye_v,
-                        left_eye_h=feats.left_eye_h,
-                        left_eye_v=feats.left_eye_v,
-                        canthal_normal=feats.canthal_normal_px,
-                    )
-                    pred = self.mapper.predict(sample)
-                    if pred.is_valid:
-                        valid = True
-                        mapped_x = pred.screen_x
-                        mapped_y = pred.screen_y
-
-            latency_ms = (time.perf_counter() - t0) * 1000.0
-            gaze_sample = GazeSample(
-                timestamp=t0,
-                x=mapped_x,
-                y=mapped_y,
-                valid=valid,
-                face_detected=feats.face_detected,
-                latency_ms=round(latency_ms, 2),
-                yaw_deg=feats.yaw_deg,
-                pitch_deg=feats.pitch_deg,
+            feats, gaze_sample, _ = process_frame(
+                frame,
+                self.detector,
+                self.estimator,
+                mapper=self.mapper,
             )
 
             t_now = time.perf_counter()
@@ -631,7 +735,7 @@ class LiveGazeWorker:
             with self._lock:
                 self.latest_sample = gaze_sample
                 self.samples.append(gaze_sample)
-                self.per_frame_latency = round(latency_ms, 2)
+                self.per_frame_latency = gaze_sample.latency_ms
                 self.fps = round(fps, 1)
 
 

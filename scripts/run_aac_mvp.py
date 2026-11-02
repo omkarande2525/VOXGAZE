@@ -3,7 +3,7 @@ VoxGaze AAC MVP: Working Gaze-to-Word AAC Demonstration Runner
 
 Launches the local FastAPI web server hosting the accessible AAC word board,
 simulated gaze demo mode, live research diagnostic pipeline, offline speech synthesis,
-and the experimental horizontal gaze-tree demo (Task D2b).
+the experimental horizontal gaze-tree demo (Task D2b), and the rest test evaluation (Task D5).
 """
 
 import argparse
@@ -41,8 +41,56 @@ def main():
         default=False,
         help="Allow arrow keys to inject LEFT/RIGHT commands for fallback plans B and C",
     )
+    parser.add_argument(
+        "--rest-test",
+        type=float,
+        default=0.0,
+        help="Run rest stability test for SECONDS (default: 0, inactive)",
+    )
     args = parser.parse_args()
 
+    # -------------------------------------------------------------
+    # Task D5: Dedicated Rest Stability Test Execution
+    # -------------------------------------------------------------
+    if args.rest_test > 0.0:
+        print("\n" + "*" * 65)
+        print("         VOXGAZE REST TEST: CENTER GAZE STABILITY EVALUATION   ")
+        print("*" * 65)
+        print("Starting 18-trial calibration sequence. Look at targets...")
+        print("Press ESC in the calibration window to abort.\n")
+
+        from backend.app.aac.demo_perception import LiveGazeWorker, run_calibration
+        from backend.app.aac.demo_runner import DemoRunner, run_rest_test
+        from backend.app.aac.demo_tree import DemoStateMachine
+        from backend.app.aac.speech import OfflineTTSEngine
+
+        mapper, cap = run_calibration(camera_idx=args.camera)
+        if mapper is None or not getattr(mapper, "is_fitted", False):
+            print("\n[VoxGaze Demo] Calibration aborted or failed. Exiting rest test.")
+            return
+
+        print("\n[VoxGaze Demo] Calibration succeeded! Starting LiveGazeWorker for rest test...")
+        worker = LiveGazeWorker(cap=cap, mapper=mapper)
+        fsm = DemoStateMachine()
+        speech_engine = OfflineTTSEngine()
+
+        demo_runner = DemoRunner(
+            worker=worker,
+            fsm=fsm,
+            speech_engine=speech_engine,
+            allow_keys=False,
+            camera_idx=args.camera,
+            mode="live",
+        )
+        try:
+            run_rest_test(runner=demo_runner, duration_s=args.rest_test)
+        finally:
+            demo_runner.stop()
+        return
+
+    # -------------------------------------------------------------
+    # Interactive Server Modes
+    # -------------------------------------------------------------
     demo_runner = None
 
     if args.experimental_demo:

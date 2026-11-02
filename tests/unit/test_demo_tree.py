@@ -22,7 +22,7 @@ from pathlib import Path
 import random
 import pytest
 
-from backend.app.aac.demo_tree import DemoScreen, DemoStateMachine, TreeEvent
+from backend.app.aac.demo_tree import DemoScreen, DemoStateMachine, DemoTreeStateMachine, TreeEvent
 
 
 # ---------------------------------------------------------------------------
@@ -353,3 +353,31 @@ def test_reset_returns_to_root_from_any_state(fsm):
     assert fsm.state == "NODE"
     assert fsm.hold_progress == 0.0
     assert fsm.armed is False
+
+
+def test_demo_tree_state_machine_interface_and_properties():
+    """Verify Task D1 DemoTreeStateMachine class and property outputs."""
+    tree_sm = DemoTreeStateMachine()
+    assert isinstance(tree_sm, DemoStateMachine)
+
+    # current_screen_info() output check
+    info = tree_sm.current_screen_info()
+    assert info["title"] == "ROOT"
+    assert info["left_label"] == "TALK"
+    assert info["right_label"] == "ALERT & ACTIONS"
+    assert info["kind"] == "node"
+
+    # properties check
+    assert tree_sm.hold_progress == 0.0
+    assert tree_sm.armed is False
+    assert tree_sm.phrase_list == []
+    assert isinstance(tree_sm.events, list)
+
+    # Arm and test events dict access
+    feed_stream(tree_sm, 0.0, 0.50, "CENTER")
+    assert tree_sm.armed is True
+    assert len(tree_sm.events) > 0
+    # Test dictionary-style access on event
+    first_event = tree_sm.events[0]
+    assert "t" in first_event.to_dict()
+    assert first_event["type"] == first_event.type

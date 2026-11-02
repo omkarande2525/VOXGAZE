@@ -69,13 +69,17 @@
 
     <!-- 5. Center Indicator & Arming Cue (Single-Step Escape / Arming Rest Zone) -->
     <section class="center-rest-zone" id="center-rest-zone" aria-label="Center Rest and Arming Zone">
+      <!-- Hold Progress Indicator -->
+      <div class="overall-progress-wrapper" aria-label="Hold progress">
+        <div class="overall-progress-bar" id="progress-bar-fill" style="width: 0%;"></div>
+      </div>
       <div class="center-pill" id="center-pill">
         <span class="center-dot" id="center-dot">○</span>
         <span class="center-label">CENTER</span>
-        <span class="arm-cue-badge" id="arm-cue-badge">LOOK TO CENTRE</span>
+        <span class="arm-cue-badge" id="arm-cue-badge">RE-ARMING AT CENTRE...</span>
       </div>
       <div class="arm-explanation" id="arm-explanation">
-        Must return eyes to CENTER to arm next decision
+        Hold eyes at CENTER (500 ms) to arm next decision
       </div>
     </section>
 
@@ -92,6 +96,13 @@
       <div class="telemetry-item">
         <span class="item-label">Speed:</span>
         <span class="item-value" id="val-fps">-- fps</span>
+      </div>
+      <div class="telemetry-item">
+        <span class="item-label">Latency:</span>
+        <span class="item-value" id="val-latency">-- ms</span>
+      </div>
+      <div class="telemetry-item" id="val-speaking-container" style="display: none;">
+        <span class="item-value status-warn" id="val-speaking">🔊 SPEAKING...</span>
       </div>
       <div class="telemetry-item status-shortcuts">
         <span class="shortcut-tag"><kbd>Esc</kbd> Reset</span>

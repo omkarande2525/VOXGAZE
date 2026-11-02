@@ -159,3 +159,31 @@ During the test and calibration runs on 2026-11-01, additional report artifacts 
 4. **Current Status**:
    - Live speech selection remains disabled (`is_selection_enabled = False`).
    - Milestone M1 remains open pending vertical calibration margin refinement.
+
+---
+
+## 6. Exploratory Prototype: Horizontal Gaze-Tree Demo (v1.1-demo)
+
+### Architectural Choices
+Following the Session B findings (which established 100% horizontal accuracy across 12/12 trials versus 50% vertical accuracy), an exploratory horizontal gaze-tree demo was engineered to demonstrate end-to-end communication while strictly preserving safety invariants:
+1. **1D Horizontal Navigation ($X$-Axis Only)**: Mapped $X$ coordinates drive discrete transitions via dual-threshold hysteresis (`LEFT` enter $< 0.35$, exit $> 0.40$; `RIGHT` enter $> 0.65$, exit $< 0.60$). The vertical $Y$ axis is completely ignored.
+2. **Single MobileOne-S0 Execution Loop**: Calibration and live tracking run MobileOne-S0 exclusively (omitting ResNet-34), achieving $\sim 25\text{ ms}$ per-frame inference latency ($\ge 30\text{ FPS}$).
+3. **Conservative Timing Invariants**:
+   - $\ge 500\text{ ms}$ dwell at `CENTER` required to arm next selection.
+   - $\ge 1000\text{ ms}$ continuous hold required to trigger directional choice.
+   - $\le 150\text{ ms}$ grace window for tracking dropouts.
+   - Mandatory `CONFIRM` screen (`LEFT` = `YES`, `RIGHT` = `NO`) before phrase buffer commit or speech synthesis.
+   - $\ge 300\text{ ms}$ tracking loss (`NONE`) pauses state machine safely.
+
+### Formal Status: Multi-Session Gate NOT Passed
+- **Session A**: PASSED (12/12 peripheral accuracy, 0/15 center false activation).
+- **Session B**: FAILED (9/12 peripheral accuracy due to vertical near-misses, 0/15 center false activation).
+- **Result**: The formal multi-session acceptance gate was **NOT PASSED**.
+- **Deployment Constraint**: Live word selection in the production AAC board remains strictly disabled (`is_selection_enabled = False`). The gaze-tree demonstration is exposed **only** under the explicit `--experimental-demo` CLI flag and carries a permanent on-screen warning banner: `"EXPERIMENTAL - NOT VALIDATED - GATE NOT PASSED"`.
+
+### Key Limitations
+1. **Single-User Validation**: Empirically calibrated and evaluated on a single test participant; generalization across diverse cranial geometries remains unverified.
+2. **Constrained Illumination**: Tested under steady indoor ambient lighting; sensitive to direct backlighting or low-light conditions.
+3. **Small Vocabulary Tree**: Navigates an 8-leaf fixed binary tree (`I NEED`, `WATER`, `YES`, `NO`, `HELP`, `PAIN`, `SPEAK`, `UNDO`); unsuited for unrestricted prose.
+4. **Horizontal-Only Axis**: Vertical eye movements do not register; interface interaction is restricted to 1D binary branching.
+5. **Exploratory Status**: Research demonstration intended to characterize real-time latency and interaction ergonomics, not a clinically approved assistive device.

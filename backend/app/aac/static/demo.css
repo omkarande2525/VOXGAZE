@@ -45,7 +45,8 @@
   padding: 0;
 }
 
-html, body {
+html,
+body {
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -148,9 +149,17 @@ html, body {
 }
 
 @keyframes pulse-border {
-  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-  70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
 }
 
 /* 3. Screen Context / Candidate Preview */
@@ -341,8 +350,27 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
   margin-bottom: 12px;
+}
+
+/* Overall Progress Indicator Bar */
+.overall-progress-wrapper {
+  width: 100%;
+  max-width: 480px;
+  height: 10px;
+  background-color: #0b1120;
+  border: 1px solid #1e293b;
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.overall-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+  width: 0%;
+  transition: width 0.05s linear;
 }
 
 .center-pill {

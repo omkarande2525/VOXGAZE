@@ -30,6 +30,7 @@ from backend.app.aac.demo_perception import (
     draw_target_canvas,
     extract_gaze_features_from_frame,
     print_x_readout,
+    process_frame,
     run_calibration,
 )
 from backend.app.calibration.personalized_mapper import (
@@ -232,7 +233,16 @@ def test_live_gaze_worker_lifecycle_and_samples_published():
         assert len(worker.samples) > 0
         assert worker.samples[-1] == sample
         assert worker.fps >= 0.0
+        assert worker.measured_fps >= 0.0
         assert worker.per_frame_latency > 0.0
+        assert worker.per_frame_latency_ms > 0.0
+
+        # Tuple unpacking test
+        ts, mx, my, val, face = sample
+        assert val is True
+        assert face is True
+        assert mx == pytest.approx(0.55, abs=0.01)
+        assert my == pytest.approx(0.45, abs=0.01)
 
     finally:
         worker.stop()
@@ -482,3 +492,187 @@ def test_draw_target_canvas_renders_without_crash():
         face_detected=False,
     )
     assert canvas_recording.shape == (720, 1280, 3)
+
+
+def test_process_frame_shared_per_frame_function_valid():
+    """Verify the shared process_frame function extracts features, builds calib_sample, and predicts GazeSample."""
+    raw_frame = np.zeros((720, 1280, 3), dtype=np.uint8)
+    detector = MockFaceDetector(has_face=True)
+    estimator = MockGazeEstimator(yaw_deg=-5.0, pitch_deg=2.0, is_valid=True)
+
+    mapper = PersonalizedGazeMapper(feature_set=FeatureSetType.HYBRID, alpha=1.0)
+    # Fit mapper with dummy samples
+    dummy_samples = [
+        CalibrationSample(0.50, 0.50, "CENTER", -5.0 + i * 0.1, 2.0, 0.5, 0.5, 0.5, 0.5, 30.0)
+        for i in range(10)
+    ]
+    assert mapper.fit(dummy_samples) is True
+
+    feats, gaze_sample, calib_sample = process_frame(
+        raw_frame=raw_frame,
+        detector=detector,
+        estimator=estimator,
+        mapper=mapper,
+        target_direction="LEFT",
+        target_x=0.15,
+        target_y=0.50,
+        condition_name="B1_2_LEFT",
+        trial_index=2,
+    )
+
+    # Features check
+    assert feats.face_detected is True
+    assert feats.face_crop_valid is True
+    assert feats.estimator_valid is True
+    assert feats.yaw_deg == -5.0
+    assert feats.pitch_deg == 2.0
+
+    # Calibration sample check
+    assert calib_sample is not None
+    assert calib_sample.target_direction == "LEFT"
+    assert calib_sample.target_x == 0.15
+    assert calib_sample.target_y == 0.50
+    assert calib_sample.condition_name == "B1_2_LEFT"
+    assert calib_sample.trial_index == 2
+
+    # Gaze sample check
+    assert gaze_sample.valid is True
+    assert gaze_sample.face_detected is True
+    assert 0.0 <= gaze_sample.x <= 1.0
+    assert 0.0 <= gaze_sample.y <= 1.0
+    assert gaze_sample.latency_ms > 0.0
+
+
+def test_process_frame_shared_per_frame_function_no_face():
+    """Verify process_frame handles no face honestly without leaking coordinates or calib samples."""
+    raw_frame = np.zeros((720, 1280, 3), dtype=np.uint8)
+    detector = MockFaceDetector(has_face=False)
+    estimator = MockGazeEstimator()
+
+    feats, gaze_sample, calib_sample = process_frame(
+        raw_frame=raw_frame,
+        detector=detector,
+        estimator=estimator,
+        mapper=None,
+    )
+
+    assert feats.face_detected is False
+    assert feats.face_crop_valid is False
+    assert calib_sample is None
+    assert gaze_sample.valid is False
+    assert gaze_sample.face_detected is False
+    assert gaze_sample.x == 0.50
+    assert gaze_sample.y == 0.50
+
+
+def test_process_frame_strictly_increasing_timestamps():
+    """Verify process_frame guarantees strictly increasing timestamps on the detector instance."""
+    raw_frame = np.zeros((720, 1280, 3), dtype=np.uint8)
+    detector = MockFaceDetector(has_face=True)
+    estimator = MockGazeEstimator()
+
+    timestamps = []
+    # Intercept detect_for_video calls to log timestamps
+    orig_detect = detector.detect_for_video
+    def _detect(img, ts):
+        timestamps.append(ts)
+        return orig_detect(img, ts)
+    detector.detect_for_video = _detect
+
+    for _ in range(10):
+        process_frame(raw_frame, detector, estimator)
+
+    assert len(timestamps) == 10
+    # Strictly increasing: ts[i] > ts[i-1]
+    for i in range(1, len(timestamps)):
+        assert timestamps[i] > timestamps[i - 1], f"Timestamps not strictly increasing: {timestamps}"
+
+
+def test_calibration_rejects_insufficient_valid_frame_fraction_per_trial():
+    """Verify calibration fails when any trial fails the minimum valid-frame fraction requirement."""
+    cap = MockVideoCapture()
+
+    class AlternatingFaceDetector:
+        """Returns face on first trial, no face on subsequent trials."""
+        def __init__(self):
+            self.call_count = 0
+
+        def detect_for_video(self, mp_img, ts_ms):
+            self.call_count += 1
+            # Only first trial has face, all others fail
+            if self.call_count <= 2:
+                landmarks = [MockLandmark(0.50, 0.50) for _ in range(478)]
+                landmarks[10] = MockLandmark(0.50, 0.20)
+                landmarks[152] = MockLandmark(0.50, 0.80)
+                landmarks[234] = MockLandmark(0.30, 0.50)
+                landmarks[454] = MockLandmark(0.70, 0.50)
+                return MockDetectionResult([landmarks])
+            return MockDetectionResult([])
+
+    detector = AlternatingFaceDetector()
+    estimator = MockGazeEstimator(is_valid=True)
+
+    mapper, returned_cap = run_calibration(
+        cap=cap,
+        detector=detector,
+        estimator=estimator,
+        settling_duration_s=0.002,
+        recording_duration_s=0.005,
+        headless=True,
+        min_valid_fraction_per_trial=0.5,
+    )
+
+    # Must reject calibration because trials after the first had 0% valid frames
+    assert mapper is None
+    assert returned_cap is cap
+
+
+def test_calibration_prints_per_trial_counts_total_fit_and_residual(capsys):
+    """Verify calibration prints valid-frame count per trial, total fit samples, and fit residual."""
+    cap = MockVideoCapture()
+    detector = MockFaceDetector(has_face=True)
+    estimator = MockGazeEstimator(is_valid=True)
+
+    mapper, _ = run_calibration(
+        cap=cap,
+        detector=detector,
+        estimator=estimator,
+        settling_duration_s=0.002,
+        recording_duration_s=0.005,
+        headless=True,
+        min_valid_fraction_per_trial=0.5,
+    )
+
+    assert mapper is not None
+    assert mapper.is_fitted is True
+
+    captured = capsys.readouterr().out
+    # Check valid-frame count per trial printed
+    assert "[Calibration] Trial B1_1_CENTER:" in captured
+    assert "valid frames" in captured
+    # Check total used for fit printed
+    assert "[Calibration] Total valid frames used for fit:" in captured
+    # Check fit residual printed
+    assert "[Calibration] Fit residual (RMSE):" in captured
+
+
+def test_live_gaze_worker_reuses_detector_and_estimator_from_cap():
+    """Verify LiveGazeWorker automatically reuses detector and estimator attached to cap from calibration."""
+    cap = MockVideoCapture()
+    detector = MockFaceDetector(has_face=True)
+    estimator = MockGazeEstimator(is_valid=True)
+
+    mapper, returned_cap = run_calibration(
+        cap=cap,
+        detector=detector,
+        estimator=estimator,
+        settling_duration_s=0.002,
+        recording_duration_s=0.005,
+        headless=True,
+    )
+    assert mapper is not None
+
+    worker = LiveGazeWorker(cap=returned_cap, mapper=mapper)
+    # Must reuse the same detector and estimator without re-creating
+    assert worker.detector is detector
+    assert worker.estimator is estimator

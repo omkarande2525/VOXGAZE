@@ -143,13 +143,54 @@ In Task T4, post-training INT8 quantization was systematically benchmarked for R
 
 ---
 
-## 6. Project Structure
+## 6. Experimental Gaze-to-Speech Demo (v1.1-demo)
+
+> [!WARNING]
+> **EXPERIMENTAL - NOT VALIDATED - GATE NOT PASSED**:
+> This interactive gaze-tree demo is an exploratory prototype designed to demonstrate real-time gaze navigation on commodity hardware. Because the formal multi-session acceptance gate failed on the vertical axis (Session B), this capability runs strictly behind an explicit `--experimental-demo` opt-in flag.
+
+### Core Architectural Invariant
+**Default build behavior is byte-for-byte unchanged**:
+Without `--experimental-demo`, `is_selection_enabled` remains strictly `False`, no demo routes or endpoints are registered, and any live word selection attempt raises `PermissionError`.
+
+### 1D Horizontal Binary Navigation Tree
+To circumvent vertical axis noise while delivering an end-to-end user experience, the demo uses a 1D horizontal binary navigation tree:
+- **Horizontal Control Signals**: Navigation relies solely on horizontal gaze $X$ (`LEFT` enter $< 0.35$, exit $> 0.40$; `RIGHT` enter $> 0.65$, exit $< 0.60$). Vertical coordinate $Y$ is completely ignored.
+- **Center Re-Arming Requirement**: Every directional decision requires returning to `CENTER` for $\ge 500\text{ ms}$ to arm. A single continuous hold cannot cascade across hierarchy levels.
+- **Continuous Hold & Grace Period**: Holding a direction for $\ge 1000\text{ ms}$ commits the selection. Transient dropouts $\le 150\text{ ms}$ do not reset the timer.
+- **Mandatory Confirmation**: Reaching a leaf enters an explicit `CONFIRM` screen (`LEFT` = `YES`, `RIGHT` = `NO`). Candidate phrases are **never** committed or spoken without an explicit `YES`.
+- **Vocabulary Tree**: 8 selectable choices:
+  - `TALK` $\rightarrow$ `REPLY` (`YES`, `NO`) / `NEEDS` (`I NEED`, `WATER`)
+  - `ALERT & ACTIONS` $\rightarrow$ `ALERT` (`HELP`, `PAIN`) / `ACTIONS` (`SPEAK`, `UNDO`)
+
+### Running the Demo
+1. **Live Gaze-to-Speech Demo** (requires webcam; launches 18-trial calibration sequence first):
+   ```powershell
+   python scripts/run_aac_mvp.py --experimental-demo
+   ```
+   Follow the 18-target calibration points. Once fitted, the server opens `http://127.0.0.1:8000/demo` displaying the accessible high-contrast UI.
+
+2. **Keyboard Fallback Navigation (Plans B & C)**:
+   ```powershell
+   python scripts/run_aac_mvp.py --experimental-demo --allow-keys
+   ```
+   Enables Left / Right arrow keys to inject directional navigation into the state machine.
+
+3. **Rest Stability Test Evaluation**:
+   ```powershell
+   python scripts/run_aac_mvp.py --rest-test 60
+   ```
+   Evaluates center gaze stability over 60 seconds and writes structured event logs to `artifacts/demo_logs/rest_test_<timestamp>.json`.
+
+---
+
+## 7. Project Structure
 
 ```text
 VOXGAZE/
 ├── backend/
 │   └── app/
-│       ├── aac/             # Assistive board, dwell selector, phrase builder, server
+│       ├── aac/             # Assistive board, demo_tree, demo_perception, demo_runner, server
 │       ├── calibration/     # 5-point calibration protocol, ridge mapper, gate evaluation
 │       ├── core/            # System data contracts, coordinate boundaries
 │       └── perception/      # Face crop extraction, MediaPipe, MobileOne, ResNet-34
@@ -157,17 +198,18 @@ VOXGAZE/
 │   ├── run_controlled_model_comparison.py  # 5-block physical comparison protocol runner
 │   ├── evaluate_gate.py                    # Multi-session acceptance gate evaluator
 │   ├── quantize_resnet34.py                # ONNX INT8 quantization & latency benchmark
-│   └── run_aac_mvp.py                      # Local AAC demonstration server
+│   └── run_aac_mvp.py                      # Local AAC demonstration & rest test server
 ├── tests/
-│   └── unit/                # 174 automated unit tests
+│   └── unit/                # 233 automated unit tests
 ├── artifacts/
-│   └── observations/        # Immutable JSON evaluation reports & forensics
+│   ├── observations/        # Immutable JSON evaluation reports & forensics
+│   └── demo_logs/           # Structured session logs and rest test metrics
 └── docs/                    # Specifications, acceptance gates, ADRs, UI principles
 ```
 
 ---
 
-## 7. Developer Quickstart
+## 8. Developer Quickstart
 
 ### Prerequisites
 - Python 3.10+ (tested on Python 3.10.11 and 3.13)
@@ -184,7 +226,7 @@ The repository enforces 100% pass on all unit tests:
 ```powershell
 .venv\Scripts\pytest tests/
 ```
-*(174 tests covering pure geometry, ridge mapper, FSM lifecycle, offline TTS, synthetic jitter, gate evaluator, and quantization models).*
+*(233 tests covering pure geometry, ridge mapper, FSM lifecycle, gaze tree navigation, UI invariants, structured logging, offline TTS, synthetic jitter, gate evaluator, and quantization models).*
 
 ### Running the Controlled Model Comparison Protocol
 1. **Mock Dry Run** (runs in seconds without camera, headless):
