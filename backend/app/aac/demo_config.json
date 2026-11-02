@@ -1,0 +1,60 @@
+{
+  "timing": {
+    "hold_ms": 1000,
+    "center_arm_ms": 500,
+    "grace_ms": 150,
+    "confirm_timeout_s": 10,
+    "tracking_loss_ms": 300
+  },
+  "thresholds": {
+    "left_enter": 0.35,
+    "left_exit": 0.40,
+    "right_enter": 0.65,
+    "right_exit": 0.60
+  },
+  "tree": {
+    "label": "ROOT",
+    "left": {
+      "label": "TALK",
+      "left": {
+        "label": "REPLY",
+        "left": {
+          "word": "YES"
+        },
+        "right": {
+          "word": "NO"
+        }
+      },
+      "right": {
+        "label": "NEEDS",
+        "left": {
+          "word": "I NEED"
+        },
+        "right": {
+          "word": "WATER"
+        }
+      }
+    },
+    "right": {
+      "label": "ALERT & ACTIONS",
+      "left": {
+        "label": "ALERT",
+        "left": {
+          "word": "HELP"
+        },
+        "right": {
+          "word": "PAIN"
+        }
+      },
+      "right": {
+        "label": "ACTIONS",
+        "left": {
+          "action": "SPEAK"
+        },
+        "right": {
+          "action": "UNDO"
+        }
+      }
+    }
+  }
+}
