@@ -50,8 +50,9 @@ class DemoKeyRequest(BaseModel):
 class DemoStateHolder:
     """State proxy for the experimental binary gaze-tree demonstration."""
 
-    def __init__(self, runner: Any = None):
+    def __init__(self, runner: Any = None, allow_keys: bool = False):
         self.runner = runner
+        self.allow_keys = allow_keys or getattr(runner, "allow_keys", False)
         self.fsm: Optional[Any] = getattr(runner, "fsm", None)
         if self.fsm is None:
             try:
@@ -129,6 +130,8 @@ class DemoStateHolder:
         if self.runner is not None and hasattr(self.runner, "inject_key"):
             self.runner.inject_key(key)
         elif self.fsm is not None:
+            if not self.allow_keys:
+                raise PermissionError("Key simulation disabled without --allow-keys.")
             t = time.time()
             d = key.upper().strip()
             if d in ("LEFT", "RIGHT", "CENTER", "NONE"):
@@ -552,6 +555,7 @@ def load_latest_calibration_gate_results() -> Dict[str, Any]:
 def create_app(
     service: Optional[AACService] = None,
     experimental_demo: bool = False,
+    allow_keys: bool = False,
     demo_runner: Any = None,
 ) -> FastAPI:
     """Factory creating the VoxGaze AAC FastAPI application."""
@@ -680,8 +684,10 @@ def create_app(
     # Experimental Gaze-Tree Demo Routes (Only Registered with Flag)
     # -------------------------------------------------------------
     is_demo_enabled = experimental_demo or (os.getenv("VOXGAZE_EXPERIMENTAL_DEMO", "").lower() in ("1", "true"))
+    is_keys_allowed = allow_keys or getattr(demo_runner, "allow_keys", False) or (os.getenv("VOXGAZE_ALLOW_KEYS", "").lower() in ("1", "true"))
+
     if is_demo_enabled:
-        demo_holder = DemoStateHolder(runner=demo_runner)
+        demo_holder = DemoStateHolder(runner=demo_runner, allow_keys=is_keys_allowed)
         app.state.demo_runner = demo_runner
         app.state.demo_state_holder = demo_holder
 
@@ -707,10 +713,11 @@ def create_app(
             is_paused = demo_holder.toggle_pause()
             return {"status": "SUCCESS", "paused": is_paused}
 
-        @app.post("/api/demo/key")
-        def demo_key(req: DemoKeyRequest) -> Dict[str, Any]:
-            demo_holder.inject_key(req.key)
-            return {"status": "SUCCESS", "key": req.key}
+        if is_keys_allowed:
+            @app.post("/api/demo/key")
+            def demo_key(req: DemoKeyRequest) -> Dict[str, Any]:
+                demo_holder.inject_key(req.key)
+                return {"status": "SUCCESS", "key": req.key}
 
         @app.post("/api/demo/recalibrate")
         def demo_recalibrate() -> Dict[str, Any]:
