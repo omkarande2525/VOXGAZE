@@ -1,0 +1,471 @@
+/* ==========================================================================
+   VoxGaze Experimental Demo UI Stylesheet (demo.css)
+   Complies with docs/ui-principles.md:
+   - High contrast, dark environment to reduce eye fatigue
+   - Massive dwell-free target zones (LEFT and RIGHT)
+   - Multi-modal state signals (Icons + Text + Color, never color alone)
+   - Persistent candidate & phrase previews
+   - Reduced decorative motion
+   ========================================================================== */
+
+:root {
+  --bg-primary: #050811;
+  --bg-secondary: #0f172a;
+  --bg-card: #141e33;
+  --bg-card-hover: #1e2942;
+  --border-default: #334155;
+  --border-focus: #38bdf8;
+  --border-active: #0ea5e9;
+
+  --text-primary: #ffffff;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
+  /* High-contrast status colors */
+  --status-armed-bg: #064e3b;
+  --status-armed-border: #10b981;
+  --status-armed-text: #a7f3d0;
+
+  --status-warn-bg: #78350f;
+  --status-warn-border: #f59e0b;
+  --status-warn-text: #fef3c7;
+
+  --status-danger-bg: #881337;
+  --status-danger-border: #f43f5e;
+  --status-danger-text: #ffe4e6;
+
+  --meter-fill: #38bdf8;
+  --meter-fill-yes: #10b981;
+  --meter-fill-no: #f43f5e;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  user-select: none;
+}
+
+/* 1. Permanent Safety Banner */
+.permanent-banner {
+  background-color: #991b1b;
+  color: #ffffff;
+  border-bottom: 2px solid #ef4444;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  z-index: 100;
+}
+
+.banner-badge {
+  background: #000000;
+  color: #fef08a;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+/* Main Container */
+.demo-main-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 42px);
+  padding: 16px 24px 0 24px;
+}
+
+/* 2. Top Bar: Phrase Display */
+.top-phrase-bar {
+  background-color: var(--bg-secondary);
+  border: 2px solid var(--border-default);
+  border-radius: 12px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 70px;
+  margin-bottom: 12px;
+}
+
+.phrase-label-group {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  overflow: hidden;
+}
+
+.phrase-tag {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #38bdf8;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+.phrase-display {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.phrase-placeholder {
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.speaking-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: var(--status-armed-bg);
+  border: 2px solid var(--status-armed-border);
+  color: var(--status-armed-text);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  animation: pulse-border 1.5s infinite;
+}
+
+@keyframes pulse-border {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+/* 3. Screen Context / Candidate Preview */
+.screen-context-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 12px;
+  min-height: 48px;
+}
+
+.screen-heading-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.screen-level-tag {
+  background-color: var(--border-default);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+
+.screen-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text-secondary);
+  letter-spacing: 0.05em;
+}
+
+.confirm-preview-box {
+  background: #1e1b4b;
+  border: 2px solid #818cf8;
+  padding: 6px 18px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.confirm-prompt {
+  font-size: 1.2rem;
+  color: #c7d2fe;
+  font-weight: 600;
+}
+
+.confirm-candidate {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 0.05em;
+}
+
+/* 4. Main Two Panels (Massive Gaze Targets) */
+.panels-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  flex: 1;
+  min-height: 0;
+  margin-bottom: 16px;
+}
+
+.gaze-panel {
+  background-color: var(--bg-card);
+  border: 4px solid var(--border-default);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 28px 36px;
+  position: relative;
+  transition: border-color 0.1s ease, background-color 0.1s ease;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.panel-left .panel-header {
+  justify-content: flex-start;
+}
+
+.panel-right .panel-header {
+  justify-content: flex-end;
+}
+
+.direction-name {
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+}
+
+.arrow-glyph {
+  font-size: 2.2rem;
+  color: var(--text-secondary);
+}
+
+.panel-choice-text {
+  font-size: 3.8rem;
+  font-weight: 900;
+  text-align: center;
+  color: var(--text-primary);
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  margin: auto 0;
+  word-break: break-word;
+}
+
+/* Hold Meter Bar */
+.hold-meter-wrapper {
+  background-color: #0b1120;
+  border: 2px solid #1e293b;
+  border-radius: 12px;
+  height: 28px;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.hold-meter-bar {
+  height: 100%;
+  background-color: var(--meter-fill);
+  width: 0%;
+  transition: width 0.05s linear;
+}
+
+/* Panel States: Holding & Active */
+.gaze-panel.panel-holding {
+  border-color: var(--border-focus);
+  background-color: var(--bg-card-hover);
+}
+
+.gaze-panel.panel-left.panel-holding .hold-meter-bar {
+  background-color: #38bdf8;
+}
+
+.gaze-panel.panel-right.panel-holding .hold-meter-bar {
+  background-color: #38bdf8;
+}
+
+/* Confirmation Mode Overrides */
+.confirm-mode .panel-left {
+  border-color: #065f46;
+}
+
+.confirm-mode .panel-left .panel-choice-text {
+  color: #34d399;
+}
+
+.confirm-mode .panel-left.panel-holding {
+  border-color: var(--meter-fill-yes);
+  background-color: #064e3b;
+}
+
+.confirm-mode .panel-left .hold-meter-bar {
+  background-color: var(--meter-fill-yes);
+}
+
+.confirm-mode .panel-right {
+  border-color: #881337;
+}
+
+.confirm-mode .panel-right .panel-choice-text {
+  color: #fb7185;
+}
+
+.confirm-mode .panel-right.panel-holding {
+  border-color: var(--meter-fill-no);
+  background-color: #4c0519;
+}
+
+.confirm-mode .panel-right .hold-meter-bar {
+  background-color: var(--meter-fill-no);
+}
+
+/* 5. Center Indicator & Arming Cue */
+.center-rest-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.center-pill {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background-color: var(--bg-secondary);
+  border: 3px solid var(--border-default);
+  padding: 10px 32px;
+  border-radius: 9999px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  transition: all 0.15s ease;
+}
+
+.center-dot {
+  font-size: 1.8rem;
+  color: var(--text-muted);
+}
+
+.center-label {
+  color: var(--text-secondary);
+  letter-spacing: 0.05em;
+}
+
+.arm-cue-badge {
+  padding: 4px 14px;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  background-color: #334155;
+  color: #cbd5e1;
+}
+
+/* Armed State */
+.center-pill.is-armed {
+  border-color: var(--status-armed-border);
+  background-color: #062f26;
+}
+
+.center-pill.is-armed .center-dot {
+  color: #34d399;
+}
+
+.center-pill.is-armed .center-label {
+  color: #ffffff;
+}
+
+.center-pill.is-armed .arm-cue-badge {
+  background-color: var(--status-armed-border);
+  color: #022c22;
+}
+
+/* Center Active (Holding Center) */
+.center-pill.is-holding-center {
+  border-color: #38bdf8;
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.3);
+}
+
+.arm-explanation {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+/* 6. Bottom Status & Telemetry Bar */
+.bottom-status-bar {
+  background-color: var(--bg-secondary);
+  border-top: 2px solid var(--border-default);
+  margin: 0 -24px;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1.15rem;
+}
+
+.telemetry-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.item-label {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.item-value {
+  color: var(--text-primary);
+  font-weight: 800;
+}
+
+.status-ok {
+  color: #34d399;
+}
+
+.status-warn {
+  color: #fbbf24;
+}
+
+.status-danger {
+  color: #f87171;
+}
+
+.status-shortcuts {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.shortcut-tag {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+kbd {
+  background-color: #334155;
+  color: #ffffff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid #475569;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+}

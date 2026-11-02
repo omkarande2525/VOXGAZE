@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VoxGaze Gaze-Tree Demo (Experimental)</title>
+  <link rel="stylesheet" href="/static/demo.css">
+</head>
+<body class="demo-body">
+  <!-- 1. Permanent Safety Banner (Always Visible) -->
+  <header class="permanent-banner" role="alert" aria-label="System Safety Status">
+    <span class="banner-badge">⚠️ WARNING</span>
+    <span class="banner-text" id="banner-text">EXPERIMENTAL - NOT VALIDATED - GATE NOT PASSED</span>
+  </header>
+
+  <div class="demo-main-container">
+    <!-- 2. Top Bar: Assembled Phrase & Speaking Indicator -->
+    <header class="top-phrase-bar" aria-label="Phrase Construction Bar">
+      <div class="phrase-label-group">
+        <span class="phrase-tag">PHRASE:</span>
+        <div class="phrase-display" id="phrase-display" aria-live="polite">
+          <span class="phrase-placeholder">(No words yet &mdash; look left or right to start)</span>
+        </div>
+      </div>
+      <div class="speaking-indicator" id="speaking-indicator" aria-live="assertive" style="display: none;">
+        <span class="speaker-icon">🔊</span>
+        <span class="speaking-text">SPEAKING...</span>
+      </div>
+    </header>
+
+    <!-- 3. Screen Context / Candidate Preview -->
+    <section class="screen-context-section" aria-label="Active Decision Level">
+      <div class="screen-heading-wrap">
+        <span class="screen-level-tag" id="screen-level-tag">LEVEL</span>
+        <h1 class="screen-title" id="screen-title">ROOT</h1>
+      </div>
+      <div class="confirm-preview-box" id="confirm-preview-box" style="display: none;">
+        <span class="confirm-prompt" id="confirm-prompt">ADD WORD?</span>
+        <span class="confirm-candidate" id="confirm-candidate">WATER</span>
+      </div>
+    </section>
+
+    <!-- 4. Main Two-Panel Gaze Choices (High Contrast, Massive Targets) -->
+    <main class="panels-grid" role="region" aria-label="Gaze Selection Panels">
+      <!-- LEFT PANEL -->
+      <section class="gaze-panel panel-left" id="panel-left" data-direction="LEFT" aria-label="Left Choice">
+        <div class="panel-header">
+          <span class="arrow-glyph">⮜</span>
+          <span class="direction-name" id="dir-name-left">LEFT</span>
+        </div>
+        <div class="panel-choice-text" id="label-left">TALK</div>
+        <div class="hold-meter-wrapper" aria-label="Left hold progress">
+          <div class="hold-meter-bar" id="progress-left" style="width: 0%;"></div>
+        </div>
+      </section>
+
+      <!-- RIGHT PANEL -->
+      <section class="gaze-panel panel-right" id="panel-right" data-direction="RIGHT" aria-label="Right Choice">
+        <div class="panel-header">
+          <span class="direction-name" id="dir-name-right">RIGHT</span>
+          <span class="arrow-glyph">⮞</span>
+        </div>
+        <div class="panel-choice-text" id="label-right">ALERT &amp; ACTIONS</div>
+        <div class="hold-meter-wrapper" aria-label="Right hold progress">
+          <div class="hold-meter-bar" id="progress-right" style="width: 0%;"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 5. Center Indicator & Arming Cue (Single-Step Escape / Arming Rest Zone) -->
+    <section class="center-rest-zone" id="center-rest-zone" aria-label="Center Rest and Arming Zone">
+      <div class="center-pill" id="center-pill">
+        <span class="center-dot" id="center-dot">○</span>
+        <span class="center-label">CENTER</span>
+        <span class="arm-cue-badge" id="arm-cue-badge">LOOK TO CENTRE</span>
+      </div>
+      <div class="arm-explanation" id="arm-explanation">
+        Must return eyes to CENTER to arm next decision
+      </div>
+    </section>
+
+    <!-- 6. Bottom Status & Telemetry Bar -->
+    <footer class="bottom-status-bar" role="contentinfo" aria-label="Telemetry & System Status">
+      <div class="telemetry-item">
+        <span class="item-label">Direction:</span>
+        <span class="item-value" id="val-direction">CENTER</span>
+      </div>
+      <div class="telemetry-item">
+        <span class="item-label">Tracking:</span>
+        <span class="item-value status-ok" id="val-tracking">● OK</span>
+      </div>
+      <div class="telemetry-item">
+        <span class="item-label">Speed:</span>
+        <span class="item-value" id="val-fps">-- fps</span>
+      </div>
+      <div class="telemetry-item status-shortcuts">
+        <span class="shortcut-tag"><kbd>Esc</kbd> Reset</span>
+        <span class="shortcut-tag"><kbd>P</kbd> Pause</span>
+        <span class="shortcut-tag"><kbd>C</kbd> Recalibrate</span>
+        <span class="shortcut-tag"><kbd>←</kbd>/<kbd>→</kbd> Key Nav</span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="/static/demo.js"></script>
+</body>
+</html>

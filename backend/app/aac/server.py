@@ -7,6 +7,7 @@ endpoints for phrase building, gaze pointer tracking, dwell progress, and offlin
 
 import asyncio
 import json
+import os
 from pathlib import Path
 import time
 from typing import Any, Dict, Optional
@@ -40,6 +41,103 @@ class TileActionRequest(BaseModel):
 
 class SpeakRequest(BaseModel):
     phrase: Optional[str] = None  # If None, speaks the current phrase from PhraseBuilder
+
+
+class DemoKeyRequest(BaseModel):
+    key: str
+
+
+class DemoStateHolder:
+    """State proxy for the experimental binary gaze-tree demonstration."""
+
+    def __init__(self, runner: Any = None):
+        self.runner = runner
+        self.fsm: Optional[Any] = getattr(runner, "fsm", None)
+        if self.fsm is None:
+            try:
+                from backend.app.aac.demo_tree import DemoStateMachine
+                self.fsm = DemoStateMachine()
+            except Exception:
+                self.fsm = None
+        self.paused: bool = False
+        self.speaking: bool = False
+        self.detected_direction: str = "CENTER"
+        self.measured_fps: float = 0.0
+
+    def get_state(self) -> Dict[str, Any]:
+        if self.runner is not None and hasattr(self.runner, "get_state"):
+            return self.runner.get_state()
+
+        if self.fsm is None:
+            return {
+                "banner_text": "EXPERIMENTAL - NOT VALIDATED - GATE NOT PASSED",
+                "screen": {
+                    "title": "ERROR",
+                    "left_label": "",
+                    "right_label": "",
+                    "kind": "node",
+                    "candidate": None,
+                    "candidate_type": None,
+                },
+                "detected_direction": "NONE",
+                "hold": {"direction": None, "progress": 0.0},
+                "armed": False,
+                "tracking": "lost",
+                "phrase": [],
+                "speaking": False,
+                "measured_fps": 0.0,
+            }
+
+        scr = self.fsm.current_screen
+        return {
+            "banner_text": "EXPERIMENTAL - NOT VALIDATED - GATE NOT PASSED",
+            "screen": {
+                "title": scr.title,
+                "left_label": scr.left_label,
+                "right_label": scr.right_label,
+                "kind": scr.kind,
+                "candidate": scr.candidate,
+                "candidate_type": scr.candidate_type,
+            },
+            "detected_direction": self.detected_direction,
+            "hold": {
+                "direction": self.fsm.hold_dir,
+                "progress": round(self.fsm.hold_progress, 3),
+            },
+            "armed": self.fsm.armed,
+            "tracking": "paused" if (self.paused or self.fsm.paused) else "ok",
+            "phrase": list(self.fsm.phrase),
+            "speaking": self.speaking,
+            "measured_fps": self.measured_fps,
+        }
+
+    def reset(self) -> None:
+        if self.runner is not None and hasattr(self.runner, "reset"):
+            self.runner.reset()
+        elif self.fsm is not None:
+            self.fsm.reset(time.time())
+
+    def toggle_pause(self) -> bool:
+        if self.runner is not None and hasattr(self.runner, "toggle_pause"):
+            return self.runner.toggle_pause()
+        self.paused = not self.paused
+        if self.fsm is not None:
+            self.fsm.paused = self.paused
+        return self.paused
+
+    def inject_key(self, key: str) -> None:
+        if self.runner is not None and hasattr(self.runner, "inject_key"):
+            self.runner.inject_key(key)
+        elif self.fsm is not None:
+            t = time.time()
+            d = key.upper().strip()
+            if d in ("LEFT", "RIGHT", "CENTER", "NONE"):
+                self.detected_direction = d
+                self.fsm.on_sample(t, d)
+
+    def recalibrate(self) -> None:
+        if self.runner is not None and hasattr(self.runner, "recalibrate"):
+            self.runner.recalibrate()
 
 
 class AACService:
@@ -451,7 +549,11 @@ def load_latest_calibration_gate_results() -> Dict[str, Any]:
 
 
 
-def create_app(service: Optional[AACService] = None) -> FastAPI:
+def create_app(
+    service: Optional[AACService] = None,
+    experimental_demo: bool = False,
+    demo_runner: Any = None,
+) -> FastAPI:
     """Factory creating the VoxGaze AAC FastAPI application."""
     app = FastAPI(
         title="VoxGaze AAC MVP",
@@ -572,5 +674,47 @@ def create_app(service: Optional[AACService] = None) -> FastAPI:
             if index_path.is_file():
                 return FileResponse(index_path)
             return HTMLResponse("<h3>VoxGaze AAC UI loading...</h3>")
+
+
+    # -------------------------------------------------------------
+    # Experimental Gaze-Tree Demo Routes (Only Registered with Flag)
+    # -------------------------------------------------------------
+    is_demo_enabled = experimental_demo or (os.getenv("VOXGAZE_EXPERIMENTAL_DEMO", "").lower() in ("1", "true"))
+    if is_demo_enabled:
+        demo_holder = DemoStateHolder(runner=demo_runner)
+        app.state.demo_runner = demo_runner
+        app.state.demo_state_holder = demo_holder
+
+        if static_dir.is_dir():
+            @app.get("/demo", response_class=HTMLResponse)
+            def serve_demo():
+                demo_path = static_dir / "demo.html"
+                if demo_path.is_file():
+                    return FileResponse(demo_path)
+                return HTMLResponse("<h3>VoxGaze AAC Demo UI loading...</h3>")
+
+        @app.get("/api/demo/state")
+        def get_demo_state() -> Dict[str, Any]:
+            return demo_holder.get_state()
+
+        @app.post("/api/demo/reset")
+        def reset_demo() -> Dict[str, Any]:
+            demo_holder.reset()
+            return {"status": "SUCCESS", "message": "Reset to root"}
+
+        @app.post("/api/demo/pause")
+        def pause_demo() -> Dict[str, Any]:
+            is_paused = demo_holder.toggle_pause()
+            return {"status": "SUCCESS", "paused": is_paused}
+
+        @app.post("/api/demo/key")
+        def demo_key(req: DemoKeyRequest) -> Dict[str, Any]:
+            demo_holder.inject_key(req.key)
+            return {"status": "SUCCESS", "key": req.key}
+
+        @app.post("/api/demo/recalibrate")
+        def demo_recalibrate() -> Dict[str, Any]:
+            demo_holder.recalibrate()
+            return {"status": "SUCCESS", "message": "Recalibration requested"}
 
     return app
